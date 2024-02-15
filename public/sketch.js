@@ -1,4 +1,5 @@
 
+
 class Message {
   constructor(_id, _owner, _msg) {
     this.id = _id
@@ -21,7 +22,7 @@ class Post {
     this.id = _id
     this.owner = _owner
     this.mediaType = _mediaType
-    this.media = null
+    this.media = _media
     this.likes = []
   }
 
@@ -164,8 +165,8 @@ class PeopleList {
   friendPerson(person,wantFriend) {
     let current = this.link;
     while (current) {
-      if (current.get("name") == wantFriend || current.get("id") == wantFriend) {
-        current.addFriend(person);
+      if (current.get("name") == person || current.get("id") == person) {
+        current.addFriend(wantFriend);
       }
       current = current.get("next");
     }
@@ -221,7 +222,6 @@ class PeopleList {
     let numPosts = 5;
     for (let i = 0; i < numPosts; i++) {
       var person = this.getPerson(this.ids[Math.floor(Math.random() * this.ids.length)])
-      //print(round(random(this.ids.length)),person)
        if (person != null) {
       person.createPost()
        }
@@ -236,16 +236,72 @@ class PeopleList {
       for (let i = 0; i < numPosts; i++) {
         for (let x = 0; x < likeNum; x++) {
           let randomX = Math.floor(Math.random() * this.ids.length)
-          print(randomX)
           var personLike = this.getPerson(this.ids[randomX])
            if (personLike != null) {
-             print(personLike)
             current.get("posts")[i].get("likes").push(personLike.get("id"))
            }
         }
       }
       current = current.get("next");
     }
+  }
+
+  suggestFriend(person) {
+    var possiblePeople = []
+    var peopleArray = []
+    let current = this.link;
+    while (current) {
+      for (let i = 0; i < person.recommend.length; i++) {
+        let otherPerson = current
+        let commonHobbies = person.hobbies.filter(hobby => otherPerson.get("hobbies").includes(hobby));
+        if (commonHobbies.length > 0) {
+          peopleArray['hob'] = true
+        }
+      }
+      for (let i = 0; i < person.posts.length; i++) {
+        let thePost = person.posts[i]
+        for (let a = 0; a < thePost.likes.length; a++) {
+        if (thePost.likes[a] == current.id) {
+          peopleArray['like'] = true
+        }
+        }
+      }
+    if (peopleArray['hob'] == true && peopleArray['like'] == true) {
+      possiblePeople.push(current)
+      peopleArray = []
+    }
+    current = current.get("next") 
+    }
+      
+    return possiblePeople
+  }
+
+  createNewsFeed(person) {
+    var possiblePeople = []
+    var peopleArray = []
+    let current = this.link;
+    while (current) {
+      for (let i = 0; i < current.posts.length; i++) {
+        for (let fi = 0; fi < person.friends.length; fi++) {
+        let thePost = current.posts[i]
+        for (let a = 0; a < thePost.likes.length; a++) {
+        if (thePost.likes[a] == current.id) {
+          peopleArray['ilike'] = true
+        }
+        if (person.friends[a].id == thePost.likes[a]) {
+              peopleArray['flike'] = true
+        }
+        }
+        }
+      }
+    if (peopleArray['ilike'] == true || peopleArray['flike'] == true) {
+      possiblePeople.push(current)
+      peopleArray = []
+    }
+    current = current.get("next") 
+    }
+
+    return possiblePeople
   }
 
   createRecommendList() {
@@ -284,45 +340,73 @@ class PeopleList {
 }
 
 let peopleList;
+let feed = null
 
 function setup() {
   createCanvas(400, 400);
 
   peopleList = new PeopleList();
 
-  // Create 10 people with unique attributes
-  for (let i = 0; i < 10; i++) {
-    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), createVector(random(width), random(height)), generateHobbies());
-    peopleList.addPerson(person);
-  }
-  peopleList.removePerson(peopleList.get("link"))
+  generateFakePeople()
 
   // Display information about each person
-  peopleList.display();
+  //peopleList.display();
 
   // Try to befriend people based on hobbies
   peopleList.createRecommendList();
 
   // Make random posts and have random users like it
   peopleList.generateRandomPost()
-  peopleList.generateRandomPostLikes()
-}
 
+  // Try to like peoples post
+  peopleList.generateRandomPostLikes()
+
+  let current = peopleList.get("link");
+  let friendList = peopleList.suggestFriend(current)
+  for (let i=0; i < friendList.length; i++) {
+    peopleList.friendPerson(current,friendList[i])
+    print('new friend')
+  }
+}
 function draw() {
   background(220);
 
   // Display people on the canvas
+
+  drawNodeList()
+
   let current = peopleList.get("link");
-  while (current) {
-    fill(255, 0, 0)
-    stroke(0, 0, 0)
-    ellipse(current.location.x, current.location.y, 20, 20);
-    fill(255, 0, 0);
-    textAlign(CENTER, CENTER);
-    text(current.name, current.location.x, current.location.y + 20);
-    text(current.id, current.location.x, current.location.y + 40); // Displaying ID
-    current = current.get("next");
+  
+  feed = peopleList.createNewsFeed(current)
+  current.location.x = width/2
+  current.location.y = height/2 
+  fill(255, 0, 0)
+  stroke(0, 0, 0)
+  ellipse(current.location.x, current.location.y, 20, 20);
+  fill(255, 0, 0);
+  textAlign(CENTER, CENTER);
+  text(current.name, current.location.x, current.location.y + 20);
+  text(current.id, current.location.x, current.location.y + 40); // Displaying ID
+  text(`${current.posts.length}`, current.location.x, current.location.y + 60); // Displaying ID
+  if (current.posts.length > 0) {
+  for (let i = 0; i < current.posts.length; i++) {
+    text(`${current.posts[i].media}`, current.location.x, current.location.y + 80 + i * 20); // Displaying ID
   }
+  }
+    for (let i = 0; i < feed.length; i++) {
+      print(feed)
+      strokeWeight(10)
+      line(current.location.x, current.location.y, feed[i].get("location").x, feed[i].get("location").y);
+    }
+    for (let i=0; i < current.friends.length; i++) {
+      print('heyyy')
+      strokeWeight(2)
+      stroke(0,0,255)
+        line(current.location.x, current.location.y, current.friends[i].get("location").x, current.friends[i].get("location").y);
+      }
+    strokeWeight(1)
+  
+  
   peopleList.showAllLikes()
   peopleList.showAllrecommend()
 }
@@ -373,4 +457,27 @@ function getRandomChatMessage() {
 
   // Return the random chat message
   return chatMessages[randomIndex];
+}
+
+function generateFakePeople() {
+  for (let i = 0; i < 10; i++) {
+    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), createVector(random(width), random(height)), generateHobbies());
+    peopleList.addPerson(person);
+  }
+  peopleList.removePerson(peopleList.get("link"))
+}
+
+function drawNodeList() {
+  let current = peopleList.get("link");
+  while (current) {
+    fill(255, 0, 0)
+    stroke(0, 0, 0)
+    ellipse(current.location.x, current.location.y, 20, 20);
+    fill(255, 0, 0);
+    textAlign(CENTER, CENTER);
+    text(current.name, current.location.x, current.location.y + 20);
+    text(current.id, current.location.x, current.location.y + 40); // Displaying ID
+    text(`${current.posts.length}`, current.location.x, current.location.y + 60); // Displaying ID
+    current = current.get("next");
+  }
 }
