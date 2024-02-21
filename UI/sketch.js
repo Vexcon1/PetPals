@@ -1,11 +1,13 @@
 let ui;
 
+let post;
+
 class UI {
   constructor() {
-    this.isAccount = false;
+    this.isAccount = true;
 
-    this.loginPage = false;
-    this.hobbiesPage = true
+    this.loginPage = true;
+    this.hobbiesPage = false
     this.postsPage = false;
     if (this.isAccount) {
       this.loginPage = false;
@@ -156,7 +158,7 @@ class UI {
         this.pet != "" &&
         this.age != ""
       ) {
-        this.postsPage = true;
+        this.hobbiesPage = true;
         this.loginPage = false;
       }
 
@@ -234,18 +236,24 @@ class UI {
             fill(20)
             rect(i*175+37.5, j * 75 + 160, 150, 50, 5)
             fill(50)
-            rect(i*175+37.5, j * 75 + 150, 150, 50, 5)
             
-            if (mouseX > i*175+37 && mouseX < i*175+213 && mouseY > j * 75 + 150 && mouseY < j*75+225)
+            let t = 0
+            
+            if (mouseX > i*175+37.5 && mouseX < i*175+37.5+150 && mouseY > j * 75 + 150 && mouseY < j*75+160 + 50)
               {
-                
+                t = 3
               }
+            
+            rect(i*175+37.5, j * 75 + 150 + t, 150, 50, 5)
           }
       }
   }
 
   runPostsPage() {
     background(30);
+    
+    if (post != null)
+    post.update()
   }
 
   mouseRelease() {
@@ -275,6 +283,7 @@ class UI {
 function setup() {
   createCanvas(400, 600);
   
+  post = new Post("Jesse Reimer", "Hello World! \n hey", null, 573)
   ui = new UI();
 }
 
@@ -297,3 +306,50 @@ function keyPressed() {
 function mouseReleased() {
   ui.mouseRelease();
 }
+
+class Post
+  {
+    constructor(who, words, img, likes)
+    {
+      this.who = who
+      this.words = words
+      this.img = img
+      this.likes = likes
+      
+      this.y = 0
+    }
+    
+    update()
+    {
+      this.display()
+    }
+    
+    display()
+    {
+      rectMode(CORNER)
+      fill(40)
+      noStroke()
+      rect(25, 25, width - 50, 300, 20)
+      
+      rectMode(CORNER)
+      fill(50)
+      textSize(20)
+      rect(40, 40, textWidth(this.who) + 20, 35, 10)
+      
+      rectMode(CORNER)
+      fill(50)
+      rect(40, 90, width-80, 35, textAscent(this.words))
+      
+      fill(200)
+      textSize(15)
+      text(this.words, 50, 113)
+      
+      textAlign(LEFT)
+      textStyle(BOLD)
+      fill(100, 180, 255)
+      noStroke()
+      textSize(20)
+      text(this.who, 50, 65)
+      
+    }
+  }
