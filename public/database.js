@@ -4,7 +4,8 @@ class Database {
   }
 
   set(index, value) {
-       this.data[index] = value
+    print(index,value)
+    this.data[index] = value
   }
 
   get(index) {
@@ -18,14 +19,29 @@ class Database {
   chievData(_data) {
     this.data = _data
   }
+
+  saveData() {
+    localStorage.setItem('database', JSON.stringify(this.data));
+  }
+
+  loadData() {
+    print(localStorage.getItem('database'))
+    if (JSON.parse(localStorage.getItem('database')) != null) {
+    this.data = JSON.parse(localStorage.getItem('database'));
+    }
+  }
+
+  saveFile(name,data) {
+    
+  }
 }
 
 const db = new Database()
 
-function preload() {
-  db.chievData(loadJSON("db.json"))
+function setup() {
+  db.loadData()
 }
 
 function stop() {
-  saveJSON("db.json", db.archData())
+db.saveData()
 }
