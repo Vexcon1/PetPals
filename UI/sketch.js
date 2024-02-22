@@ -7,7 +7,7 @@ class UI {
     this.isAccount = true;
 
     this.loginPage = true;
-    this.hobbiesPage = false
+    this.hobbiesPage = false;
     this.postsPage = false;
     if (this.isAccount) {
       this.loginPage = false;
@@ -28,7 +28,7 @@ class UI {
     if (this.loginPage) {
       this.runLogPage();
     }
-    
+
     if (this.hobbiesPage) {
       this.runHobbiesPage();
     }
@@ -206,54 +206,52 @@ class UI {
       this.age = this.age.substr(0, this.age.length - 1);
     }
   }
-  
-  runHobbiesPage()
-  {
-    background(30)
-    
-    textAlign(CENTER)
-    textStyle(ITALIC)
-    noStroke()
-    fill(200)
-    textSize(20)
-    text("Pick your three favourite", 197, 50)
-    
-    
-    fill(20)
-    textSize(40)
-    textStyle(BOLD)
-    text("HOBBIES", 200, 95)
-    fill(100, 180, 255)
-    text("HOBBIES", 200, 90)
-    
-    
-    for (let i = 0; i < 2; i++)
-      {
-        for (let j = 0; j < 5; j++)
-          {
-            rectMode(CORNER)
-            noStroke()
-            fill(20)
-            rect(i*175+37.5, j * 75 + 160, 150, 50, 5)
-            fill(50)
-            
-            let t = 0
-            
-            if (mouseX > i*175+37.5 && mouseX < i*175+37.5+150 && mouseY > j * 75 + 150 && mouseY < j*75+160 + 50)
-              {
-                t = 3
-              }
-            
-            rect(i*175+37.5, j * 75 + 150 + t, 150, 50, 5)
-          }
+
+  runHobbiesPage() {
+    background(30);
+
+    textAlign(CENTER);
+    textStyle(ITALIC);
+    noStroke();
+    fill(200);
+    textSize(20);
+    text("Pick your three favourite", 197, 50);
+
+    fill(20);
+    textSize(40);
+    textStyle(BOLD);
+    text("HOBBIES", 200, 95);
+    fill(100, 180, 255);
+    text("HOBBIES", 200, 90);
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 5; j++) {
+        rectMode(CORNER);
+        noStroke();
+        fill(20);
+        rect(i * 175 + 37.5, j * 75 + 160, 150, 50, 5);
+        fill(50);
+
+        let t = 0;
+
+        if (
+          mouseX > i * 175 + 37.5 &&
+          mouseX < i * 175 + 37.5 + 150 &&
+          mouseY > j * 75 + 150 &&
+          mouseY < j * 75 + 160 + 50
+        ) {
+          t = 3;
+        }
+
+        rect(i * 175 + 37.5, j * 75 + 150 + t, 150, 50, 5);
       }
+    }
   }
 
   runPostsPage() {
     background(30);
-    
-    if (post != null)
-    post.update()
+
+    if (post != null) post.update();
   }
 
   mouseRelease() {
@@ -282,8 +280,13 @@ class UI {
 
 function setup() {
   createCanvas(400, 600);
-  
-  post = new Post("Jesse Reimer", "Hello World! \n hey", null, 573)
+
+  post = new Post(
+    "Jesse Reimer",
+    "Hello World! hey i like dogs they are sooooo much better than cats",
+    null,
+    573
+  );
   ui = new UI();
 }
 
@@ -307,49 +310,121 @@ function mouseReleased() {
   ui.mouseRelease();
 }
 
-class Post
-  {
-    constructor(who, words, img, likes)
-    {
-      this.who = who
-      this.words = words
-      this.img = img
-      this.likes = likes
-      
-      this.y = 0
-    }
+class Post {
+  constructor(who, words, img, likes) {
+    this.who = who;
+    this.words = words;
+    this.img = img;
+    this.likes = likes;
+    this.liked = false
+
+    this.y = 0;
+
+    this.yscroll = 100;
+  }
+
+  update() {
+    this.display();
+  }
+
+  scroll() {}
+
+  display() {
+    push();
+    translate(0, this.yscroll);
     
-    update()
-    {
-      this.display()
-    }
+    let modifiedString = stringFix(this.words)
+    let lines = modifiedString.split('\n');
+
+    let y = 110;
+    let x = 40;
+    let xSize = 0;
+    let ySize = 0;
+
+ // Loop through each line
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+   
+    // Calculate width and height of the text
+    let textWidthLine = textWidth(line);
+    let textHeightLine = textAscent() + textDescent();
+   
+    xSize += textWidthLine + 5
+    ySize += textHeightLine + 5
+   
+    //y += textHeightLine; // Add some spacing between
+  }
+
+    rectMode(CORNER);
+    fill(40);
+    noStroke();
+    rect(25, 25, width - 50, 300, 20);
+
+    fill(100, 180, 255);
+    ellipse(65, 60, 40, 40);
+
+    rectMode(CORNER);
+    fill(50);
+    textSize(20);
+    rect(95, 40, textWidth(this.who) + 30, 35, 10);
+
+    rectMode(CORNER);
+    fill(50);
+    rect(x, y - textAscent() - 2, xSize, ySize, 25);
+
+    textStyle(BOLD);
+    fill(200);
+    textSize(15);
+    print(modifiedString)
+    text(modifiedString, 50, y);
+
+    textAlign(LEFT);
+    textStyle(BOLD);
+    fill(100, 180, 255);
+    noStroke();
+    textSize(20);
+    text(this.who, 105, 65);
+
+    fill(50);
+    stroke(255);
+    strokeWeight(3);
     
-    display()
-    {
-      rectMode(CORNER)
-      fill(40)
-      noStroke()
-      rect(25, 25, width - 50, 300, 20)
-      
-      rectMode(CORNER)
-      fill(50)
-      textSize(20)
-      rect(40, 40, textWidth(this.who) + 20, 35, 10)
-      
-      rectMode(CORNER)
-      fill(50)
-      rect(40, 90, width-80, 35, textAscent(this.words))
-      
-      fill(200)
-      textSize(15)
-      text(this.words, 50, 113)
-      
-      textAlign(LEFT)
-      textStyle(BOLD)
-      fill(100, 180, 255)
-      noStroke()
-      textSize(20)
-      text(this.who, 50, 65)
-      
+    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15)
+      {
+        stroke(255, 100, 100);
+      }
+    if (this.liked) {
+      fill(255, 100, 100);
+      stroke(255, 100, 100);
+    }
+
+    ellipse(346, 55, 12, 12)
+    ellipse(334, 55, 12, 12)
+    
+    push()
+    noStroke()
+    quad(340, 53, 350, 57, 340, 70, 330, 57)
+    pop()
+    
+    line(340, 70, 330, 60);
+    line(340, 70, 350, 60);
+
+    pop();
+  }
+}
+
+function stringFix(textInput) {
+  let ind = 0
+  let modifiedString = ""
+ 
+  for (let i = 0; i < textInput.length; i++) {
+    if (textWidth(textInput.substring(ind,i)) >= 170 && textInput.substring(i,i+1) == " ") {
+     
+    modifiedString = `${modifiedString}` + textInput.substring(ind, i) + "\n" + textInput.substring(i)
+      print(textInput.substring(ind, i) + "\n" + textInput.substring(i))
+      ind = i;
+     
     }
   }
+  return modifiedString
+}
