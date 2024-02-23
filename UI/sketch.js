@@ -4,7 +4,7 @@ let post;
 
 class UI {
   constructor() {
-    this.isAccount = true;
+    this.isAccount = false;
 
     this.loginPage = true;
     this.hobbiesPage = false;
@@ -22,6 +22,21 @@ class UI {
     this.username = "";
     this.pet = "";
     this.age = "";
+    this.hobbys = [];
+
+    this.hobbies = ["#walks", "#cuddle", "#dicipline", "#training", "#funny", "#mad", "#dog", "#cat", "#kids", "#relatable"];
+    this.hobbySelect = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
   }
 
   update() {
@@ -183,7 +198,7 @@ class UI {
     noStroke();
     textStyle(BOLDITALIC);
     textSize(20);
-    text("Create Account", 200, 456);
+    text("Next", 200, 456);
   }
 
   addToKey(k) {
@@ -215,14 +230,35 @@ class UI {
     noStroke();
     fill(200);
     textSize(20);
-    text("Pick your three favourite", 197, 50);
+    text("Pick three", 197, 50);
 
     fill(20);
     textSize(40);
     textStyle(BOLD);
-    text("HOBBIES", 200, 95);
+    text("CATEGORIES", 200, 95);
     fill(100, 180, 255);
-    text("HOBBIES", 200, 90);
+    text("CATEGORIES", 200, 90);
+    
+    rectMode(CENTER)
+    noStroke()
+    fill(100)
+    if (this.hobbys.length == 3)
+      {
+        if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135 && mouseIsPressed)
+          fill(80, 160, 230)
+        else if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135)
+          fill(90, 170, 240)
+        else
+          fill(100, 180, 255)
+      }
+    rect(200, 120, 130, 30, 5)
+    
+    fill(200)
+    if (this.hobbys.length == 3)
+      fill(255)
+    textSize(15)
+    textAlign(CENTER)
+    text("Create Account", 200, 124)
 
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 5; j++) {
@@ -230,9 +266,14 @@ class UI {
         noStroke();
         fill(20);
         rect(i * 175 + 37.5, j * 75 + 160, 150, 50, 5);
-        fill(50);
 
         let t = 0;
+
+        fill(50);
+        if (this.hobbySelect[i * 5 + j] == true) {
+          fill(50, 90, 125);
+          t = 2;
+        }
 
         if (
           mouseX > i * 175 + 37.5 &&
@@ -241,9 +282,16 @@ class UI {
           mouseY < j * 75 + 160 + 50
         ) {
           t = 3;
+          if (mouseIsPressed == true) {
+            t = 5;
+          }
         }
 
         rect(i * 175 + 37.5, j * 75 + 150 + t, 150, 50, 5);
+
+        textSize(20);
+        fill(255);
+        text(this.hobbies[i * 5 + j], i * 175 + 110, j * 75 + 180 + t);
       }
     }
   }
@@ -275,19 +323,44 @@ class UI {
     //rect(200, 150, 200, 25, 5);
     //rect(200, 250, 200, 25, 5);
     //rect(200, 350, 200, 25, 5);
+
+    if (this.hobbiesPage) {
+      if(mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135 && this.hobbys.length == 3)
+        {
+          this.hobbiesPage = false
+          this.postsPage = true
+          return
+        }
+        
+      
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 5; j++) {
+          if (
+            mouseX > i * 175 + 37.5 &&
+            mouseX < i * 175 + 37.5 + 150 &&
+            mouseY > j * 75 + 150 &&
+            mouseY < j * 75 + 160 + 50
+          ) {
+            if (this.hobbySelect[i * 5 + j] == true) {
+              this.hobbys.splice(this.hobbies[i * 5 + j], 1)
+              this.hobbySelect[i * 5 + j] = false;
+            } else if (this.hobbys.length < 3) {
+              this.hobbys.push(this.hobbies[i * 5 + j])
+              this.hobbySelect[i * 5 + j] = true;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
 function setup() {
   createCanvas(400, 600);
 
-  post = new Post(
-    "Jesse Reimer",
-    "Hello World! hey i like dogs they are sooooo much better than cats",
-    null,
-    573
-  );
   ui = new UI();
+  
+  post = new Post(ui.username, "Hello World! this is me jesse tlaking  whats up ualklk cats are so dumb and dogs are so coll spacing test lol", null, 573);
 }
 
 function draw() {
@@ -308,6 +381,7 @@ function keyPressed() {
 
 function mouseReleased() {
   ui.mouseRelease();
+  post.mouseRelease();
 }
 
 class Post {
@@ -316,49 +390,38 @@ class Post {
     this.words = words;
     this.img = img;
     this.likes = likes;
-    this.liked = false
+    this.liked = false;
 
-    this.y = 0;
+    this.hite = 85;
 
     this.yscroll = 100;
+    
+    this.next = null
+  }
+  
+  get(data_name)
+  {
+    return this[data_name]
+  }
+  
+  set(data_name, data_set)
+  {
+    this[data_name] = data_set
   }
 
   update() {
     this.display();
   }
 
-  scroll() {}
-
   display() {
     push();
     translate(0, this.yscroll);
-    
-    let modifiedString = stringFix(this.words)
-    let lines = modifiedString.split('\n');
-
-    let y = 110;
-    let x = 40;
-    let xSize = 0;
-    let ySize = 0;
-
- // Loop through each line
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-   
-    // Calculate width and height of the text
-    let textWidthLine = textWidth(line);
-    let textHeightLine = textAscent() + textDescent();
-   
-    xSize += textWidthLine + 5
-    ySize += textHeightLine + 5
-   
-    //y += textHeightLine; // Add some spacing between
-  }
+    textAlign(LEFT)
 
     rectMode(CORNER);
     fill(40);
     noStroke();
-    rect(25, 25, width - 50, 300, 20);
+    rect(25, 25, width - 50, this.hite, 20);
 
     fill(100, 180, 255);
     ellipse(65, 60, 40, 40);
@@ -370,13 +433,13 @@ class Post {
 
     rectMode(CORNER);
     fill(50);
-    rect(x, y - textAscent() - 2, xSize, ySize, 25);
+    rect(40, 90, 320, this.hite - 80, 10);
 
     textStyle(BOLD);
     fill(200);
     textSize(15);
-    print(modifiedString)
-    text(modifiedString, 50, y);
+
+    this.wrapText(this.words, 50, 110, width - 100, 20);
 
     textAlign(LEFT);
     textStyle(BOLD);
@@ -388,43 +451,75 @@ class Post {
     fill(50);
     stroke(255);
     strokeWeight(3);
-    
-    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15)
-      {
-        stroke(255, 100, 100);
-      }
+
+    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15) {
+      stroke(255, 100, 100);
+    }
     if (this.liked) {
       fill(255, 100, 100);
       stroke(255, 100, 100);
     }
 
-    ellipse(346, 55, 12, 12)
-    ellipse(334, 55, 12, 12)
-    
-    push()
-    noStroke()
-    quad(340, 53, 350, 57, 340, 70, 330, 57)
-    pop()
-    
+    ellipse(346, 55, 12, 12);
+    ellipse(334, 55, 12, 12);
+
+    push();
+    noStroke();
+    quad(340, 53, 350, 57, 340, 70, 330, 57);
+    pop();
+
     line(340, 70, 330, 60);
     line(340, 70, 350, 60);
 
     pop();
   }
-}
 
-function stringFix(textInput) {
-  let ind = 0
-  let modifiedString = ""
- 
-  for (let i = 0; i < textInput.length; i++) {
-    if (textWidth(textInput.substring(ind,i)) >= 170 && textInput.substring(i,i+1) == " ") {
-     
-    modifiedString = `${modifiedString}` + textInput.substring(ind, i) + "\n" + textInput.substring(i)
-      print(textInput.substring(ind, i) + "\n" + textInput.substring(i))
-      ind = i;
-     
+  wrapText(tex, x, y, maxWidth, lineHeight) {
+    let words = tex.split(" ");
+    let line = "";
+
+    for (let i = 0; i < words.length; i++) {
+      let testLine = line + words[i] + " ";
+      let testWidth = textWidth(testLine);
+      if (testWidth > maxWidth && i > 0) {
+        text(line, x, y); // Draw the line
+        line = words[i] + " "; // Start a new line
+        y += lineHeight; // Move to the next line
+      } else {
+        line = testLine;
+      }
+    }
+    text(line, x, y); // Draw the last line
+    this.hite = y;
+  }
+
+  mouseRelease() {
+    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15) {
+      if (this.liked == false) {
+        this.liked = true;
+      } else if (this.liked == true) {
+        this.liked = false;
+      }
     }
   }
-  return modifiedString
+
+  up() {
+    this.yscroll += 20;
+  }
+
+  down() {
+    this.yscroll -= 20;
+  }
+}
+
+function mouseWheel(event) {
+  // Change the background color
+  // based on deltaY.
+  if (ui.postsPage == true) {
+    if (event.deltaY > 0) {
+      post.down();
+    } else if (event.deltaY < 0) {
+      post.up();
+    }
+  }
 }
