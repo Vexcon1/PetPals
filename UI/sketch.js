@@ -7,25 +7,25 @@ let tp;
 class UI {
   constructor() {
     
-    this.isAccount = false;
+    this.isAccount = true;
 
     this.loginPage = true;
     this.hobbiesPage = false;
     this.postsPage = false;
     if (this.isAccount) {
       this.loginPage = false;
-      this.postsPage = true;
+      this.postsPage = false;
     }
     this.messagingPage = false;
     this.makePostPage = false;
-    this.accountPage = false;
+    this.accountPage = true;
 
     this.typing = 0;
 
-    this.username = "";
-    this.pet = "";
-    this.age = "";
-    this.hobbys = [];
+    this.username = "Dawg";
+    this.pet = "dawg";
+    this.age = "2";
+    this.hobbys = ["#walking", "#running", "#training"];
 
     this.hobbies = [
       "#walks",
@@ -72,6 +72,10 @@ class UI {
     
     if (this.makePostPage) {
       this.runMakePostPage();
+    }
+    
+    if (this.accountPage) {
+      this.runAccountPage();
     }
 
     this.runBottomMenu();
@@ -140,7 +144,9 @@ class UI {
     line(370, 38, 357, 45);
   }
 
-  runMessagingPage() {}
+  runMessagingPage() {
+    background()
+  }
 
   runLogPage() {
     rectMode(CENTER);
@@ -353,6 +359,51 @@ class UI {
     background(30)
     
     tp.update()
+  }
+  
+  runAccountPage()
+  {
+    background(30)
+    
+    rectMode(CENTER)
+    noStroke()
+    
+    fill(40)
+    rect(width/2, 80, width-60, 100, 50)
+    
+    fill(100, 180, 255)
+    
+    ellipse(80, 80, 80, 80)
+    
+    textAlign(LEFT)
+    textStyle(BOLD)
+    
+    let s = 2
+    let textY = 80
+    
+    while(textWidth(this.username) < 200 && textAscent() < 80)
+      {
+        textSize(s)
+        s += 2
+        textY += 0.70
+      }
+    
+    fill(200)
+    text(this.username, 130, textY)
+    textSize(2)
+    
+    for(let i = 0; i < 3; i ++)
+      {
+        textAlign(CENTER)
+        rectMode(CENTER)
+        fill(40)
+        rect(i * 120 + 80, 150, 110, 20, 10)
+        
+        textStyle(NORMAL)
+        fill(100, 180, 255)
+        textSize(15)
+        text(this.hobbys[i], i * 120 + 80, 155)
+      }
   }
 
   mouseRelease() {
