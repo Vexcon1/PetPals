@@ -4,44 +4,25 @@ class Database {
   }
 
   set(index, value) {
-    print(index,value)
-    this.data[index] = value
+    print('set',index,value)
+    socket.emit('database', { key: 'set', data: index, value: value });
   }
 
   get(index) {
-    return  this.data[index]
+    socket.emit('database', { key: 'get', data: index});
+    socket.on('database', (key, index, value) => {
+      print('get',key,index,value)
+    });
   }
+}
 
-  archData() {
-    return  this.data
-  }
-
-  chievData(_data) {
-    this.data = _data
-  }
-
-  saveData() {
-    localStorage.setItem('database', JSON.stringify(this.data));
-  }
-
-  loadData() {
-    print(localStorage.getItem('database'))
-    if (JSON.parse(localStorage.getItem('database')) != null) {
-    this.data = JSON.parse(localStorage.getItem('database'));
-    }
-  }
-
-  saveFile(name,data) {
-    
-  }
+function mousePressed() {
+ db.set('h','hah')
+  db.get('h')
 }
 
 const db = new Database()
 
 function setup() {
-  db.loadData()
-}
-
-function stop() {
-db.saveData()
+  
 }

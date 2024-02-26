@@ -23,15 +23,18 @@ class Person {
 
   // User Actions
 
-  createPost() {
-    let post = new Post(this.id, this.name, "text", getRandomChatMessage());
+  createPost(amount) {
+    let post = new Post(this.id, this.name, getRandomChatMessage(),null,0);
     this.posts.push(post)
+    ui.createUIPost(post)
   }
 
   addPostLike(id,pid) {
     for (let i = 0; i < this.posts.length; i++) {
       if (posts[i].get("id") == pid) {
-        posts[i].get("likes").push(id)
+        posts[i].get("likesUser").push(id)
+        posts[i].set("likes", posts[i].get("likes") + 1)
+        print(posts[i].get("likes"))
       }
     }
   }
@@ -65,8 +68,8 @@ class Person {
   recommendLikes() {
   for (let i = 0; i < this.posts.length; i++) {
     let thePost = this.posts[i]
-    for (let i = 0; i < thePost.likes.length; i++) {
-      let otherPerson = peopleList.getPerson(thePost.likes[i])
+    for (let i = 0; i < thePost.likesUser.length; i++) {
+      let otherPerson = peopleList.getPerson(thePost.likesUser[i])
     if (otherPerson != null) {
       strokeWeight(4)
       stroke(0, 255, 0); // Red line for failed recommendhip

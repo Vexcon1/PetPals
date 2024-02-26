@@ -120,7 +120,8 @@ class PeopleList {
           let randomX = Math.floor(Math.random() * this.ids.length)
           var personLike = this.getPerson(this.ids[randomX])
            if (personLike != null) {
-            current.get("posts")[i].get("likes").push(personLike.get("id"))
+            current.get("posts")[i].get("likesUser").push(personLike.get("id"))
+                current.get("posts")[i].set("likes", current.get("posts")[i].get("likes") + 1)
            }
         }
       }
@@ -142,8 +143,8 @@ class PeopleList {
       }
       for (let i = 0; i < person.posts.length; i++) {
         let thePost = person.posts[i]
-        for (let a = 0; a < thePost.likes.length; a++) {
-        if (thePost.likes[a] == current.id) {
+        for (let a = 0; a < thePost.likesUser.length; a++) {
+        if (thePost.likesUser[a] == current.id) {
           peopleArray['like'] = true
         }
         }
@@ -166,11 +167,11 @@ class PeopleList {
       for (let i = 0; i < current.posts.length; i++) {
         for (let fi = 0; fi < person.friends.length; fi++) {
         let thePost = current.posts[i]
-        for (let a = 0; a < thePost.likes.length; a++) {
-        if (thePost.likes[a] == current.id) {
+        for (let a = 0; a < thePost.likesUser.length; a++) {
+        if (thePost.likesUser[a] == current.id) {
           peopleArray['ilike'] = true
         }
-        if (person.friends[a].id == thePost.likes[a]) {
+        if (person.friends[a].id == thePost.likesUser[a]) {
               peopleArray['flike'] = true
         }
         }
