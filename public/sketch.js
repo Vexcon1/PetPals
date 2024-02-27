@@ -177,7 +177,7 @@ function showAllPosts() {
     }
     current = current.get("next");
   }
-  print(newPost)
+  ui.set("postsDisplaying", newPost)
 }
 
 function testShowAll() {
@@ -227,4 +227,18 @@ function testShowAll() {
 
   peopleList.showAllLikes()
   peopleList.showAllrecommend()
+}
+
+function keyPressed() {
+  if (keyCode == UP_ARROW) {
+    print('remade')
+    // Try to befriend people based on hobbies
+    peopleList.createRecommendList();
+
+    // Make random posts and have random users like it
+    //peopleList.generateRandomPost()
+
+    // Try to like peoples post
+    peopleList.generateRandomPostLikes()
+  }
 }

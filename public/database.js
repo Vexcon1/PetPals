@@ -17,8 +17,7 @@ class Database {
 }
 
 function mousePressed() {
- db.set('h','hah')
-  db.get('h')
+
 }
 
 const db = new Database()

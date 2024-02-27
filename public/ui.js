@@ -7,18 +7,22 @@ let tp;
 class UI {
   constructor() {
 
-    this.isAccount = true;
+    this.isAccount = false;
 
     this.loginPage = true;
     this.hobbiesPage = false;
+    this.postTypePage = false;
     this.postsPage = false;
     if (this.isAccount) {
       this.loginPage = false;
-      this.postsPage = true;
+      this.postTypePage = false;
     }
     this.messagingPage = false;
     this.makePostPage = false;
     this.accountPage = false;
+    this.debugPage = false
+
+    this.postPageView = "ForYou"
 
     this.typing = 0;
 
@@ -54,6 +58,12 @@ class UI {
       false,
       false,
     ];
+  
+
+  // Algorithms
+
+  this.feed = null;
+
   }
 
   get(data_name) {
@@ -63,7 +73,13 @@ class UI {
     this[data_name] = data_set
   }
 
-  update() {    
+  update() {  
+
+    if (this.debugPage) {
+      this.runDebugPage();
+      return
+    }
+    
     if (this.loginPage) {
       this.runLogPage();
     }
@@ -76,6 +92,10 @@ class UI {
       this.runPostsPage();
     }
 
+    if (this.postTypePage) {
+      this.runPostTypePage();
+    }
+
     if (this.messagingPage) {
       this.runMessagingPage();
     }
@@ -84,10 +104,23 @@ class UI {
       this.runMakePostPage();
     }
 
+    if (this.accountPage) {
+      this.runAccountPage();
+    }
+
     this.runBottomMenu();
   }
 
+  runDebugPage()
+  {
+    drawNodeList();
+    testShowAll()
+  }
+  
   runBottomMenu() {
+    fill(255, 0, 0)
+    ellipse( 15, 15, 20, 20)
+    
     rectMode(CENTER);
     noStroke();
     fill(40);
@@ -352,29 +385,160 @@ class UI {
     }
   }
 
+  runPostTypePage()
+  {
+    background(30)
+
+    noStroke()
+    rectMode(CENTER)
+    fill(100, 180, 255)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
+      fill(120, 200, 255)
+    rect(width/2, height/2, 150, 30, 5)
+    
+    fill(100, 180, 255)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
+      fill(120, 200, 255)
+    rect(width/2, height/2 -50, 150, 30, 5)
+    
+    fill(100, 180, 255)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
+      fill(120, 200, 255)
+    rect(width/2, height/2 - 100, 150, 30, 5)
+
+    textAlign(CENTER)
+    textStyle(BOLD)
+    textSize(20)
+    fill(30)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
+      fill(255)
+    text("For You", width/2, height/2 - 94)
+
+    fill(30)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
+      fill(255)
+    text("Popular", width/2, height/2 - 44)
+
+    fill(30)
+    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
+      fill(255)
+    text("Newest", width/2, height/2 + 6)
+  }
+
   runPostsPage() {
     background(30);
 
-    if (post != null) post.update(i * 130);
-    
+    if (this.postPageView == "Newest") {
+    this.postsDisplaying = peopleList.createAllPostList()
     for (let i=0; i < this.postsDisplaying.length; i++) {
-      this.postsDisplaying[i].update(i * 130)
+      
+      this.postsDisplaying[i].update(i * 130 + 130)
+    }
+    }
+    if (this.postPageView == "ForYou") {
+      let me = peopleList.getPerson(this.id)
+       this.postsDisplaying = peopleList.createNewsFeed(me)
+      print(this.postsDisplaying.length)
+      for (let i=0; i < this.postsDisplaying.length; i++) {
+        this.postsDisplaying[i].update(i * 130 + 130)
+      }
     }
   }
 
   runMakePostPage()
   {
     background(30)
-    
+
+    tp.update()
+  }
+
+  runAccountPage()
+  {
+    background(30)
+
+    rectMode(CENTER)
+    noStroke()
+
+    fill(40)
+    rect(width/2, 80, width-60, 100, 50)
+
+    fill(100, 180, 255)
+
+    ellipse(80, 80, 80, 80)
+
+    textAlign(LEFT)
+    textStyle(BOLD)
+
+    let s = 2
+    let textY = 80
+
+    while(textWidth(this.username) < 200 && textAscent() < 80)
+      {
+        textSize(s)
+        s += 2
+        textY += 0.70
+      }
+
+    fill(200)
+    text(this.username, 130, textY)
+    textSize(2)
+
+    for(let i = 0; i < 3; i ++)
+      {
+        textAlign(CENTER)
+        rectMode(CENTER)
+        fill(40)
+        rect(i * 120 + 80, 150, 110, 20, 10)
+
+        textStyle(NORMAL)
+        fill(100, 180, 255)
+        textSize(15)
+        text(this.hobbys[i], i * 120 + 80, 155)
+      }
   }
 
   mouseRelease() {
+    if (dist(mouseX, mouseY, 15, 15) < 10)
+    {
+      this.debugPage = true
+    }
+    
     if (this.isAccount == true) {
+
+      if (this.postTypePage)
+      {
+        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
+        {
+          //top
+          this.postPageView = "ForYou"
+          this.postsPage = true;
+          this.postTypePage = false;
+        }
+          
+        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
+        {
+          //middle
+          this.postPageView = "Popular"
+          this.postsPage = true;
+          this.postTypePage = false;
+        }
+          
+        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
+        {
+          //bottom
+          this.postPageView = "Newest"
+          this.postsPage = true;
+          this.postTypePage = false;
+        }
+          
+      }
+      
       //can access message, posts, account, and create posts
       if (dist(mouseX, mouseY, 370, 25) < 25) {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
+        this.postTypePage = false
         this.makePostPage = false;
         this.accountPage = false;
         this.messagingPage = true;
@@ -384,6 +548,7 @@ class UI {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
+        this.postTypePage = false
         this.makePostPage = false;
         this.messagingPage = false;
         this.accountPage = true;
@@ -392,7 +557,8 @@ class UI {
       if (dist(mouseX, mouseY, 100, 575) < 15) {
         this.loginPage = false;
         this.hobbiesPage = false;
-        this.postsPage = true;
+        this.postsPage = false;
+        this.postTypePage = true;
         this.makePostPage = false;
         this.accountPage = false;
         this.messagingPage = false;
@@ -402,10 +568,11 @@ class UI {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
+        this.postTypePage = false
         this.accountPage = false;
         this.messagingPage = false;
 
-        tp = new PostCreator(this.username, " ", null, 200)
+        tp = new PostCreator(this.id,this.username, " ", null, 200)
 
         this.makePostPage = true;
       }
@@ -441,8 +608,13 @@ class UI {
         this.hobbys.length == 3
       ) {
         this.hobbiesPage = false;
-        this.postsPage = true;
+        this.accountPage = true;
         this.isAccount = true
+        // create account
+        this.id = peopleList.generateUniqueId()
+        let person = new Person(this.id, this.username, this.age, this.pet, createVector(random(width), random(height)), this.hobbies);
+        peopleList.addPerson(person);
+        print("created account")
         return;
       }
 
@@ -477,7 +649,7 @@ class UI {
   updateUIPost(po) {
     for (let i=0; i < this.postsDisplaying.length; i++) {
       if (this.postsDisplaying[i].id == po.id) {
-        this.postsDisplaying[i] = po.id
+        this.postsDisplaying[i] = po
       }
     }
   }
@@ -499,10 +671,6 @@ function keyPressed() {
     
     if (tp != null)
       tp.backspace();
-
-    for (let i=0; i < ui.postsDisplaying.length; i++) {
-      ui.postsDisplaying[i].backspace();
-    }
   }
 }
 
@@ -539,112 +707,116 @@ function mouseWheel(event) {
 }
 
 class PostCreator extends Post
-{
-  constructor(who, words, img, likes, hitee) {
-    super(who, words, img, likes)
+  {
+    constructor(id, who, words, img, likes) {
+      super(id, who, words, img, likes)
 
-    this.hite = 85;
+      this.hite = 85;
 
-    this.yscroll = 0;
+      this.yscroll = 0;
 
-    this.next = null;
+      this.next = null;
 
-    this.typing = false
-  }
-
-  display() {
-    textAlign(LEFT);
-
-    rectMode(CORNER);
-    fill(40);
-    noStroke();
-    rect(25, 25, width - 50, this.hite, 20);
-
-    fill(100, 180, 255);
-    ellipse(65, 60, 40, 40);
-
-    rectMode(CORNER);
-    fill(50);
-    textSize(20);
-    rect(95, 40, textWidth(this.who) + 20, 35, 10);
-
-    rectMode(CORNER);
-    fill(50);
-    if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite -80)
-      fill(60)
-    if (this.typing)
-      stroke(100, 180, 255)
-
-    rect(40, 90, 320, this.hite - 80, 10);
-
-    noStroke()
-    textStyle(BOLD);
-    fill(200);
-    textSize(15);
-
-    this.wrapText(this.words, 50, 110, width - 100, 20);
-
-    textAlign(LEFT);
-    textStyle(BOLD);
-    fill(100, 180, 255);
-    noStroke();
-    textSize(20);
-    text(this.who, 105, 65);
-
-    rectMode(CENTER)
-    noStroke()
-
-    fill(20)
-    rect(200, this.hite + 80, 150, 50, 10)
-
-    push()
-    fill(100, 180, 255)
-    if(mouseX > 125 && mouseX < 275 && mouseY > this.hite + 45 && mouseY < this.hite + 95)
-      {
-        translate(0, 3)
-
-        if (mouseIsPressed)
-          {
-            translate(0, 2)
-          }
-      }
-
-    rect(200, this.hite + 70, 150, 50, 10)
-
-    fill(50)
-    textAlign(CENTER)
-    textSize(25)
-
-    text("POST", 200, this.hite+80)
-
-    fill(255)
-    textAlign(CENTER)
-    textSize(25)
-
-    text("POST", 200, this.hite+77)
-
-    pop()
-
-  }
-
-  mouseRelease() {
-    if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite - 80)
-      {
-        this.typing = true
-      }
-    else 
       this.typing = false
+    }
 
-    //rect(40, 90, 320, this.hite - 80, 10);
-  }
+    display() {
+      textAlign(LEFT);
 
-  addToKey(k) {
-    if (this.typing == true) this.words += k;
-  }
+      rectMode(CORNER);
+      fill(40);
+      noStroke();
+      rect(25, 25, width - 50, this.hite, 20);
 
-  backspace() {
-    if (this.typing == true) {
-      this.words = this.words.substr(0, this.words.length - 1);
+      fill(100, 180, 255);
+      ellipse(65, 60, 40, 40);
+
+      rectMode(CORNER);
+      fill(50);
+      textSize(20);
+      rect(95, 40, textWidth(this.who) + 20, 35, 10);
+
+      rectMode(CORNER);
+      fill(50);
+      if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite -80)
+        fill(60)
+      if (this.typing)
+        stroke(100, 180, 255)
+
+      rect(40, 90, 320, this.hite - 80, 10);
+
+      noStroke()
+      textStyle(BOLD);
+      fill(200);
+      textSize(15);
+
+      this.wrapText(this.words, 50, 110, width - 100, 20);
+
+      textAlign(LEFT);
+      textStyle(BOLD);
+      fill(100, 180, 255);
+      noStroke();
+      textSize(20);
+      text(this.who, 105, 65);
+
+      rectMode(CENTER)
+      noStroke()
+
+      fill(20)
+      rect(200, this.hite + 80, 150, 50, 10)
+
+      push()
+      fill(100, 180, 255)
+      if(mouseX > 125 && mouseX < 275 && mouseY > this.hite + 45 && mouseY < this.hite + 95)
+        {
+          translate(0, 3)
+
+          if (mouseIsPressed)
+            {
+              this.typing = false;
+              print(this.id)
+              let personA = peopleList.getPerson(this.id)
+              personA.createPost(this.words)
+              translate(0, 2)
+            }
+        }
+
+      rect(200, this.hite + 70, 150, 50, 10)
+
+      fill(50)
+      textAlign(CENTER)
+      textSize(25)
+
+      text("POST", 200, this.hite+80)
+
+      fill(255)
+      textAlign(CENTER)
+      textSize(25)
+
+      text("POST", 200, this.hite+77)
+
+      pop()
+
+    }
+
+    mouseRelease() {
+      if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite - 80)
+        {
+          this.typing = true
+        }
+      else 
+        this.typing = false
+
+      //rect(40, 90, 320, this.hite - 80, 10);
+    }
+
+    addToKey(k) {
+      if (this.typing == true) this.words += k;
+    }
+
+    backspace() {
+      if (this.typing == true) {
+        this.words = this.words.substr(0, this.words.length - 1);
+      }
     }
   }
-}

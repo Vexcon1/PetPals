@@ -22,6 +22,7 @@ class PeopleList {
       while (current.get("next")) {
         current = current.get("next");
       }
+      print('added person')
       current.set("next",person);
     }
     this.length++;
@@ -81,7 +82,7 @@ class PeopleList {
   display() {
     let current = this.link;
     while (current) {
-      let info = `ID: ${current.get("id")}, ${current.get("name")}, Age: ${current.get("age")}, Pet: ${current.get("pet")}, Hobbies: ${current.get("hobbies").join(', ')}, Location: (${current.get("location").x.toFixed(2)}, ${current.get("location").y.toFixed(2)})`;
+      let info = `ID: ${current.get("id")}, ${current.get("name")}, Age: ${current.get("age")}, Hobbies: ${current.get("hobbies").join(', ')}, Location: (${current.get("location").x.toFixed(2)}, ${current.get("location").y.toFixed(2)})`;
       current = current.get("next");
     }
   }
@@ -184,7 +185,15 @@ class PeopleList {
     current = current.get("next") 
     }
 
-    return possiblePeople
+    let allPosts = []
+
+    for (let i = 0; i < possiblePeople.length; i++) {
+      allPosts = allPosts.concat(possiblePeople[i].posts)
+    }
+
+    print(allPosts)
+
+    return allPosts
   }
 
   createRecommendList() {
@@ -199,6 +208,16 @@ class PeopleList {
       }
       current = current.get("next");
     }
+  }
+
+  createAllPostList() {
+    let current = this.link;
+    let allPosts = []
+    while (current) {
+      allPosts = allPosts.concat(current.get("posts"))
+      current = current.get("next");
+    }
+    return allPosts
   }
 
   showAllrecommend() {

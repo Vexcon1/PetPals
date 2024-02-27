@@ -23,8 +23,11 @@ class Person {
 
   // User Actions
 
-  createPost(amount) {
-    let post = new Post(this.id, this.name, getRandomChatMessage(),null,0);
+  createPost(txt) {
+    if (txt == undefined) {
+      txt = getRandomChatMessage()
+    }
+    let post = new Post(this.id, this.name, txt,null,0);
     this.posts.push(post)
     ui.createUIPost(post)
   }
