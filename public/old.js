@@ -157,7 +157,7 @@ function getRandomChatMessage() {
 
 function generateFakePeople() {
   for (let i = 0; i < 10; i++) {
-    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), createVector(random(width), random(height)), generateHobbies());
+    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
     peopleList.addPerson(person);
   }
   peopleList.removePerson(peopleList.get("link"))
@@ -204,12 +204,10 @@ function testShowAll() {
   }
   }
     for (let i = 0; i < feed.length; i++) {
-      print(feed)
       strokeWeight(10)
       line(current.location.x, current.location.y, feed[i].get("location").x, feed[i].get("location").y);
     }
     for (let i=0; i < current.friends.length; i++) {
-      print('heyyy')
       strokeWeight(2)
       stroke(0,0,0)
         line(current.location.x, current.location.y, current.friends[i].get("location").x, current.friends[i].get("location").y);

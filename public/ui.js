@@ -11,6 +11,7 @@ class UI {
 
     this.loginPage = true;
     this.hobbiesPage = false;
+    this.petTypePage = false
     this.postTypePage = false;
     this.postsPage = false;
     if (this.isAccount) {
@@ -18,6 +19,7 @@ class UI {
       this.postTypePage = false;
     }
     this.messagingPage = false;
+    this.textPage = false;
     this.makePostPage = false;
     this.accountPage = false;
     this.debugPage = false
@@ -33,6 +35,19 @@ class UI {
     this.hobbys = [];
 
     this.postsDisplaying = []
+
+    this.pets = [
+      "Dog",
+      "Cat",
+      "Bird",
+      "Fish",
+      "Hamster",
+      "Rat",
+      "Snake",
+      "Lizard",
+      "Chicken",
+      "Pig",
+    ];
 
     this.hobbies = [
       "#walks",
@@ -88,6 +103,10 @@ class UI {
       this.runHobbiesPage();
     }
 
+    if (this.petTypePage) {
+      this.runPetSelectionPage();
+    }
+
     if (this.postsPage) {
       this.runPostsPage();
     }
@@ -98,6 +117,10 @@ class UI {
 
     if (this.messagingPage) {
       this.runMessagingPage();
+    }
+
+    if (this.textPage) {
+      this.runTextPage();
     }
 
     if (this.makePostPage) {
@@ -113,6 +136,10 @@ class UI {
 
   runDebugPage()
   {
+    rectMode(CENTER);
+    textAlign(CENTER);
+    background(30);
+    this.runBottomMenu()
     drawNodeList();
     testShowAll()
   }
@@ -183,7 +210,54 @@ class UI {
     line(370, 38, 357, 45);
   }
 
-  runMessagingPage() {}
+  runMessagingPage() {
+    background(30)
+
+    textAlign(CENTER)
+    textStyle(BOLD)
+    noStroke()
+    textSize(50)
+    fill(255)
+    text("Messages", width/2, 100)
+
+    for (let i = 0; i < 6; i++)
+    {
+      rectMode(CENTER)
+      noStroke()
+      fill(50)
+
+      rect(width/2, i * 70 + 200, width-50, 50, 10)
+
+      fill(100, 180, 255)
+      ellipse(50, i*70+200, 30, 30)
+
+      //text(name)
+    }
+  }
+
+  runTextPage()
+    {
+      background(30)
+
+      rectMode(CORNER)
+      noStroke()
+      fill(25)
+      rect(0, height - 100, width, 50)
+
+      fill(35)
+      if (mouseX > 10 && mouseX < 260 && mouseY > height -90 && mouseY < height - 60)
+        fill(40)
+      rect(10, height - 90, 250, 30, 10)
+
+      fill(80, 160, 255)
+      rect(270, height - 90, 120, 30, 10)
+
+      textAlign(CENTER)
+      textStyle(BOLD)
+      textSize(25)
+      fill(255)
+      text("SEND", 330, height -66)
+    }
 
   runLogPage() {
     rectMode(CENTER);
@@ -253,13 +327,13 @@ class UI {
 
     if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
       if (
-        mouseIsPressed == true &&
+        this.mouseRelease() == true &&
         this.username != "" &&
         this.pet != "" &&
         this.age != ""
       ) {
         post = new Post(ui.id, ui.username, "Hello World!", null, 573);
-        this.hobbiesPage = true;
+        this.petTypePage = true;
         this.loginPage = false;
       }
 
@@ -385,6 +459,83 @@ class UI {
     }
   }
 
+  runPetSelectionPage() {
+    background(30);
+
+    textAlign(CENTER);
+    textStyle(ITALIC);
+    noStroke();
+    fill(200);
+    textSize(20);
+    text("Pick your", 197, 50);
+
+    fill(20);
+    textSize(40);
+    textStyle(BOLD);
+    text("PET TYPE", 200, 95);
+    fill(100, 180, 255);
+    text("PET TYPE", 200, 90);
+
+    rectMode(CENTER);
+    noStroke();
+    fill(100);
+    if (this.pet != "") {
+      if (
+        mouseX > 135 &&
+        mouseX < 265 &&
+        mouseY > 105 &&
+        mouseY < 135 &&
+        mouseIsPressed
+      )
+        fill(80, 160, 230);
+      else if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135)
+        fill(90, 170, 240);
+      else fill(100, 180, 255);
+    }
+    rect(200, 120, 130, 30, 5);
+
+    fill(200);
+    if (this.pet != "") fill(255);
+    textSize(15);
+    textAlign(CENTER);
+    text("Next", 200, 124);
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 5; j++) {
+        rectMode(CORNER);
+        noStroke();
+        fill(20);
+        rect(i * 175 + 37.5, j * 75 + 160, 150, 50, 5);
+
+        let t = 0;
+
+        fill(50);
+        if (this.pets[i * 5 + j] == this.pet) {
+          fill(50, 90, 125);
+          t = 2;
+        }
+
+        if (
+          mouseX > i * 175 + 37.5 &&
+          mouseX < i * 175 + 37.5 + 150 &&
+          mouseY > j * 75 + 150 &&
+          mouseY < j * 75 + 160 + 50
+        ) {
+          t = 3;
+          if (mouseIsPressed == true) {
+            t = 5;
+          }
+        }
+
+        rect(i * 175 + 37.5, j * 75 + 150 + t, 150, 50, 5);
+
+        textSize(20);
+        fill(255);
+        text(this.pets[i * 5 + j], i * 175 + 110, j * 75 + 180 + t);
+      }
+    }
+  }
+
   runPostTypePage()
   {
     background(30)
@@ -431,14 +582,19 @@ class UI {
     if (this.postPageView == "Newest") {
     this.postsDisplaying = peopleList.createAllPostList()
     for (let i=0; i < this.postsDisplaying.length; i++) {
-      
       this.postsDisplaying[i].update(i * 130 + 130)
     }
     }
     if (this.postPageView == "ForYou") {
       let me = peopleList.getPerson(this.id)
        this.postsDisplaying = peopleList.createNewsFeed(me)
-      print(this.postsDisplaying.length)
+      for (let i=0; i < this.postsDisplaying.length; i++) {
+        this.postsDisplaying[i].update(i * 130 + 130)
+      }
+    }
+    if (this.postPageView == "Popular") {
+      let me = peopleList.getPerson(this.id)
+       this.postsDisplaying = peopleList.createPopularFeed()
       for (let i=0; i < this.postsDisplaying.length; i++) {
         this.postsDisplaying[i].update(i * 130 + 130)
       }
@@ -500,7 +656,7 @@ class UI {
   mouseRelease() {
     if (dist(mouseX, mouseY, 15, 15) < 10)
     {
-      this.debugPage = true
+      this.debugPage = !this.debugPage
     }
     
     if (this.isAccount == true) {
@@ -542,6 +698,7 @@ class UI {
         this.makePostPage = false;
         this.accountPage = false;
         this.messagingPage = true;
+        this.textPage = false;
       }
 
       if (dist(mouseX, mouseY, 300, 575) < 15) {
@@ -552,6 +709,7 @@ class UI {
         this.makePostPage = false;
         this.messagingPage = false;
         this.accountPage = true;
+        this.textPage = false;
       }
 
       if (dist(mouseX, mouseY, 100, 575) < 15) {
@@ -562,6 +720,7 @@ class UI {
         this.makePostPage = false;
         this.accountPage = false;
         this.messagingPage = false;
+        this.textPage = false;
       }
 
       if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
@@ -571,6 +730,7 @@ class UI {
         this.postTypePage = false
         this.accountPage = false;
         this.messagingPage = false;
+        this.textPage = false;
 
         tp = new PostCreator(this.id,this.username, " ", null, 200)
 
@@ -581,18 +741,19 @@ class UI {
     if (this.loginPage) {
       if (mouseX > 100 && mouseX < 300 && mouseY > 135 && mouseY < 165) {
         this.typing = 1;
-        return;
+        return false;
       }
       if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
         this.typing = 2;
-        return;
+        return false;
       }
       if (mouseX > 100 && mouseX < 300 && mouseY > 335 && mouseY < 365) {
         this.typing = 3;
-        return;
+        return false;
       }
 
       this.typing = 0;
+      return true
     }
 
     //rect(200, 150, 200, 25, 5);
@@ -612,8 +773,9 @@ class UI {
         this.isAccount = true
         // create account
         this.id = peopleList.generateUniqueId()
-        let person = new Person(this.id, this.username, this.age, this.pet, createVector(random(width), random(height)), this.hobbies);
+        let person = new Person(this.id, this.username, this.age, this.pet, this.hobbies);
         peopleList.addPerson(person);
+        allFriend(person)
         print("created account")
         return;
       }
@@ -637,12 +799,36 @@ class UI {
         }
       }
     }
-  }
 
-  createUIPost(po) {
-    this.postsDisplaying.push(po)
-    for (let i=0; i < this.postsDisplaying.length; i++) {
-      this.postsDisplaying[i].fixSpace(i * 130)
+    if (this.petTypePage) {
+      if (
+        mouseX > 135 &&
+        mouseX < 265 &&
+        mouseY > 105 &&
+        mouseY < 135 &&
+        this.pet != ""
+      ) {
+        this.petTypePage = false;
+        this.hobbiesPage = true;
+        return;
+      }
+
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 5; j++) {
+          if (
+            mouseX > i * 175 + 37.5 &&
+            mouseX < i * 175 + 37.5 + 150 &&
+            mouseY > j * 75 + 150 &&
+            mouseY < j * 75 + 160 + 50
+          ) {
+            if (this.pets[i * 5 + j] == this.pet) {
+              this.pet = ""
+            } else if (this.pet == "") {
+              this.pet = this.pets[i * 5 + j];
+            }
+          }
+        }
+      }
     }
   }
 
@@ -776,7 +962,10 @@ class PostCreator extends Post
               this.typing = false;
               print(this.id)
               let personA = peopleList.getPerson(this.id)
+              allFriend(personA)
+              if (personA != null) {
               personA.createPost(this.words)
+              }
               translate(0, 2)
             }
         }

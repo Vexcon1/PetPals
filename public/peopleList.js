@@ -121,6 +121,7 @@ class PeopleList {
           let randomX = Math.floor(Math.random() * this.ids.length)
           var personLike = this.getPerson(this.ids[randomX])
            if (personLike != null) {
+             this.friendPerson(current.id,personLike)
             current.get("posts")[i].get("likesUser").push(personLike.get("id"))
                 current.get("posts")[i].set("likes", current.get("posts")[i].get("likes") + 1)
            }
@@ -172,8 +173,11 @@ class PeopleList {
         if (thePost.likesUser[a] == current.id) {
           peopleArray['ilike'] = true
         }
+        if (person.friends[a] != null) {
         if (person.friends[a].id == thePost.likesUser[a]) {
               peopleArray['flike'] = true
+
+        }
         }
         }
         }
@@ -184,16 +188,35 @@ class PeopleList {
     }
     current = current.get("next") 
     }
-
+    
     let allPosts = []
 
     for (let i = 0; i < possiblePeople.length; i++) {
       allPosts = allPosts.concat(possiblePeople[i].posts)
     }
 
-    print(allPosts)
-
     return allPosts
+  }
+
+  async createPopularFeed() {
+    let current = this.link;
+    let allPosts = []
+    let thePosts = []
+    values = []
+
+    while (current) {
+      thePosts = thePosts.concat(current.posts)
+      for (let i = 0; i < current.posts.length; i++) {
+        values.push(current.posts[i].likes)
+      }
+      current = current.get("next") 
+    }
+    await quickSort(0, values.length - 1);
+    for (let i = 0; i < values.length; i++) {
+      allPosts.push(thePosts[i])
+    }
+    print(values,allPosts)
+    return allPosts.reverse()
   }
 
   createRecommendList() {

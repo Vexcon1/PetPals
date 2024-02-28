@@ -11,6 +11,7 @@ class Post {
     this.hite = 85;
 
     this.yscroll = 0;
+    this.yscrollIndex = 0;
 
     this.next = null;
   }
@@ -23,16 +24,17 @@ class Post {
   }
 
   update(a) {
+    this.yscrollIndex = a
     this.display();
   }
 
   fixSpace(a) {
-    this.yscroll = a
+    this.yscrollIndex = a
   }
 
   display() {
     push();
-    translate(0, this.yscroll);
+    translate(0, this.yscroll+this.yscrollIndex);
     textAlign(LEFT);
 
     rectMode(CORNER);

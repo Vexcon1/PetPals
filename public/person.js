@@ -1,10 +1,10 @@
 class Person {
-  constructor(id, name, age, pet, location, _hobbies) {
+  constructor(id, name, age, pet, _hobbies) {
     this.id = id;
     this.name = name;
     this.age = age;
     this.pet = pet;
-    this.location = location;
+    this.location = createVector(random(width)-15, random(height)-15);
     this.hobbies = _hobbies;
     this.recommend = [];
     this.friends = [];
@@ -29,7 +29,6 @@ class Person {
     }
     let post = new Post(this.id, this.name, txt,null,0);
     this.posts.push(post)
-    ui.createUIPost(post)
   }
 
   addPostLike(id,pid) {
@@ -37,9 +36,13 @@ class Person {
       if (posts[i].get("id") == pid) {
         posts[i].get("likesUser").push(id)
         posts[i].set("likes", posts[i].get("likes") + 1)
-        print(posts[i].get("likes"))
       }
     }
+  }
+
+  addFriend(current) {
+    print('new friend')
+    this.friends.push(current)
   }
 
   // Algorithms

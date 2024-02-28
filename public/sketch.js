@@ -83,7 +83,7 @@ function generateName() {
     "Christopher",
     "Victoria",
     "Nathan",
-    "Lily",
+    "Jesse",
     "Samuel",
     "Madison",
     "Christian",
@@ -91,7 +91,7 @@ function generateName() {
     "Dylan",
     "Natalie",
     "Joshua",
-    "Hannah",
+    "Theo",
     "Jonathan",
     "Avery",
     "Carter",
@@ -108,7 +108,18 @@ function generatePet() {
 }
 
 function generateHobbies() {
-  let hobbies = ['Reading', 'Cooking', 'Gardening', 'Painting', 'Running', 'Photography', 'Singing', 'Knitting', 'Fishing', 'Cycling'];
+  let hobbies = [
+    "#walks",
+    "#cuddle",
+    "#dicipline",
+    "#training",
+    "#funny",
+    "#mad",
+    "#dog",
+    "#cat",
+    "#kids",
+    "#relatable",
+  ];
   let selectedHobbies = [];
   for (let i = 0; i < 3; i++) {
     let hobby = random(hobbies);
@@ -119,7 +130,7 @@ function generateHobbies() {
 
 function generatePost() {
   for (let i = 0; i < 10; i++) {
-    peopleList.createPost(post);
+    peopleList.generateRandomPost();
   }
 }
 
@@ -131,7 +142,7 @@ function getRandomChatMessage() {
     "How's your day going?",
     "Nice weather today, isn't it?",
     "Did you watch any good movies lately?",
-    "I'm feeling hungry!",
+    "Do these devs know how to code?",
     "Have you heard the latest news?",
     "What are your plans for the weekend?",
     "I just finished a good book!",
@@ -147,10 +158,20 @@ function getRandomChatMessage() {
 
 function generateFakePeople() {
   for (let i = 0; i < 10; i++) {
-    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), createVector(random(width), random(height)), generateHobbies());
+    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
     peopleList.addPerson(person);
   }
   peopleList.removePerson(peopleList.get("link"))
+}
+
+function allFriend(id) {
+  let current = peopleList.get("link");
+  while (current) {
+    if (current.get("id") == id) {
+      peopleList.friendPerson(id,current)
+    }
+    current = current.get("next");
+  }
 }
 
 function drawNodeList() {
@@ -189,6 +210,8 @@ function testShowAll() {
 
   let current = peopleList.get("link");
 
+  if (current != null) {
+    
   feed = peopleList.createNewsFeed(current)
   current.location.x = width/2
   current.location.y = height/2 
@@ -196,6 +219,7 @@ function testShowAll() {
   stroke(0, 0, 0)
   ellipse(current.location.x, current.location.y, 20, 20);
   fill(255, 0, 0);
+  textSize(15)
   textAlign(CENTER, CENTER);
   text(current.name, current.location.x, current.location.y + 20);
   text(current.id, current.location.x, current.location.y + 40); // Displaying ID
@@ -205,15 +229,19 @@ function testShowAll() {
     text(`${current.posts[i].media}`, current.location.x, current.location.y + 80 + i * 20); // Displaying ID
   }
   }
+    /*
     for (let i = 0; i < feed.length; i++) {
+      if (current.location != null) {
       print(feed)
       strokeWeight(10)
+      print(current.location)
       line(current.location.x, current.location.y, feed[i].get("location").x, feed[i].get("location").y);
+      }
     }
+    */
     for (let i=0; i < current.friends.length; i++) {
-      print('heyyy')
       strokeWeight(2)
-      stroke(0,0,0)
+      stroke(10,10,255)
         line(current.location.x, current.location.y, current.friends[i].get("location").x, current.friends[i].get("location").y);
       }
     strokeWeight(1)
@@ -227,6 +255,7 @@ function testShowAll() {
 
   peopleList.showAllLikes()
   peopleList.showAllrecommend()
+  }
 }
 
 function keyPressed() {
@@ -236,9 +265,72 @@ function keyPressed() {
     peopleList.createRecommendList();
 
     // Make random posts and have random users like it
-    //peopleList.generateRandomPost()
+    peopleList.generateRandomPost()
 
     // Try to like peoples post
     peopleList.generateRandomPostLikes()
   }
+  if (keyCode == DOWN_ARROW) {
+     generateFakePeople()
+  }
+}
+
+let states = [];
+let values = []
+async function quickSort(start, end) {
+  if (start > end) {  // Nothing to sort!
+    return;
+  }
+  // partition() returns the index of the pivot element.
+  // Once partition() is executed, all elements to the  
+  // left of the pivot element are smaller than it and 
+  // all elements to its right are larger than it.
+  let index = await partition(start, end);
+  // restore original state
+  states[index] = -1;
+  await Promise.all(
+    [quickSort(start, index - 1), 
+     quickSort(index + 1, end)
+    ]);
+}
+
+// We have chosen the element at the last index as 
+// the pivot element, but we could've made different
+// choices, e.g. take the first element as pivot.
+async function partition(start, end) {
+  for (let i = start; i < end; i++) {
+    // identify the elements being considered currently
+    states[i] = 1;
+  }
+  // Quicksort algorithm
+  let pivotIndex = start;
+  // make pivot index distinct
+  states[pivotIndex] = 0;
+  let pivotElement = values[end];
+  for (let i = start; i < end; i++) {
+    if (values[i] < pivotElement) {
+      await swap(i, pivotIndex);
+      states[pivotIndex] = -1;
+      pivotIndex++;
+      states[pivotIndex] = 0;
+    }
+  }
+  await swap(end, pivotIndex);
+  for (let i = start; i < end; i++) {
+    // restore original state
+    if (i != pivotIndex) {
+      states[i] = -1;
+    }
+  }
+  return pivotIndex;
+}
+
+// swaps elements of 'values' at indices 'i' and 'j'
+async function swap(i, j) {
+  // adjust the pace of the simulation by changing the
+  // value
+  //await sleep(25);
+  let temp = values[i];
+  values[i] = values[j];
+  values[j] = temp;
 }
