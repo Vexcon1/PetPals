@@ -2,6 +2,7 @@ const socket = io();
 
 let peopleList;
 let feed = null
+let vs1;
 let ui;
 
 // This sketch shows how to add an image from a file input
@@ -19,6 +20,7 @@ function setup() {
   resizeCanvas(400, 600)
 
   ui = new UI();
+  vs1 = new VScrollbar(10, 10, 10, height*2, 10);
 
   let post
 
@@ -258,7 +260,7 @@ function testShowAll() {
   }
 }
 
-function keyPressed() {
+function keyPressedM() {
   if (keyCode == UP_ARROW) {
     print('remade')
     // Try to befriend people based on hobbies
@@ -306,9 +308,9 @@ async function partition(start, end) {
   let pivotIndex = start;
   // make pivot index distinct
   states[pivotIndex] = 0;
-  let pivotElement = values[end];
+  let pivotElement = values[end].likes;
   for (let i = start; i < end; i++) {
-    if (values[i] < pivotElement) {
+    if (values[i].likes < pivotElement) {
       await swap(i, pivotIndex);
       states[pivotIndex] = -1;
       pivotIndex++;

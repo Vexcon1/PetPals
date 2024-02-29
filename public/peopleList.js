@@ -201,21 +201,20 @@ class PeopleList {
   async createPopularFeed() {
     let current = this.link;
     let allPosts = []
-    let thePosts = []
     values = []
 
     while (current) {
-      thePosts = thePosts.concat(current.posts)
       for (let i = 0; i < current.posts.length; i++) {
-        values.push(current.posts[i].likes)
+        values.push(current.posts[i])
       }
       current = current.get("next") 
     }
+   // await quickSort(0, values.length - 1);
     await quickSort(0, values.length - 1);
     for (let i = 0; i < values.length; i++) {
-      allPosts.push(thePosts[i])
+      allPosts.push(values[i])
     }
-    print(values,allPosts)
+    //print(values,allPosts)
     return allPosts.reverse()
   }
 

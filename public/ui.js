@@ -4,6 +4,8 @@ let post;
 
 let tp;
 
+
+
 class UI {
   constructor() {
 
@@ -31,10 +33,11 @@ class UI {
     this.id = "";
     this.username = "";
     this.pet = "";
+    this.email = "";
     this.age = "";
     this.hobbys = [];
 
-    this.postsDisplaying = []
+    this.postsDisplaying = null
 
     this.pets = [
       "Dog",
@@ -287,7 +290,7 @@ class UI {
 
     textStyle(NORMAL);
     textSize(15);
-    text("Pet Animal", 200, 230);
+    text("Email", 200, 230);
 
     noFill();
     stroke(150);
@@ -302,7 +305,7 @@ class UI {
 
     noStroke();
     fill(255);
-    if (this.pet != null) text(this.pet, 200, 255);
+    if (this.email != null) text(this.email, 200, 255);
 
     noStroke();
     fill(200);
@@ -329,7 +332,7 @@ class UI {
       if (
         this.mouseRelease() == true &&
         this.username != "" &&
-        this.pet != "" &&
+        this.email != "" &&
         this.age != ""
       ) {
         post = new Post(ui.id, ui.username, "Hello World!", null, 573);
@@ -337,7 +340,7 @@ class UI {
         this.loginPage = false;
       }
 
-      if (this.username == "" || this.pet == "" || this.age == "") {
+      if (this.username == "" || this.email == "" || this.age == "") {
         noFill();
         stroke(200, 150, 150);
         rect(200, 450, 204, 44, 5);
@@ -363,22 +366,22 @@ class UI {
 
   addToKey(k) {
     if (this.typing == 1 && textWidth(this.username) < 275) this.username += k;
-    if (this.typing == 2 && textWidth(this.pet) < 275) this.pet += k;
+    if (this.typing == 2 && textWidth(this.email) < 275) this.email += k;
     if (this.typing == 3 && textWidth(this.age) < 20 && key >= 0 && key <= 9)
       this.age += k;
   }
 
   backspace() {
     if (this.typing == 1) {
-      this.username = this.username.substr(0, this.username.length - 1);
+      this.username = this.username.substring(0, this.username.length - 1);
     }
 
     if (this.typing == 2) {
-      this.pet = this.pet.substr(0, this.pet.length - 1);
+      this.email = this.email.substring(0, this.email.length - 1);
     }
 
     if (this.typing == 3) {
-      this.age = this.age.substr(0, this.age.length - 1);
+      this.age = this.age.substring(0, this.age.length - 1);
     }
   }
 
@@ -409,11 +412,32 @@ class UI {
         mouseY > 105 &&
         mouseY < 135 &&
         mouseIsPressed
-      )
-        fill(80, 160, 230);
+      ){
+        for(let i = 0; i < 10; i++)
+        {
+          fill(12, 22, 30, 255 - i*25)
+          rect(200, 120, 110+i*4, 10+i*4, 10);
+        }
+        fill(60, 140, 200);
+      }
       else if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135)
-        fill(90, 170, 240);
-      else fill(100, 180, 255);
+      {
+        for(let i = 0; i < 10; i++)
+        {
+          fill(25, 45, 60, 255 - i*25)
+          rect(200, 120, 110+i*4, 10+i*4, 10);
+        }
+        fill(80, 160, 230);
+      }
+      else 
+      {
+        for(let i = 0; i < 10; i++)
+          {
+            fill(50, 90, 125, 255 - i*25)
+            rect(200, 120, 110+i*4, 10+i*4, 10);
+          }
+        fill(100, 180, 255);
+      }
     }
     rect(200, 120, 130, 30, 5);
 
@@ -434,7 +458,7 @@ class UI {
 
         fill(50);
         if (this.hobbySelect[i * 5 + j] == true) {
-          fill(50, 90, 125);
+          fill(100, 180, 255);
           t = 2;
         }
 
@@ -511,7 +535,7 @@ class UI {
 
         fill(50);
         if (this.pets[i * 5 + j] == this.pet) {
-          fill(50, 90, 125);
+          fill(100, 180, 255);
           t = 2;
         }
 
@@ -576,27 +600,42 @@ class UI {
     text("Newest", width/2, height/2 + 6)
   }
 
-  runPostsPage() {
+  async runPostsPage() {
     background(30);
 
+    vs1.update();
+    vs1.display();
+
     if (this.postPageView == "Newest") {
+      if ( this.postsDisplaying == null) {
     this.postsDisplaying = peopleList.createAllPostList()
+      }
+      if (this.postsDisplaying != null) {
     for (let i=0; i < this.postsDisplaying.length; i++) {
       this.postsDisplaying[i].update(i * 130 + 130)
     }
+      }
     }
     if (this.postPageView == "ForYou") {
+      if ( this.postsDisplaying == null) {
       let me = peopleList.getPerson(this.id)
        this.postsDisplaying = peopleList.createNewsFeed(me)
+      }
+      if (this.postsDisplaying != null) {
       for (let i=0; i < this.postsDisplaying.length; i++) {
         this.postsDisplaying[i].update(i * 130 + 130)
       }
+      }
     }
     if (this.postPageView == "Popular") {
-      let me = peopleList.getPerson(this.id)
-       this.postsDisplaying = peopleList.createPopularFeed()
+      if ( this.postsDisplaying == null) {
+       this.postsDisplaying = await peopleList.createPopularFeed()
+      }
+     // print(this.postsDisplaying)
+      if (this.postsDisplaying != null) {
       for (let i=0; i < this.postsDisplaying.length; i++) {
         this.postsDisplaying[i].update(i * 130 + 130)
+      }
       }
     }
   }
@@ -669,6 +708,7 @@ class UI {
           this.postPageView = "ForYou"
           this.postsPage = true;
           this.postTypePage = false;
+          this.postsDisplaying = null;
         }
           
         if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
@@ -677,6 +717,7 @@ class UI {
           this.postPageView = "Popular"
           this.postsPage = true;
           this.postTypePage = false;
+          this.postsDisplaying = null;
         }
           
         if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
@@ -685,6 +726,7 @@ class UI {
           this.postPageView = "Newest"
           this.postsPage = true;
           this.postTypePage = false;
+          this.postsDisplaying = null;
         }
           
       }
@@ -768,15 +810,17 @@ class UI {
         mouseY < 135 &&
         this.hobbys.length == 3
       ) {
-        this.hobbiesPage = false;
-        this.accountPage = true;
-        this.isAccount = true
-        // create account
+        if (this.isAccount == false) {
         this.id = peopleList.generateUniqueId()
         let person = new Person(this.id, this.username, this.age, this.pet, this.hobbies);
         peopleList.addPerson(person);
         allFriend(person)
         print("created account")
+        }
+        this.hobbiesPage = false;
+        this.accountPage = true;
+        this.isAccount = true
+        // create account
         return;
       }
 
@@ -851,9 +895,12 @@ function keyTyped() {
 }
 
 function keyPressed() {
+  keyPressedM()
   if (keyCode == BACKSPACE) {
     if (ui.loginPage == true)
-    ui.backspace();
+    {
+      ui.backspace();
+    }
     
     if (tp != null)
       tp.backspace();
@@ -867,9 +914,11 @@ function mouseReleased() {
 
   if (tp != null)
     tp.mouseRelease()
-
+  
+  if (ui.postsDisplaying != null) {
   for (let i=0; i < ui.postsDisplaying.length; i++) {
     ui.postsDisplaying[i].mouseRelease();
+  }
   }
 }
 
@@ -883,12 +932,14 @@ function mouseWheel(event) {
       post.up();
     }
   }
+  if (ui.postsDisplaying != null) {
   for (let i=0; i < ui.postsDisplaying.length; i++) {
     if (event.deltaY > 0) {
          ui.postsDisplaying[i].down();
     } else if (event.deltaY < 0) {
          ui.postsDisplaying[i].up();
     }
+  }
   }
 }
 
@@ -1009,3 +1060,70 @@ class PostCreator extends Post
       }
     }
   }
+
+function VScrollbar(xp, yp, sw, sh, l) {
+  this.swidth = sw; // width and height of bar
+  this.sheight = sh;
+  var heighttowidth = sh - sw;
+  this.ratio = (sh / heighttowidth)*2;
+  this.xpos = xp - this.swidth / 2; // x and y position of bar
+  this.ypos = yp;
+  this.spos = this.ypos; // Set slider position to the top
+  this.newspos = this.spos;
+  this.sposMin = this.ypos; // max and min values of slider
+  this.sposMax = this.ypos + this.sheight - this.swidth;
+  this.loose = l; // how loose/heavy
+  this.over = false; // is the mouse over the slider?
+  this.locked = false;
+
+  this.update = function() {
+    if (this.overEvent()) {
+      this.over = true;
+    } else {
+      this.over = false;
+    }
+    if (mouseIsPressed && this.over) {
+      this.locked = true;
+    }
+    if (!mouseIsPressed) {
+      this.locked = false;
+    }
+    if (this.locked) {
+      this.newspos = constrain(mouseY - this.swidth / 2, this.sposMin, this.sposMax);
+    }
+    if (abs(this.newspos - this.spos) > 1) {
+      this.spos = this.spos + (this.newspos - this.spos) / this.loose;
+    }
+  }
+
+  this.constrain = function(val, minv, maxv) {
+    return min(max(val, minv), maxv);
+  }
+
+  this.overEvent = function() {
+    if (mouseX > this.xpos && mouseX < this.xpos + this.swidth &&
+      mouseY > this.ypos && mouseY < this.ypos + this.sheight) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  this.display = function() {
+    noStroke();
+    fill(204);
+    rect(this.xpos, this.ypos, this.swidth, this.sheight);
+    if (this.over || this.locked) {
+      fill(0, 0, 0);
+    } else {
+      fill(102, 102, 102);
+    }
+    rect(this.xpos, this.spos, this.swidth, this.swidth);
+  }
+
+  this.getPos = function() {
+      // Convert spos to be values between
+      // 0 and the total height of the scrollbar
+      return -(this.spos - this.ypos) * this.ratio;
+  }
+}

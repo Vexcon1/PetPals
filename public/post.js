@@ -24,12 +24,10 @@ class Post {
   }
 
   update(a) {
-    this.yscrollIndex = a
+    var Pos = vs1.getPos();
+    this.yscroll = Pos+a- this.hite
+    //this.yscrollIndex = a
     this.display();
-  }
-
-  fixSpace(a) {
-    this.yscrollIndex = a
   }
 
   display() {
@@ -152,9 +150,8 @@ splitLongWord(word, maxWidth) {
     segments.push(currentSegment);
     return segments;
 }
-
   mouseRelease() {
-    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15) {
+    if (dist(mouseX, mouseY, 340, 60 + this.yscroll+this.yscrollIndex) < 15) {
       if (this.liked == false) {
         this.liked = true;
         this.likes ++
@@ -166,10 +163,10 @@ splitLongWord(word, maxWidth) {
   }
 
   up() {
-    this.yscroll += 20;
+    //this.yscroll += 20;
   }
 
   down() {
-    this.yscroll -= 20;
+    //this.yscroll -= 20;
   }
 }
