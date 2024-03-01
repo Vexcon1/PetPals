@@ -11,7 +11,6 @@ class Post {
     this.hite = 85;
 
     this.yscroll = 0;
-    this.yscrollIndex = 0;
 
     this.next = null;
   }
@@ -25,14 +24,14 @@ class Post {
 
   update(a) {
     var Pos = vs1.getPos();
-    this.yscroll = Pos+a- this.hite
+    this.yscroll = Pos+a - this.hite
     //this.yscrollIndex = a
     this.display();
   }
 
   display() {
     push();
-    translate(0, this.yscroll+this.yscrollIndex);
+    translate(0, this.yscroll);
     textAlign(LEFT);
 
     rectMode(CORNER);
@@ -151,7 +150,7 @@ splitLongWord(word, maxWidth) {
     return segments;
 }
   mouseRelease() {
-    if (dist(mouseX, mouseY, 340, 60 + this.yscroll+this.yscrollIndex) < 15) {
+    if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15) {
       if (this.liked == false) {
         this.liked = true;
         this.likes ++

@@ -1,32 +1,27 @@
-
-
 let post;
 
 let tp;
 
-
-
 class UI {
   constructor() {
-
-    this.isAccount = false;
+    this.isAccount = true;
 
     this.loginPage = true;
     this.hobbiesPage = false;
-    this.petTypePage = false
+    this.petTypePage = false;
     this.postTypePage = false;
     this.postsPage = false;
     if (this.isAccount) {
       this.loginPage = false;
-      this.postTypePage = false;
+      this.postTypePage = true;
     }
     this.messagingPage = false;
     this.textPage = false;
     this.makePostPage = false;
     this.accountPage = false;
-    this.debugPage = false
+    this.debugPage = false;
 
-    this.postPageView = "ForYou"
+    this.postPageView = "ForYou";
 
     this.typing = 0;
 
@@ -37,7 +32,7 @@ class UI {
     this.age = "";
     this.hobbys = [];
 
-    this.postsDisplaying = null
+    this.postsDisplaying = null;
 
     this.pets = [
       "Dog",
@@ -76,28 +71,25 @@ class UI {
       false,
       false,
     ];
-  
 
-  // Algorithms
+    // Algorithms
 
-  this.feed = null;
-
+    this.feed = null;
   }
 
   get(data_name) {
-    return this[data_name]
+    return this[data_name];
   }
-  set(data_name,data_set) {
-    this[data_name] = data_set
+  set(data_name, data_set) {
+    this[data_name] = data_set;
   }
 
-  update() {  
-
+  update() {
     if (this.debugPage) {
       this.runDebugPage();
-      return
+      return;
     }
-    
+
     if (this.loginPage) {
       this.runLogPage();
     }
@@ -137,20 +129,19 @@ class UI {
     this.runBottomMenu();
   }
 
-  runDebugPage()
-  {
+  runDebugPage() {
     rectMode(CENTER);
     textAlign(CENTER);
     background(30);
-    this.runBottomMenu()
+    this.runBottomMenu();
     drawNodeList();
-    testShowAll()
+    testShowAll();
   }
-  
+
   runBottomMenu() {
-    fill(255, 0, 0)
-    ellipse( 15, 15, 20, 20)
-    
+    fill(255, 0, 0);
+    ellipse(15, 15, 20, 20);
+
     rectMode(CENTER);
     noStroke();
     fill(40);
@@ -214,53 +205,56 @@ class UI {
   }
 
   runMessagingPage() {
-    background(30)
+    background(30);
 
-    textAlign(CENTER)
-    textStyle(BOLD)
-    noStroke()
-    textSize(50)
-    fill(255)
-    text("Messages", width/2, 100)
+    textAlign(CENTER);
+    textStyle(BOLD);
+    noStroke();
+    textSize(50);
+    fill(255);
+    text("Messages", width / 2, 100);
 
-    for (let i = 0; i < 6; i++)
-    {
-      rectMode(CENTER)
-      noStroke()
-      fill(50)
+    for (let i = 0; i < 6; i++) {
+      rectMode(CENTER);
+      noStroke();
+      fill(50);
 
-      rect(width/2, i * 70 + 200, width-50, 50, 10)
+      rect(width / 2, i * 70 + 200, width - 50, 50, 10);
 
-      fill(100, 180, 255)
-      ellipse(50, i*70+200, 30, 30)
+      fill(100, 180, 255);
+      ellipse(50, i * 70 + 200, 30, 30);
 
       //text(name)
     }
   }
 
-  runTextPage()
-    {
-      background(30)
+  runTextPage() {
+    background(30);
 
-      rectMode(CORNER)
-      noStroke()
-      fill(25)
-      rect(0, height - 100, width, 50)
+    rectMode(CORNER);
+    noStroke();
+    fill(25);
+    rect(0, height - 100, width, 50);
 
-      fill(35)
-      if (mouseX > 10 && mouseX < 260 && mouseY > height -90 && mouseY < height - 60)
-        fill(40)
-      rect(10, height - 90, 250, 30, 10)
+    fill(35);
+    if (
+      mouseX > 10 &&
+      mouseX < 260 &&
+      mouseY > height - 90 &&
+      mouseY < height - 60
+    )
+      fill(40);
+    rect(10, height - 90, 250, 30, 10);
 
-      fill(80, 160, 255)
-      rect(270, height - 90, 120, 30, 10)
+    fill(80, 160, 255);
+    rect(270, height - 90, 120, 30, 10);
 
-      textAlign(CENTER)
-      textStyle(BOLD)
-      textSize(25)
-      fill(255)
-      text("SEND", 330, height -66)
-    }
+    textAlign(CENTER);
+    textStyle(BOLD);
+    textSize(25);
+    fill(255);
+    text("SEND", 330, height - 66);
+  }
 
   runLogPage() {
     rectMode(CENTER);
@@ -328,34 +322,16 @@ class UI {
     fill(255);
     if (this.age != null) text(this.age, 200, 355);
 
-    if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
-      if (
-        this.mouseRelease() == true &&
-        this.username != "" &&
-        this.email != "" &&
-        this.age != ""
-      ) {
-        post = new Post(ui.id, ui.username, "Hello World!", null, 573);
-        this.petTypePage = true;
-        this.loginPage = false;
-      }
-
-      if (this.username == "" || this.email == "" || this.age == "") {
-        noFill();
-        stroke(200, 150, 150);
-        rect(200, 450, 204, 44, 5);
-        fill(200, 100, 100);
-      } else {
-        noFill();
-        stroke(100, 255, 100);
-        rect(200, 450, 204, 44, 5);
-        fill(200);
-      }
+    if (this.username == "" || this.email == "" || this.age == "") {
+      noFill();
+      stroke(200, 150, 150);
+      rect(200, 450, 204, 44, 5);
+      fill(200, 100, 100);
     } else {
-      fill(100, 180, 255);
-      noStroke();
-      rect(200, 450, 200, 40, 5);
-      fill(30, 25, 40);
+      noFill();
+      stroke(100, 255, 100);
+      rect(200, 450, 204, 44, 5);
+      fill(200);
     }
 
     noStroke();
@@ -412,30 +388,23 @@ class UI {
         mouseY > 105 &&
         mouseY < 135 &&
         mouseIsPressed
-      ){
-        for(let i = 0; i < 10; i++)
-        {
-          fill(12, 22, 30, 255 - i*25)
-          rect(200, 120, 110+i*4, 10+i*4, 10);
+      ) {
+        for (let i = 0; i < 10; i++) {
+          fill(12, 22, 30, 255 - i * 25);
+          rect(200, 120, 110 + i * 4, 10 + i * 4, 10);
         }
         fill(60, 140, 200);
-      }
-      else if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135)
-      {
-        for(let i = 0; i < 10; i++)
-        {
-          fill(25, 45, 60, 255 - i*25)
-          rect(200, 120, 110+i*4, 10+i*4, 10);
+      } else if (mouseX > 135 && mouseX < 265 && mouseY > 105 && mouseY < 135) {
+        for (let i = 0; i < 10; i++) {
+          fill(25, 45, 60, 255 - i * 25);
+          rect(200, 120, 110 + i * 4, 10 + i * 4, 10);
         }
         fill(80, 160, 230);
-      }
-      else 
-      {
-        for(let i = 0; i < 10; i++)
-          {
-            fill(50, 90, 125, 255 - i*25)
-            rect(200, 120, 110+i*4, 10+i*4, 10);
-          }
+      } else {
+        for (let i = 0; i < 10; i++) {
+          fill(50, 90, 125, 255 - i * 25);
+          rect(200, 120, 110 + i * 4, 10 + i * 4, 10);
+        }
         fill(100, 180, 255);
       }
     }
@@ -560,44 +529,73 @@ class UI {
     }
   }
 
-  runPostTypePage()
-  {
-    background(30)
+  runPostTypePage() {
+    background(30);
 
-    noStroke()
-    rectMode(CENTER)
-    fill(100, 180, 255)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
-      fill(120, 200, 255)
-    rect(width/2, height/2, 150, 30, 5)
-    
-    fill(100, 180, 255)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
-      fill(120, 200, 255)
-    rect(width/2, height/2 -50, 150, 30, 5)
-    
-    fill(100, 180, 255)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
-      fill(120, 200, 255)
-    rect(width/2, height/2 - 100, 150, 30, 5)
+    noStroke();
+    rectMode(CENTER);
+    fill(100, 180, 255);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 15 &&
+      mouseY < height / 2 + 15
+    )
+      fill(120, 200, 255);
+    rect(width / 2, height / 2, 150, 30, 5);
 
-    textAlign(CENTER)
-    textStyle(BOLD)
-    textSize(20)
-    fill(30)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
-      fill(255)
-    text("For You", width/2, height/2 - 94)
+    fill(100, 180, 255);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 65 &&
+      mouseY < height / 2 - 35
+    )
+      fill(120, 200, 255);
+    rect(width / 2, height / 2 - 50, 150, 30, 5);
 
-    fill(30)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
-      fill(255)
-    text("Popular", width/2, height/2 - 44)
+    fill(100, 180, 255);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 115 &&
+      mouseY < height / 2 - 85
+    )
+      fill(120, 200, 255);
+    rect(width / 2, height / 2 - 100, 150, 30, 5);
 
-    fill(30)
-    if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
-      fill(255)
-    text("Newest", width/2, height/2 + 6)
+    textAlign(CENTER);
+    textStyle(BOLD);
+    textSize(20);
+    fill(30);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 115 &&
+      mouseY < height / 2 - 85
+    )
+      fill(255);
+    text("For You", width / 2, height / 2 - 94);
+
+    fill(30);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 65 &&
+      mouseY < height / 2 - 35
+    )
+      fill(255);
+    text("Popular", width / 2, height / 2 - 44);
+
+    fill(30);
+    if (
+      mouseX > width / 2 - 75 &&
+      mouseX < width / 2 + 75 &&
+      mouseY > height / 2 - 15 &&
+      mouseY < height / 2 + 15
+    )
+      fill(255);
+    text("Newest", width / 2, height / 2 + 6);
   }
 
   async runPostsPage() {
@@ -606,137 +604,148 @@ class UI {
     vs1.update();
     vs1.display();
 
+    if (this.postsDisplaying != null) {
+      vs1.changeSize(this.postsDisplaying.length);
+    } else {
+      vs1.changeSize(0);
+      vs1.resetY()
+    }
+
     if (this.postPageView == "Newest") {
-      if ( this.postsDisplaying == null) {
-    this.postsDisplaying = peopleList.createAllPostList()
+      if (this.postsDisplaying == null) {
+        this.postsDisplaying = peopleList.createAllPostList();
       }
       if (this.postsDisplaying != null) {
-    for (let i=0; i < this.postsDisplaying.length; i++) {
-      this.postsDisplaying[i].update(i * 130 + 130)
-    }
+        for (let i = 0; i < this.postsDisplaying.length; i++) {
+          this.postsDisplaying[i].update(i * 130 + 130);
+        }
       }
     }
     if (this.postPageView == "ForYou") {
-      if ( this.postsDisplaying == null) {
-      let me = peopleList.getPerson(this.id)
-       this.postsDisplaying = peopleList.createNewsFeed(me)
+      if (this.postsDisplaying == null) {
+        let me = peopleList.getPerson(this.id);
+        this.postsDisplaying = peopleList.createNewsFeed(me);
       }
       if (this.postsDisplaying != null) {
-      for (let i=0; i < this.postsDisplaying.length; i++) {
-        this.postsDisplaying[i].update(i * 130 + 130)
-      }
+        for (let i = 0; i < this.postsDisplaying.length; i++) {
+          this.postsDisplaying[i].update(i * 130 + 130);
+        }
       }
     }
     if (this.postPageView == "Popular") {
-      if ( this.postsDisplaying == null) {
-       this.postsDisplaying = await peopleList.createPopularFeed()
+      if (this.postsDisplaying == null) {
+        this.postsDisplaying = await peopleList.createPopularFeed();
       }
-     // print(this.postsDisplaying)
+      // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
-      for (let i=0; i < this.postsDisplaying.length; i++) {
-        this.postsDisplaying[i].update(i * 130 + 130)
-      }
+        for (let i = 0; i < this.postsDisplaying.length; i++) {
+          this.postsDisplaying[i].update(i * 130 + 130);
+        }
       }
     }
   }
 
-  runMakePostPage()
-  {
-    background(30)
+  runMakePostPage() {
+    background(30);
 
-    tp.update()
+    tp.update();
   }
 
-  runAccountPage()
-  {
-    background(30)
+  runAccountPage() {
+    background(30);
 
-    rectMode(CENTER)
-    noStroke()
+    rectMode(CENTER);
+    noStroke();
 
-    fill(40)
-    rect(width/2, 80, width-60, 100, 50)
+    fill(40);
+    rect(width / 2, 80, width - 60, 100, 50);
 
-    fill(100, 180, 255)
+    fill(100, 180, 255);
 
-    ellipse(80, 80, 80, 80)
+    ellipse(80, 80, 80, 80);
 
-    textAlign(LEFT)
-    textStyle(BOLD)
+    textAlign(LEFT);
+    textStyle(BOLD);
 
-    let s = 2
-    let textY = 80
+    let s = 2;
+    let textY = 80;
 
-    while(textWidth(this.username) < 200 && textAscent() < 80)
-      {
-        textSize(s)
-        s += 2
-        textY += 0.70
-      }
+    while (textWidth(this.username) < 200 && textAscent() < 80) {
+      textSize(s);
+      s += 2;
+      textY += 0.7;
+    }
 
-    fill(200)
-    text(this.username, 130, textY)
-    textSize(2)
+    fill(200);
+    text(this.username, 130, textY);
+    textSize(2);
 
-    for(let i = 0; i < 3; i ++)
-      {
-        textAlign(CENTER)
-        rectMode(CENTER)
-        fill(40)
-        rect(i * 120 + 80, 150, 110, 20, 10)
+    for (let i = 0; i < 3; i++) {
+      textAlign(CENTER);
+      rectMode(CENTER);
+      fill(40);
+      rect(i * 120 + 80, 150, 110, 20, 10);
 
-        textStyle(NORMAL)
-        fill(100, 180, 255)
-        textSize(15)
-        text(this.hobbys[i], i * 120 + 80, 155)
-      }
+      textStyle(NORMAL);
+      fill(100, 180, 255);
+      textSize(15);
+      text(this.hobbys[i], i * 120 + 80, 155);
+    }
   }
 
   mouseRelease() {
-    if (dist(mouseX, mouseY, 15, 15) < 10)
-    {
-      this.debugPage = !this.debugPage
+    if (dist(mouseX, mouseY, 15, 15) < 10) {
+      this.debugPage = !this.debugPage;
     }
-    
-    if (this.isAccount == true) {
 
-      if (this.postTypePage)
-      {
-        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 115 && mouseY < height/2 - 85)
-        {
+    if (this.isAccount == true) {
+      if (this.postTypePage) {
+        if (
+          mouseX > width / 2 - 75 &&
+          mouseX < width / 2 + 75 &&
+          mouseY > height / 2 - 115 &&
+          mouseY < height / 2 - 85
+        ) {
           //top
-          this.postPageView = "ForYou"
+          this.postPageView = "ForYou";
           this.postsPage = true;
           this.postTypePage = false;
           this.postsDisplaying = null;
         }
-          
-        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 65 && mouseY < height/2 - 35)
-        {
+
+        if (
+          mouseX > width / 2 - 75 &&
+          mouseX < width / 2 + 75 &&
+          mouseY > height / 2 - 65 &&
+          mouseY < height / 2 - 35
+        ) {
           //middle
-          this.postPageView = "Popular"
+          this.postPageView = "Popular";
           this.postsPage = true;
           this.postTypePage = false;
           this.postsDisplaying = null;
         }
-          
-        if (mouseX > width/2 - 75 && mouseX < width/2 + 75 && mouseY > height/2 - 15 && mouseY < height/2 + 15)
-        {
+
+        if (
+          mouseX > width / 2 - 75 &&
+          mouseX < width / 2 + 75 &&
+          mouseY > height / 2 - 15 &&
+          mouseY < height / 2 + 15
+        ) {
           //bottom
-          this.postPageView = "Newest"
+          this.postPageView = "Newest";
           this.postsPage = true;
           this.postTypePage = false;
           this.postsDisplaying = null;
         }
-          
       }
-      
+
       //can access message, posts, account, and create posts
       if (dist(mouseX, mouseY, 370, 25) < 25) {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
-        this.postTypePage = false
+        this.postTypePage = false;
         this.makePostPage = false;
         this.accountPage = false;
         this.messagingPage = true;
@@ -747,7 +756,7 @@ class UI {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
-        this.postTypePage = false
+        this.postTypePage = false;
         this.makePostPage = false;
         this.messagingPage = false;
         this.accountPage = true;
@@ -769,12 +778,12 @@ class UI {
         this.loginPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
-        this.postTypePage = false
+        this.postTypePage = false;
         this.accountPage = false;
         this.messagingPage = false;
         this.textPage = false;
 
-        tp = new PostCreator(this.id,this.username, " ", null, 200)
+        tp = new PostCreator(this.id, this.username, " ", null, 200);
 
         this.makePostPage = true;
       }
@@ -794,8 +803,14 @@ class UI {
         return false;
       }
 
-      this.typing = 0;
-      return true
+      if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
+        if (this.username != "" && this.email != "" && this.age != "") {
+          this.petTypePage = true;
+          this.loginPage = false;
+        }
+        this.typing = 0;
+        return true;
+      }
     }
 
     //rect(200, 150, 200, 25, 5);
@@ -811,15 +826,21 @@ class UI {
         this.hobbys.length == 3
       ) {
         if (this.isAccount == false) {
-        this.id = peopleList.generateUniqueId()
-        let person = new Person(this.id, this.username, this.age, this.pet, this.hobbies);
-        peopleList.addPerson(person);
-        allFriend(person)
-        print("created account")
+          this.id = peopleList.generateUniqueId();
+          let person = new Person(
+            this.id,
+            this.username,
+            this.age,
+            this.pet,
+            this.hobbies,
+          );
+          peopleList.addPerson(person);
+          allFriend(person);
+          print("created account");
         }
         this.hobbiesPage = false;
         this.accountPage = true;
-        this.isAccount = true
+        this.isAccount = true;
         // create account
         return;
       }
@@ -866,7 +887,7 @@ class UI {
             mouseY < j * 75 + 160 + 50
           ) {
             if (this.pets[i * 5 + j] == this.pet) {
-              this.pet = ""
+              this.pet = "";
             } else if (this.pet == "") {
               this.pet = this.pets[i * 5 + j];
             }
@@ -877,48 +898,41 @@ class UI {
   }
 
   updateUIPost(po) {
-    for (let i=0; i < this.postsDisplaying.length; i++) {
+    for (let i = 0; i < this.postsDisplaying.length; i++) {
       if (this.postsDisplaying[i].id == po.id) {
-        this.postsDisplaying[i] = po
+        this.postsDisplaying[i] = po;
       }
     }
   }
 }
 
-
 function keyTyped() {
-  if (ui.loginPage == true)
-  if (key != "Enter") ui.addToKey(key);
+  if (ui.loginPage == true) if (key != "Enter") ui.addToKey(key);
 
-  if (tp != null)
-  if (key != "Enter") tp.addToKey(key);
+  if (tp != null) if (key != "Enter") tp.addToKey(key);
 }
 
 function keyPressed() {
-  keyPressedM()
+  keyPressedM();
   if (keyCode == BACKSPACE) {
-    if (ui.loginPage == true)
-    {
+    if (ui.loginPage == true) {
       ui.backspace();
     }
-    
-    if (tp != null)
-      tp.backspace();
+
+    if (tp != null) tp.backspace();
   }
 }
 
 function mouseReleased() {
   ui.mouseRelease();
-  if (post != null)
-  post.mouseRelease();
+  if (post != null) post.mouseRelease();
 
-  if (tp != null)
-    tp.mouseRelease()
-  
+  if (tp != null) tp.mouseRelease();
+
   if (ui.postsDisplaying != null) {
-  for (let i=0; i < ui.postsDisplaying.length; i++) {
-    ui.postsDisplaying[i].mouseRelease();
-  }
+    for (let i = 0; i < ui.postsDisplaying.length; i++) {
+      ui.postsDisplaying[i].mouseRelease();
+    }
   }
 }
 
@@ -933,139 +947,152 @@ function mouseWheel(event) {
     }
   }
   if (ui.postsDisplaying != null) {
-  for (let i=0; i < ui.postsDisplaying.length; i++) {
-    if (event.deltaY > 0) {
-         ui.postsDisplaying[i].down();
-    } else if (event.deltaY < 0) {
-         ui.postsDisplaying[i].up();
-    }
-  }
-  }
-}
-
-class PostCreator extends Post
-  {
-    constructor(id, who, words, img, likes) {
-      super(id, who, words, img, likes)
-
-      this.hite = 85;
-
-      this.yscroll = 0;
-
-      this.next = null;
-
-      this.typing = false
-    }
-
-    display() {
-      textAlign(LEFT);
-
-      rectMode(CORNER);
-      fill(40);
-      noStroke();
-      rect(25, 25, width - 50, this.hite, 20);
-
-      fill(100, 180, 255);
-      ellipse(65, 60, 40, 40);
-
-      rectMode(CORNER);
-      fill(50);
-      textSize(20);
-      rect(95, 40, textWidth(this.who) + 20, 35, 10);
-
-      rectMode(CORNER);
-      fill(50);
-      if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite -80)
-        fill(60)
-      if (this.typing)
-        stroke(100, 180, 255)
-
-      rect(40, 90, 320, this.hite - 80, 10);
-
-      noStroke()
-      textStyle(BOLD);
-      fill(200);
-      textSize(15);
-
-      this.wrapText(this.words, 50, 110, width - 100, 20);
-
-      textAlign(LEFT);
-      textStyle(BOLD);
-      fill(100, 180, 255);
-      noStroke();
-      textSize(20);
-      text(this.who, 105, 65);
-
-      rectMode(CENTER)
-      noStroke()
-
-      fill(20)
-      rect(200, this.hite + 80, 150, 50, 10)
-
-      push()
-      fill(100, 180, 255)
-      if(mouseX > 125 && mouseX < 275 && mouseY > this.hite + 45 && mouseY < this.hite + 95)
-        {
-          translate(0, 3)
-
-          if (mouseIsPressed)
-            {
-              this.typing = false;
-              print(this.id)
-              let personA = peopleList.getPerson(this.id)
-              allFriend(personA)
-              if (personA != null) {
-              personA.createPost(this.words)
-              }
-              translate(0, 2)
-            }
-        }
-
-      rect(200, this.hite + 70, 150, 50, 10)
-
-      fill(50)
-      textAlign(CENTER)
-      textSize(25)
-
-      text("POST", 200, this.hite+80)
-
-      fill(255)
-      textAlign(CENTER)
-      textSize(25)
-
-      text("POST", 200, this.hite+77)
-
-      pop()
-
-    }
-
-    mouseRelease() {
-      if (mouseX > 40 && mouseX < 360 && mouseY > 90 && mouseY < 90+this.hite - 80)
-        {
-          this.typing = true
-        }
-      else 
-        this.typing = false
-
-      //rect(40, 90, 320, this.hite - 80, 10);
-    }
-
-    addToKey(k) {
-      if (this.typing == true) this.words += k;
-    }
-
-    backspace() {
-      if (this.typing == true) {
-        this.words = this.words.substr(0, this.words.length - 1);
+    for (let i = 0; i < ui.postsDisplaying.length; i++) {
+      if (event.deltaY > 0) {
+        ui.postsDisplaying[i].down();
+      } else if (event.deltaY < 0) {
+        ui.postsDisplaying[i].up();
       }
     }
   }
 
+  if (event.deltaY > 0) {
+    vs1.down();
+  } else if (event.deltaY < 0) {
+    vs1.up();
+  }
+}
+
+class PostCreator extends Post {
+  constructor(id, who, words, img, likes) {
+    super(id, who, words, img, likes);
+
+    this.hite = 85;
+
+    this.yscroll = 0;
+
+    this.next = null;
+
+    this.typing = false;
+  }
+
+  display() {
+    textAlign(LEFT);
+
+    rectMode(CORNER);
+    fill(40);
+    noStroke();
+    rect(25, 25, width - 50, this.hite, 20);
+
+    fill(100, 180, 255);
+    ellipse(65, 60, 40, 40);
+
+    rectMode(CORNER);
+    fill(50);
+    textSize(20);
+    rect(95, 40, textWidth(this.who) + 20, 35, 10);
+
+    rectMode(CORNER);
+    fill(50);
+    if (
+      mouseX > 40 &&
+      mouseX < 360 &&
+      mouseY > 90 &&
+      mouseY < 90 + this.hite - 80
+    )
+      fill(60);
+    if (this.typing) stroke(100, 180, 255);
+
+    rect(40, 90, 320, this.hite - 80, 10);
+
+    noStroke();
+    textStyle(BOLD);
+    fill(200);
+    textSize(15);
+
+    this.wrapText(this.words, 50, 110, width - 100, 20);
+
+    textAlign(LEFT);
+    textStyle(BOLD);
+    fill(100, 180, 255);
+    noStroke();
+    textSize(20);
+    text(this.who, 105, 65);
+
+    rectMode(CENTER);
+    noStroke();
+
+    fill(20);
+    rect(200, this.hite + 80, 150, 50, 10);
+
+    push();
+    fill(100, 180, 255);
+    if (
+      mouseX > 125 &&
+      mouseX < 275 &&
+      mouseY > this.hite + 45 &&
+      mouseY < this.hite + 95
+    ) {
+      translate(0, 3);
+
+      if (mouseIsPressed) {
+        this.typing = false;
+        print(this.id);
+        let personA = peopleList.getPerson(this.id);
+        allFriend(personA);
+        if (personA != null) {
+          personA.createPost(this.words);
+        }
+        translate(0, 2);
+      }
+    }
+
+    rect(200, this.hite + 70, 150, 50, 10);
+
+    fill(50);
+    textAlign(CENTER);
+    textSize(25);
+
+    text("POST", 200, this.hite + 80);
+
+    fill(255);
+    textAlign(CENTER);
+    textSize(25);
+
+    text("POST", 200, this.hite + 77);
+
+    pop();
+  }
+
+  mouseRelease() {
+    if (
+      mouseX > 40 &&
+      mouseX < 360 &&
+      mouseY > 90 &&
+      mouseY < 90 + this.hite - 80
+    ) {
+      this.typing = true;
+    } else this.typing = false;
+
+    //rect(40, 90, 320, this.hite - 80, 10);
+  }
+
+  addToKey(k) {
+    if (this.typing == true) this.words += k;
+  }
+
+  backspace() {
+    if (this.typing == true) {
+      this.words = this.words.substr(0, this.words.length - 1);
+    }
+  }
+}
+
 function VScrollbar(xp, yp, sw, sh, l) {
   this.swidth = sw; // width and height of bar
-  this.sheight = sh;
+  this.sheight = sh-15;
   var heighttowidth = sh - sw;
-  this.ratio = (sh / heighttowidth)*2;
+  this.ratio = (sh / heighttowidth) * 2;
   this.xpos = xp - this.swidth / 2; // x and y position of bar
   this.ypos = yp;
   this.spos = this.ypos; // Set slider position to the top
@@ -1075,8 +1102,9 @@ function VScrollbar(xp, yp, sw, sh, l) {
   this.loose = l; // how loose/heavy
   this.over = false; // is the mouse over the slider?
   this.locked = false;
+  this.itemAmount = 0;
 
-  this.update = function() {
+  this.update = function () {
     if (this.overEvent()) {
       this.over = true;
     } else {
@@ -1089,27 +1117,45 @@ function VScrollbar(xp, yp, sw, sh, l) {
       this.locked = false;
     }
     if (this.locked) {
-      this.newspos = constrain(mouseY - this.swidth / 2, this.sposMin, this.sposMax);
+      this.newspos = constrain(
+        mouseY - this.swidth / 2,
+        this.sposMin,
+        this.sposMax,
+      );
     }
     if (abs(this.newspos - this.spos) > 1) {
       this.spos = this.spos + (this.newspos - this.spos) / this.loose;
     }
-  }
+  };
 
-  this.constrain = function(val, minv, maxv) {
+  this.up = function () {
+    // Move the slider up by reducing its ypos
+    this.newspos = constrain(this.spos - 30, this.sposMin, this.sposMax);
+  };
+
+  this.down = function () {
+    // Move the slider down by increasing its ypos
+    this.newspos = constrain(this.spos + 30, this.sposMin, this.sposMax);
+  };
+
+  this.constrain = function (val, minv, maxv) {
     return min(max(val, minv), maxv);
-  }
+  };
 
-  this.overEvent = function() {
-    if (mouseX > this.xpos && mouseX < this.xpos + this.swidth &&
-      mouseY > this.ypos && mouseY < this.ypos + this.sheight) {
+  this.overEvent = function () {
+    if (
+      mouseX > this.xpos &&
+      mouseX < this.xpos + this.swidth &&
+      mouseY > this.ypos &&
+      mouseY < this.ypos + this.sheight
+    ) {
       return true;
     } else {
       return false;
     }
-  }
+  };
 
-  this.display = function() {
+  this.display = function () {
     noStroke();
     fill(204);
     rect(this.xpos, this.ypos, this.swidth, this.sheight);
@@ -1118,12 +1164,30 @@ function VScrollbar(xp, yp, sw, sh, l) {
     } else {
       fill(102, 102, 102);
     }
-    rect(this.xpos, this.spos, this.swidth, this.swidth);
-  }
+    rect(this.xpos, this.spos+(this.sheight/this.itemAmount)/2, this.swidth, this.sheight/this.itemAmount);
+  };
 
-  this.getPos = function() {
-      // Convert spos to be values between
-      // 0 and the total height of the scrollbar
-      return -(this.spos - this.ypos) * this.ratio;
+  this.getPos = function () {
+    // Convert spos to be values between
+    // 0 and the total height of the scrollbar
+    return -(this.spos - this.ypos) * this.ratio;
+  };
+
+  this.changeSize = function (numElements) {
+    // Adjust scrollbar size based on the number of elements
+    var scrollbarHeight = this.sheight;
+    var scrollbarWidth = this.swidth;
+    var heighttowidth = scrollbarHeight - scrollbarWidth;
+    var lengt = (numElements * 110 + 110)
+    this.ratio = (lengt / heighttowidth)  ;
+    this.spoxMin = this.ypos
+    this.sposMax = lengt-15
+    this.itemAmount = numElements
+  };
+
+  this.resetY = function () {
+    this.ypos = 0
+    this.spos = this.ypos; 
+    this.newspos = constrain(this.spos, this.sposMin, this.sposMax);
   }
 }

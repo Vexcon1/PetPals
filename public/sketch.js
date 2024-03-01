@@ -13,14 +13,14 @@ let ui;
 //   https://p5js.org/reference/#/p5/createFileInput
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(400, 600);
 
   peopleList = new PeopleList();
 
-  resizeCanvas(400, 600)
+
 
   ui = new UI();
-  vs1 = new VScrollbar(10, 10, 10, height*2, 10);
+  vs1 = new VScrollbar(10, 10, 10, height*2-110, 10);
 
   let post
 
@@ -148,7 +148,7 @@ function getRandomChatMessage() {
     "Have you heard the latest news?",
     "What are your plans for the weekend?",
     "I just finished a good book!",
-    "Let's grab coffee sometime!"
+    "Let's grab coffee sometime! I would really love to get to know you better"
   ];
 
   // Generate a random index
