@@ -165,8 +165,10 @@ class PeopleList {
     var possiblePeople = []
     var peopleArray = []
     let current = this.link;
+    if (person != null) {
     while (current) {
       for (let i = 0; i < current.posts.length; i++) {
+        if (person.friends != null) {
         for (let fi = 0; fi < person.friends.length; fi++) {
         let thePost = current.posts[i]
         for (let a = 0; a < thePost.likesUser.length; a++) {
@@ -177,6 +179,7 @@ class PeopleList {
         if (person.friends[a].id == thePost.likesUser[a]) {
               peopleArray['flike'] = true
 
+        }
         }
         }
         }
@@ -196,6 +199,7 @@ class PeopleList {
     }
 
     return allPosts
+  }
   }
 
   async createPopularFeed() {
