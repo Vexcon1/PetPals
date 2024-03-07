@@ -4,7 +4,7 @@ let tp;
 
 class UI {
   constructor() {
-    this.isAccount = true;
+    this.isAccount = false;
 
     this.loginPage = true;
     this.hobbiesPage = false;
@@ -25,12 +25,13 @@ class UI {
 
     this.typing = 0;
 
-    this.id = "";
+    this.id = "0";
     this.username = "";
     this.pet = "";
     this.email = "";
     this.age = "";
     this.hobbys = [];
+    this.thisPerson = this.id
 
     this.postsDisplaying = null;
 
@@ -125,7 +126,7 @@ class UI {
     if (this.accountPage) {
       this.runAccountPage();
     }
-
+    
     this.runBottomMenu();
   }
 
@@ -605,11 +606,21 @@ class UI {
     vs1.display();
 
     if (this.postsDisplaying != null) {
-      vs1.changeSize(this.postsDisplaying.length);
+      var addSizeVs = 0
+      for (let i = 0; i < this.postsDisplaying.length; i++) {
+        var addhitee = this.postsDisplaying[i].getHitee()
+        if (i-1 >= 0) {
+        addhitee = this.postsDisplaying[i-1].getHitee()
+        }
+        addSizeVs = addSizeVs + (i*130) - addhitee
+      }
+      vs1.changeSize(this.postsDisplaying.length,addSizeVs);
     } else {
       vs1.changeSize(0);
       vs1.resetY()
     }
+
+   
 
     if (this.postPageView == "Newest") {
       if (this.postsDisplaying == null) {
@@ -617,7 +628,11 @@ class UI {
       }
       if (this.postsDisplaying != null) {
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          this.postsDisplaying[i].update(i * 130 + 130);
+          var addhitee = this.postsDisplaying[i].getHitee()
+          if (i-1 >= 0) {
+          addhitee = this.postsDisplaying[i-1].getHitee()
+          }
+          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
         }
       }
     }
@@ -628,7 +643,11 @@ class UI {
       }
       if (this.postsDisplaying != null) {
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          this.postsDisplaying[i].update(i * 130 + 130);
+          var addhitee = this.postsDisplaying[i].getHitee()
+          if (i-1 >= 0) {
+          addhitee = this.postsDisplaying[i-1].getHitee()
+          }
+          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
         }
       }
     }
@@ -639,7 +658,11 @@ class UI {
       // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          this.postsDisplaying[i].update(i * 130 + 130);
+          var addhitee = this.postsDisplaying[i].getHitee()
+          if (i-1 >= 0) {
+          addhitee = this.postsDisplaying[i-1].getHitee()
+          }
+          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
         }
       }
     }
@@ -652,10 +675,33 @@ class UI {
   }
 
   runAccountPage() {
+
+    let thisName
+    let thisHobbies
+    let thisPet
+    let thisAge
+
+//find the person
+    if (this.thisPerson == 0)
+    {
+      thisName = this.username
+      thisHobbies = this.hobbys
+      thisPet = this.pet
+      thisAge = this.age
+    } else {
+      thisName = peopleList.getPerson(this.thisPerson).name
+      thisHobbies = peopleList.getPerson(this.thisPerson).hobbies
+      thisPet = peopleList.getPerson(this.thisPerson).pet
+      thisAge = peopleList.getPerson(this.thisPerson).age
+    }
+    
     background(30);
 
     rectMode(CENTER);
     noStroke();
+
+    fill(35)
+    rect(width / 2, 110, width-50, 170, 55);
 
     fill(40);
     rect(width / 2, 80, width - 60, 100, 50);
@@ -670,27 +716,45 @@ class UI {
     let s = 2;
     let textY = 80;
 
-    while (textWidth(this.username) < 200 && textAscent() < 80) {
+    while (textWidth(thisName) < 200 && textAscent() < 80) {
       textSize(s);
       s += 2;
       textY += 0.7;
     }
 
     fill(200);
-    text(this.username, 130, textY);
+    text(thisName, 130, textY);
     textSize(2);
 
     for (let i = 0; i < 3; i++) {
       textAlign(CENTER);
-      rectMode(CENTER);
+      rectMode(CORNER);
       fill(40);
-      rect(i * 120 + 80, 150, 110, 20, 10);
+      rect(i * 83 + 80, 170, 73, 20, 10);
 
       textStyle(NORMAL);
       fill(100, 180, 255);
       textSize(15);
-      text(this.hobbys[i], i * 120 + 80, 155);
+      text(thisHobbies[i], i * 85 + 115, 185);
     }
+
+    fill(40)
+    rect(70, 140, 260, 20, 5)
+
+    fill(180)
+    text(int(thisAge) + " year old, proud " + thisPet + " owner", width/2, 155)
+  }
+
+  viewProfile()
+  {
+    this.loginPage = false;
+    this.hobbiesPage = false;
+    this.postsPage = false;
+    this.postTypePage = false;
+    this.makePostPage = false;
+    this.messagingPage = false;
+    this.accountPage = true;
+    this.textPage = false;
   }
 
   mouseRelease() {
@@ -759,6 +823,7 @@ class UI {
         this.postTypePage = false;
         this.makePostPage = false;
         this.messagingPage = false;
+        this.thisPerson = this.id;
         this.accountPage = true;
         this.textPage = false;
       }
@@ -923,7 +988,7 @@ function keyPressed() {
   }
 }
 
-function mouseReleased() {
+function mouseReleased() {  
   ui.mouseRelease();
   if (post != null) post.mouseRelease();
 
@@ -1034,17 +1099,6 @@ class PostCreator extends Post {
       mouseY < this.hite + 95
     ) {
       translate(0, 3);
-
-      if (mouseIsPressed) {
-        this.typing = false;
-        print(this.id);
-        let personA = peopleList.getPerson(this.id);
-        allFriend(personA);
-        if (personA != null) {
-          personA.createPost(this.words);
-        }
-        translate(0, 2);
-      }
     }
 
     rect(200, this.hite + 70, 150, 50, 10);
@@ -1073,6 +1127,21 @@ class PostCreator extends Post {
     ) {
       this.typing = true;
     } else this.typing = false;
+
+    if (
+      mouseX > 125 &&
+      mouseX < 275 &&
+      mouseY > this.hite + 45 &&
+      mouseY < this.hite + 95
+    ) {
+        this.typing = false;
+        print(this.id);
+        let personA = peopleList.getPerson(this.id);
+        allFriend(personA);
+        if (personA != null) {
+          personA.createPost(this.words);
+        }
+    }
 
     //rect(40, 90, 320, this.hite - 80, 10);
   }
@@ -1173,15 +1242,15 @@ function VScrollbar(xp, yp, sw, sh, l) {
     return -(this.spos - this.ypos) * this.ratio;
   };
 
-  this.changeSize = function (numElements) {
+  this.changeSize = function (numElements, extraSize) {
     // Adjust scrollbar size based on the number of elements
     var scrollbarHeight = this.sheight;
     var scrollbarWidth = this.swidth;
     var heighttowidth = scrollbarHeight - scrollbarWidth;
-    var lengt = (numElements * 110 + 110)
-    this.ratio = (lengt / heighttowidth)  ;
+    var lengt = this.sheight/numElements
+    this.ratio = numElements
     this.spoxMin = this.ypos
-    this.sposMax = lengt-15
+    this.sposMax = this.sheight
     this.itemAmount = numElements
   };
 
