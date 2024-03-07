@@ -4,7 +4,7 @@ let tp;
 
 class UI {
   constructor() {
-    this.isAccount = false;
+    this.isAccount = true;
 
     this.loginPage = true;
     this.hobbiesPage = false;
@@ -703,6 +703,9 @@ class UI {
     fill(35)
     rect(width / 2, 110, width-50, 170, 55);
 
+    rectMode(CENTER)
+    rect(width/2, 200, 160, 50, 10)
+
     fill(40);
     rect(width / 2, 80, width - 60, 100, 50);
 
@@ -738,9 +741,19 @@ class UI {
       text(thisHobbies[i], i * 85 + 115, 185);
     }
 
+    fill(100, 180, 255);
+    if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
+      fill(120, 200, 255)
+    if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
+      fill(50, 100, 150)
+    textStyle(BOLD)
+    textSize(20)
+    text("FOLLOW", width/2, 215)
+    
     fill(40)
     rect(70, 140, 260, 20, 5)
 
+    textStyle(NORMAL)
     fill(180)
     text(int(thisAge) + " year old, proud " + thisPet + " owner", width/2, 155)
   }
@@ -763,6 +776,18 @@ class UI {
     }
 
     if (this.isAccount == true) {
+      if (this.accountPage)
+      {
+        if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
+        {
+
+          
+           let personFriend = peopleList.getPerson(this.thisPerson)
+           peopleList.friendPerson(this.id,personFriend)
+          //follow button
+        }
+      }
+      
       if (this.postTypePage) {
         if (
           mouseX > width / 2 - 75 &&
