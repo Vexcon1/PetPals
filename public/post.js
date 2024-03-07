@@ -11,8 +11,6 @@ class Post {
     this.hite = 85;
 
     this.yscroll = 0;
-
-    this.next = null;
   }
 
   get(data_name) {
@@ -24,11 +22,12 @@ class Post {
 
   update(a) {
     var Pos = vs1.getPos();
-    this.yscroll = Pos+a - this.hite
+    this.yscroll = Pos+a
     //this.yscrollIndex = a
     this.display();
   }
 
+  
   display() {
     push();
     translate(0, this.yscroll);
@@ -42,9 +41,15 @@ class Post {
     fill(100, 180, 255);
     ellipse(65, 60, 40, 40);
 
+    textStyle(BOLD);
+    textSize(20);
     rectMode(CORNER);
     fill(50);
-    textSize(20);
+    if (mouseX > 95 && 
+        mouseX < 95 + textWidth(this.who) + 20 && 
+        mouseY > 40 + this.yscroll &&
+        mouseY < 40 + this.yscroll + 35)
+      fill(60)
     rect(95, 40, textWidth(this.who) + 20, 35, 10);
 
     rectMode(CORNER);
@@ -159,6 +164,18 @@ splitLongWord(word, maxWidth) {
         this.likes --
       }
     }
+
+    textStyle(BOLD);
+    textSize(20);
+    fill(50);
+    if (mouseX > 95 && 
+        mouseX < 95 + textWidth(this.who) + 20 && 
+        mouseY > 40 + this.yscroll &&
+        mouseY < 40 + this.yscroll + 35)
+      {
+        ui.thisPerson = this.id
+        ui.viewProfile()
+      }
   }
 
   up() {
@@ -167,5 +184,9 @@ splitLongWord(word, maxWidth) {
 
   down() {
     //this.yscroll -= 20;
+  }
+
+  getHitee() {
+    return this.hite
   }
 }
