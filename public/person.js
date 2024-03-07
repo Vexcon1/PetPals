@@ -41,7 +41,7 @@ class Person {
   }
 
   addFriend(current) {
-    print('new friend')
+    print('new friend',current)
     this.friends.push(current)
   }
 
