@@ -45,14 +45,34 @@ class PeopleList {
     }
   }
 
-  friendPerson(person,wantFriend) {
+  friendPerson(person1, wantFriend) {
     let current = this.link;
     while (current) {
-      if (current.get("name") == person || current.get("id") == person) {
+      if (current.get("name") == person1 || current.get("id") == person1) {
+        print("found JESSE")
         current.addFriend(wantFriend);
       }
       current = current.get("next");
     }
+  }
+
+  findIfFriend(friend1, friend2)
+  {
+    let current = this.link;
+    while (current) {
+      if (current.get("name") == friend1 || current.get("id") == friend1) {
+        for (let i = 0; i < current.get("friends").length; i++)
+          {
+            if (current.get("friends")[i].get("id") == friend2)
+            {
+              return true;
+            }
+          }
+      }
+      current = current.get("next");
+    }
+
+    return false
   }
 
   getPerson(id) {

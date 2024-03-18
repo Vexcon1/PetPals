@@ -22,7 +22,7 @@ class Post {
 
   update(a) {
     var Pos = vs1.getPos();
-    this.yscroll = Pos+a
+    this.yscroll = Pos+a;
     //this.yscrollIndex = a
     this.display();
   }
@@ -101,6 +101,31 @@ class Post {
     pop();
   }
 
+  getWrapTextValue(tex, maxWidth, lineHeight) {
+      let words = tex.split(" ");
+      let line = "";
+      let newHitee = 110;
+
+      for (let i = 0; i < words.length; i++) {
+          let currentWord = words[i];
+          let segments = this.splitLongWord(currentWord, maxWidth);
+
+          for (let segment of segments) {
+              let testLine = line + segment + " ";
+              let testWidth = textWidth(testLine.trim());
+
+              if (testWidth > maxWidth) {
+                  // Draw the line if it exceeds maxWidth
+                  line = segment + " "; // Start a new line
+                  newHitee += lineHeight; // Update newHitee with lineHeight
+              } else {
+                  line = testLine;
+              }
+          }
+      }
+      return newHitee;
+  }
+  
  wrapText(tex, x, y, maxWidth, lineHeight) {
     let words = tex.split(" ");
     let line = "";
@@ -187,6 +212,6 @@ splitLongWord(word, maxWidth) {
   }
 
   getHitee() {
-    return this.hite
+    return this.getWrapTextValue(this.words, width - 100, 15)
   }
 }

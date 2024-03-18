@@ -16,12 +16,4 @@ class Database {
   }
 }
 
-function mousePressed() {
-
-}
-
 const db = new Database()
-
-function setup() {
-  
-}

@@ -22,8 +22,6 @@ function setup() {
   ui = new UI();
   vs1 = new VScrollbar(10, 10, 10, height*2-110, 10);
 
-  let post
-
   generateFakePeople()
 
   // Display information about each person
@@ -131,7 +129,7 @@ function generateHobbies() {
 }
 
 function generatePost() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     peopleList.generateRandomPost();
   }
 }
@@ -148,7 +146,8 @@ function getRandomChatMessage() {
     "Have you heard the latest news?",
     "What are your plans for the weekend?",
     "I just finished a good book!",
-    "Let's grab coffee sometime! I would really love to get to know you better"
+    "Let's grab coffee sometime! I would really love to get to know you better",
+    "I am a bot, I am not a human, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot"
   ];
 
   // Generate a random index

@@ -1,6 +1,6 @@
-let post;
-
 let tp;
+
+let post;
 
 class UI {
   constructor() {
@@ -25,7 +25,7 @@ class UI {
 
     this.typing = 0;
 
-    this.id = "0";
+    this.id = "";
     this.username = "";
     this.pet = "";
     this.email = "";
@@ -146,7 +146,12 @@ class UI {
     rectMode(CENTER);
     noStroke();
     fill(40);
-    rect(200, 575, 400, 50);
+    rect(200, 595, 400, 90, 5);
+
+    fill(50)
+    rect(200, 575, 80, 40, 20)
+    rect(100, 575, 80, 40, 20)
+    rect(300, 575, 80, 40, 20)
 
     stroke(100, 180, 255);
     strokeWeight(2);
@@ -174,7 +179,9 @@ class UI {
     ellipse(300, 589, 20, 20);
 
     noStroke();
-    rect(300, 595, 30, 15);
+    rect(300, 592, 30, 6);
+    fill(40)
+    rect(300, 597.5, 30, 5);
 
     if (dist(mouseX, mouseY, 100, 575) < 15) {
       stroke(230, 240, 255);
@@ -184,7 +191,8 @@ class UI {
       strokeWeight(2);
     }
 
-    triangle(105, 575, 90, 568, 90, 582);
+    fill(50)
+    triangle(110, 575, 95, 568, 95, 582);
 
     fill(40);
 
@@ -610,9 +618,9 @@ class UI {
       for (let i = 0; i < this.postsDisplaying.length; i++) {
         var addhitee = this.postsDisplaying[i].getHitee()
         if (i-1 >= 0) {
-        addhitee = this.postsDisplaying[i-1].getHitee()
+       addhitee = this.postsDisplaying[i-1].getHitee()
         }
-        addSizeVs = addSizeVs + (i*130) - addhitee
+        addSizeVs = addSizeVs - (i*130) + addhitee
       }
       vs1.changeSize(this.postsDisplaying.length,addSizeVs);
     } else {
@@ -627,12 +635,14 @@ class UI {
         this.postsDisplaying = peopleList.createAllPostList();
       }
       if (this.postsDisplaying != null) {
+        var addSizeVs = 0
         for (let i = 0; i < this.postsDisplaying.length; i++) {
           var addhitee = this.postsDisplaying[i].getHitee()
           if (i-1 >= 0) {
           addhitee = this.postsDisplaying[i-1].getHitee()
           }
-          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
+           addSizeVs = addSizeVs + addhitee + 25
+          this.postsDisplaying[i].update(addSizeVs);
         }
       }
     }
@@ -677,23 +687,10 @@ class UI {
   runAccountPage() {
 
     let thisName
-    let thisHobbies
-    let thisPet
-    let thisAge
 
 //find the person
-    if (this.thisPerson == 0)
-    {
-      thisName = this.username
-      thisHobbies = this.hobbys
-      thisPet = this.pet
-      thisAge = this.age
-    } else {
-      thisName = peopleList.getPerson(this.thisPerson).name
-      thisHobbies = peopleList.getPerson(this.thisPerson).hobbies
-      thisPet = peopleList.getPerson(this.thisPerson).pet
-      thisAge = peopleList.getPerson(this.thisPerson).age
-    }
+
+    thisName = peopleList.getPerson(this.thisPerson)
     
     background(30);
 
@@ -701,61 +698,81 @@ class UI {
     noStroke();
 
     fill(35)
-    rect(width / 2, 110, width-50, 170, 55);
-
-    rectMode(CENTER)
-    rect(width/2, 200, 160, 50, 10)
-
-    fill(40);
-    rect(width / 2, 80, width - 60, 100, 50);
+    rect(width / 2, 80, width, 160);
 
     fill(100, 180, 255);
 
-    ellipse(80, 80, 80, 80);
+    ellipse(50, 50, 60, 60);
 
     textAlign(LEFT);
     textStyle(BOLD);
 
-    let s = 2;
-    let textY = 80;
-
-    while (textWidth(thisName) < 200 && textAscent() < 80) {
-      textSize(s);
-      s += 2;
-      textY += 0.7;
-    }
+    textSize(40)
+    let textY = 64;
 
     fill(200);
-    text(thisName, 130, textY);
-    textSize(2);
+    text(thisName.get("name"), 100, textY);
 
     for (let i = 0; i < 3; i++) {
       textAlign(CENTER);
       rectMode(CORNER);
-      fill(40);
-      rect(i * 83 + 80, 170, 73, 20, 10);
+      fill(45);
+      rect(50 - 73/2, i * 25 + 85, 73, 20, 10);
 
       textStyle(NORMAL);
       fill(100, 180, 255);
       textSize(15);
-      text(thisHobbies[i], i * 85 + 115, 185);
+      text(thisName.get("hobbies")[i], 50, i * 25 + 100);
     }
 
+    if (peopleList.findIfFriend(this.id, this.thisPerson) == false)
+    {
     fill(100, 180, 255);
     if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
       fill(120, 200, 255)
     if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
       fill(50, 100, 150)
-    textStyle(BOLD)
-    textSize(20)
-    text("FOLLOW", width/2, 215)
+
+      textStyle(BOLD)
+      textSize(20)
+
+      text("FOLLOW", width/2, 215)
+    }
+
+    if (peopleList.findIfFriend(this.id, this.thisPerson) == true && peopleList.findIfFriend(this.thisPerson, this.id) == false)
+    {
+      fill(180);
+      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
+        fill(200)
+      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
+        fill(100)
+
+      textStyle(BOLD)
+      textSize(20)
+
+      text("FOLLOWING", width/2, 215)
+    }
+
+    if (peopleList.findIfFriend(this.id, this.thisPerson) == true && peopleList.findIfFriend(this.thisPerson, this.id) == true)
+    {
+      fill(180);
+      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
+        fill(200)
+      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
+        fill(100)
+
+      textStyle(BOLD)
+      textSize(20)
+
+      text("FRIENDS", width/2, 215)
+    }
     
     fill(40)
     rect(70, 140, 260, 20, 5)
 
     textStyle(NORMAL)
     fill(180)
-    text(int(thisAge) + " year old, proud " + thisPet + " owner", width/2, 155)
+    text(int(thisName.get("age")) + " year old, proud " + thisName.get("pet") + " owner", width/2, 155)
   }
 
   viewProfile()
@@ -776,13 +793,12 @@ class UI {
     }
 
     if (this.isAccount == true) {
-      if (this.accountPage)
+      if (this.accountPage && this.thisPerson != this.id)
       {
         if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
         {
-
-          
            let personFriend = peopleList.getPerson(this.thisPerson)
+          print(personFriend)
            peopleList.friendPerson(this.id,personFriend)
           //follow button
         }
@@ -917,6 +933,7 @@ class UI {
       ) {
         if (this.isAccount == false) {
           this.id = peopleList.generateUniqueId();
+          this.thisPerson = this.id
           let person = new Person(
             this.id,
             this.username,
@@ -1274,7 +1291,7 @@ function VScrollbar(xp, yp, sw, sh, l) {
     var heighttowidth = scrollbarHeight - scrollbarWidth;
     var lengt = this.sheight/numElements
     this.ratio = numElements
-    this.spoxMin = this.ypos
+    this.spoxMin = 0;
     this.sposMax = this.sheight
     this.itemAmount = numElements
   };
