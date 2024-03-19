@@ -1,4 +1,4 @@
-const socket = io();
+
 
 let peopleList;
 let feed = null
@@ -159,8 +159,7 @@ function getRandomChatMessage() {
 
 function generateFakePeople() {
   for (let i = 0; i < 10; i++) {
-    let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
-    peopleList.addPerson(person);
+    peopleList.createPerson();
   }
   peopleList.removePerson(peopleList.get("link"))
 }

@@ -26,6 +26,19 @@ class PeopleList {
       current.set("next",person);
     }
     this.length++;
+  } 
+
+  createPerson(loginInfo) {
+    if (loginInfo == null) {
+      let person = new Person(this.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
+      this.addPerson(person);
+    } else {
+      if (db.get(`${loginInfo.username}`) != null) {
+    db.set(`${loginInfo.username}`,loginInfo)
+    let person = new Person(this.generateUniqueId(), loginInfo.username, loginInfo.age, loginInfo.pet, gloginInfo.hobbies);
+      this.addPerson(person);
+      }
+    }
   }
 
   removePerson(person) {
@@ -51,6 +64,17 @@ class PeopleList {
       if (current.get("name") == person1 || current.get("id") == person1) {
         print("found JESSE")
         current.addFriend(wantFriend);
+      }
+      current = current.get("next");
+    }
+  }
+
+  unfriendPerson(person1, wantFriend) {
+    let current = this.link;
+    while (current) {
+      if (current.get("name") == person1 || current.get("id") == person1) {
+        print("found JESSE")
+        current.removeFriend(wantFriend);
       }
       current = current.get("next");
     }
@@ -108,6 +132,18 @@ class PeopleList {
   }
 
   // Algorithms
+
+  async generateUniqueIdBetter() {
+    let id = 0;
+    if (await db.get('ID_Index') != null) {
+     id = await db.get('ID_Index')
+    }
+    print(true,await db.get('ID_Index'))
+    id++;
+    db.set('ID_Index',id)
+    this.ids.push(id);
+    return id;
+  }
 
   generateUniqueId() {
     let id = '';

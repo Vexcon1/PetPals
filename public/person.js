@@ -45,6 +45,12 @@ class Person {
     this.friends.push(current)
   }
 
+  removeFriend(current) {
+    print('remove friend',current)
+    let index = this.friends.indexOf(current);
+    this.friends = this.friends.splice(index, 1);
+  }
+
   // Algorithms
   createRecommend(otherPerson) {
     if (this.id === otherPerson.get("id") || this.recommend.includes(otherPerson)) {

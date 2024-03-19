@@ -4,7 +4,7 @@ let post;
 
 class UI {
   constructor() {
-    this.isAccount = true;
+    this.isAccount = false;
 
     this.loginPage = true;
     this.hobbiesPage = false;
@@ -31,7 +31,7 @@ class UI {
     this.email = "";
     this.age = "";
     this.hobbys = [];
-    this.thisPerson = this.id
+    this.thisPerson = this.id;
 
     this.postsDisplaying = null;
 
@@ -126,7 +126,7 @@ class UI {
     if (this.accountPage) {
       this.runAccountPage();
     }
-    
+
     this.runBottomMenu();
   }
 
@@ -148,10 +148,10 @@ class UI {
     fill(40);
     rect(200, 595, 400, 90, 5);
 
-    fill(50)
-    rect(200, 575, 80, 40, 20)
-    rect(100, 575, 80, 40, 20)
-    rect(300, 575, 80, 40, 20)
+    fill(50);
+    rect(200, 575, 80, 40, 20);
+    rect(100, 575, 80, 40, 20);
+    rect(300, 575, 80, 40, 20);
 
     stroke(100, 180, 255);
     strokeWeight(2);
@@ -180,7 +180,7 @@ class UI {
 
     noStroke();
     rect(300, 592, 30, 6);
-    fill(40)
+    fill(40);
     rect(300, 597.5, 30, 5);
 
     if (dist(mouseX, mouseY, 100, 575) < 15) {
@@ -191,7 +191,7 @@ class UI {
       strokeWeight(2);
     }
 
-    fill(50)
+    fill(50);
     triangle(110, 575, 95, 568, 95, 582);
 
     fill(40);
@@ -614,34 +614,32 @@ class UI {
     vs1.display();
 
     if (this.postsDisplaying != null) {
-      var addSizeVs = 0
+      var addSizeVs = 0;
       for (let i = 0; i < this.postsDisplaying.length; i++) {
-        var addhitee = this.postsDisplaying[i].getHitee()
-        if (i-1 >= 0) {
-       addhitee = this.postsDisplaying[i-1].getHitee()
+        var addhitee = this.postsDisplaying[i].getHitee();
+        if (i - 1 >= 0) {
+          addhitee = this.postsDisplaying[i - 1].getHitee();
         }
-        addSizeVs = addSizeVs - (i*130) + addhitee
+        addSizeVs = addSizeVs - i * 130 + addhitee;
       }
-      vs1.changeSize(this.postsDisplaying.length,addSizeVs);
+      vs1.changeSize(this.postsDisplaying.length, addSizeVs);
     } else {
       vs1.changeSize(0);
-      vs1.resetY()
+      vs1.resetY();
     }
-
-   
 
     if (this.postPageView == "Newest") {
       if (this.postsDisplaying == null) {
         this.postsDisplaying = peopleList.createAllPostList();
       }
       if (this.postsDisplaying != null) {
-        var addSizeVs = 0
+        var addSizeVs = 0;
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          var addhitee = this.postsDisplaying[i].getHitee()
-          if (i-1 >= 0) {
-          addhitee = this.postsDisplaying[i-1].getHitee()
+          var addhitee = this.postsDisplaying[i].getHitee();
+          if (i - 1 >= 0) {
+            addhitee = this.postsDisplaying[i - 1].getHitee();
           }
-           addSizeVs = addSizeVs + addhitee + 25
+          addSizeVs = addSizeVs + addhitee + 25;
           this.postsDisplaying[i].update(addSizeVs);
         }
       }
@@ -653,11 +651,11 @@ class UI {
       }
       if (this.postsDisplaying != null) {
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          var addhitee = this.postsDisplaying[i].getHitee()
-          if (i-1 >= 0) {
-          addhitee = this.postsDisplaying[i-1].getHitee()
+          var addhitee = this.postsDisplaying[i].getHitee();
+          if (i - 1 >= 0) {
+            addhitee = this.postsDisplaying[i - 1].getHitee();
           }
-          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
+          this.postsDisplaying[i].update(i * 130 + 130 + addhitee);
         }
       }
     }
@@ -668,11 +666,11 @@ class UI {
       // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
         for (let i = 0; i < this.postsDisplaying.length; i++) {
-          var addhitee = this.postsDisplaying[i].getHitee()
-          if (i-1 >= 0) {
-          addhitee = this.postsDisplaying[i-1].getHitee()
+          var addhitee = this.postsDisplaying[i].getHitee();
+          if (i - 1 >= 0) {
+            addhitee = this.postsDisplaying[i - 1].getHitee();
           }
-          this.postsDisplaying[i].update((i * 130 + 130) + addhitee);
+          this.postsDisplaying[i].update(i * 130 + 130 + addhitee);
         }
       }
     }
@@ -685,19 +683,18 @@ class UI {
   }
 
   runAccountPage() {
+    let thisName;
 
-    let thisName
+    //find the person
 
-//find the person
+    thisName = peopleList.getPerson(this.thisPerson);
 
-    thisName = peopleList.getPerson(this.thisPerson)
-    
     background(30);
 
     rectMode(CENTER);
     noStroke();
 
-    fill(35)
+    fill(35);
     rect(width / 2, 80, width, 160);
 
     fill(100, 180, 255);
@@ -707,7 +704,7 @@ class UI {
     textAlign(LEFT);
     textStyle(BOLD);
 
-    textSize(40)
+    textSize(40);
     let textY = 64;
 
     fill(200);
@@ -717,7 +714,7 @@ class UI {
       textAlign(CENTER);
       rectMode(CORNER);
       fill(45);
-      rect(50 - 73/2, i * 25 + 85, 73, 20, 10);
+      rect(50 - 73 / 2, i * 25 + 85, 73, 20, 10);
 
       textStyle(NORMAL);
       fill(100, 180, 255);
@@ -725,58 +722,101 @@ class UI {
       text(thisName.get("hobbies")[i], 50, i * 25 + 100);
     }
 
-    if (peopleList.findIfFriend(this.id, this.thisPerson) == false)
-    {
-    fill(100, 180, 255);
-    if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
-      fill(120, 200, 255)
-    if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
-      fill(50, 100, 150)
+    if (this.thisPerson != this.id) {
+      rectMode(CENTER);
 
-      textStyle(BOLD)
-      textSize(20)
+      fill(40);
+      rect(120, 180, 150, 30, 5);
+      rect(280, 180, 150, 30, 5);
 
-      text("FOLLOW", width/2, 215)
+      fill(100, 180, 250);
+
+      textStyle(BOLD);
+      textSize(20);
+
+      text("MESSAGE", 280, 187);
+
+      if (peopleList.findIfFriend(this.id, this.thisPerson) == false) {
+        fill(100, 180, 255);
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
+          fill(120, 200, 255);
+        if (
+          mouseX > 45 &&
+          mouseX < 195 &&
+          mouseY > 165 &&
+          mouseY < 195 &&
+          mouseIsPressed
+        )
+          fill(50, 100, 150);
+
+        textStyle(BOLD);
+        textSize(20);
+
+        text("FOLLOW", 120, 187);
+      }
+
+      if (
+        peopleList.findIfFriend(this.id, this.thisPerson) == true &&
+        peopleList.findIfFriend(this.thisPerson, this.id) == false
+      ) {
+        fill(180);
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
+          fill(200);
+        if (
+          mouseX > 45 &&
+          mouseX < 195 &&
+          mouseY > 165 &&
+          mouseY < 195 &&
+          mouseIsPressed
+        )
+          fill(100);
+
+        textStyle(BOLD);
+        textSize(20);
+
+        text("FOLLOWING", 120, 187);
+      }
+
+      if (
+        peopleList.findIfFriend(this.id, this.thisPerson) == true &&
+        peopleList.findIfFriend(this.thisPerson, this.id) == true
+      ) {
+        fill(180);
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
+          fill(200);
+        if (
+          mouseX > 45 &&
+          mouseX < 195 &&
+          mouseY > 165 &&
+          mouseY < 195 &&
+          mouseIsPressed
+        )
+          fill(100);
+
+        textStyle(BOLD);
+        textSize(20);
+
+        text("FRIENDS", 120, 187);
+      }
     }
 
-    if (peopleList.findIfFriend(this.id, this.thisPerson) == true && peopleList.findIfFriend(this.thisPerson, this.id) == false)
-    {
-      fill(180);
-      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
-        fill(200)
-      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
-        fill(100)
+    textAlign(LEFT)
+    fill(40);
+    rect(70, 140, 260, 20, 5);
 
-      textStyle(BOLD)
-      textSize(20)
-
-      text("FOLLOWING", width/2, 215)
-    }
-
-    if (peopleList.findIfFriend(this.id, this.thisPerson) == true && peopleList.findIfFriend(this.thisPerson, this.id) == true)
-    {
-      fill(180);
-      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
-        fill(200)
-      if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220 && mouseIsPressed)
-        fill(100)
-
-      textStyle(BOLD)
-      textSize(20)
-
-      text("FRIENDS", width/2, 215)
-    }
-    
-    fill(40)
-    rect(70, 140, 260, 20, 5)
-
-    textStyle(NORMAL)
-    fill(180)
-    text(int(thisName.get("age")) + " year old, proud " + thisName.get("pet") + " owner", width/2, 155)
+    textStyle(NORMAL);
+    fill(180);
+    text(
+      int(thisName.get("age")) +
+        " year old, proud " +
+        thisName.get("pet") +
+        " owner",
+      100,
+      100,
+    );
   }
 
-  viewProfile()
-  {
+  viewProfile() {
     this.loginPage = false;
     this.hobbiesPage = false;
     this.postsPage = false;
@@ -793,17 +833,15 @@ class UI {
     }
 
     if (this.isAccount == true) {
-      if (this.accountPage && this.thisPerson != this.id)
-      {
-        if (mouseX > 150 && mouseX < 250 && mouseY > 200 && mouseY < 220)
-        {
-           let personFriend = peopleList.getPerson(this.thisPerson)
-          print(personFriend)
-           peopleList.friendPerson(this.id,personFriend)
+      if (this.accountPage && this.thisPerson != this.id) {
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195) {
+          let personFriend = peopleList.getPerson(this.thisPerson);
+          print(personFriend);
+          peopleList.friendPerson(this.id, personFriend);
           //follow button
         }
       }
-      
+
       if (this.postTypePage) {
         if (
           mouseX > width / 2 - 75 &&
@@ -933,7 +971,7 @@ class UI {
       ) {
         if (this.isAccount == false) {
           this.id = peopleList.generateUniqueId();
-          this.thisPerson = this.id
+          this.thisPerson = this.id;
           let person = new Person(
             this.id,
             this.username,
@@ -1030,7 +1068,7 @@ function keyPressed() {
   }
 }
 
-function mouseReleased() {  
+function mouseReleased() {
   ui.mouseRelease();
   if (post != null) post.mouseRelease();
 
@@ -1176,13 +1214,13 @@ class PostCreator extends Post {
       mouseY > this.hite + 45 &&
       mouseY < this.hite + 95
     ) {
-        this.typing = false;
-        print(this.id);
-        let personA = peopleList.getPerson(this.id);
-        allFriend(personA);
-        if (personA != null) {
-          personA.createPost(this.words);
-        }
+      this.typing = false;
+      print(this.id);
+      let personA = peopleList.getPerson(this.id);
+      allFriend(personA);
+      if (personA != null) {
+        personA.createPost(this.words);
+      }
     }
 
     //rect(40, 90, 320, this.hite - 80, 10);
@@ -1201,7 +1239,7 @@ class PostCreator extends Post {
 
 function VScrollbar(xp, yp, sw, sh, l) {
   this.swidth = sw; // width and height of bar
-  this.sheight = sh-15;
+  this.sheight = sh - 15;
   var heighttowidth = sh - sw;
   this.ratio = (sh / heighttowidth) * 2;
   this.xpos = xp - this.swidth / 2; // x and y position of bar
@@ -1275,7 +1313,12 @@ function VScrollbar(xp, yp, sw, sh, l) {
     } else {
       fill(102, 102, 102);
     }
-    rect(this.xpos, this.spos+(this.sheight/this.itemAmount)/2, this.swidth, this.sheight/this.itemAmount);
+    rect(
+      this.xpos,
+      this.spos + this.sheight / this.itemAmount / 2,
+      this.swidth,
+      this.sheight / this.itemAmount,
+    );
   };
 
   this.getPos = function () {
@@ -1289,16 +1332,16 @@ function VScrollbar(xp, yp, sw, sh, l) {
     var scrollbarHeight = this.sheight;
     var scrollbarWidth = this.swidth;
     var heighttowidth = scrollbarHeight - scrollbarWidth;
-    var lengt = this.sheight/numElements
-    this.ratio = numElements
+    var lengt = this.sheight / numElements;
+    this.ratio = numElements;
     this.spoxMin = 0;
-    this.sposMax = this.sheight
-    this.itemAmount = numElements
+    this.sposMax = this.sheight;
+    this.itemAmount = numElements;
   };
 
   this.resetY = function () {
-    this.ypos = 0
-    this.spos = this.ypos; 
+    this.ypos = 0;
+    this.spos = this.ypos;
     this.newspos = constrain(this.spos, this.sposMin, this.sposMax);
-  }
+  };
 }
