@@ -15,6 +15,8 @@ db.default({ users: [] });
 
 app.use(express.static('public'));
 
+
+
 io.on('connection', (socket) => {
   console.log('A user connected');
 
@@ -26,12 +28,16 @@ io.on('connection', (socket) => {
     var { key, data, value } = payload;
     console.log(payload);
     console.log(key, data, value);
-    if (key === "set") {
+    if (key == "set") {
       db.set(`${data}`, value).save();
     }
-    if (key === "get") {
-      let theData = db.get(`${data}`).value();
-      socket.emit('database', { key: 'get', data: theData });
+    if (key == "get") {
+      console.log('hello')
+      var theData = db.get(`${data}`).value();
+      socket.emit('database', { key: 'getA', index: data, sData: theData });
+    }
+    if (key == "loadDB") {
+      socket.emit('database', { key: 'theDB', theDB: db.state });
     }
   });
 
