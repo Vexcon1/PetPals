@@ -800,10 +800,12 @@ class UI {
       }
     }
 
+    rectMode(CENTER);
     textAlign(LEFT)
     fill(40);
-    rect(70, 140, 260, 20, 5);
+    rect(240, 120, 300, 70, 5);
 
+    textSize(10)
     textStyle(NORMAL);
     fill(180);
     text(
@@ -812,7 +814,7 @@ class UI {
         thisName.get("pet") +
         " owner",
       100,
-      100,
+      105,
     );
   }
 
@@ -827,7 +829,7 @@ class UI {
     this.textPage = false;
   }
 
-  mouseRelease() {
+  async mouseRelease() {
     if (dist(mouseX, mouseY, 15, 15) < 10) {
       this.debugPage = !this.debugPage;
     }
@@ -970,7 +972,7 @@ class UI {
         this.hobbys.length == 3
       ) {
         if (this.isAccount == false) {
-          this.id = peopleList.generateUniqueId();
+          this.id = await peopleList.generateUniqueId();
           this.thisPerson = this.id;
           let person = new Person(
             this.id,

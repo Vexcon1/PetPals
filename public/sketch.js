@@ -22,7 +22,7 @@ function setup() {
   ui = new UI();
   vs1 = new VScrollbar(10, 10, 10, height*2-110, 10);
 
-  generateFakePeople()
+  //generateFakePeople()
 
   // Display information about each person
   peopleList.display();
@@ -39,6 +39,23 @@ function setup() {
   showAllPosts()
 
 }
+
+
+function boop() {
+  peopleList.display();
+
+  // Try to befriend people based on hobbies
+  peopleList.createRecommendList();
+
+  // Make random posts and have random users like it
+  peopleList.generateRandomPost()
+
+  // Try to like peoples post
+  peopleList.generateRandomPostLikes()
+
+  showAllPosts()
+}
+
 function draw() {
   background(220);
   //drawNodeList();
@@ -159,7 +176,10 @@ function getRandomChatMessage() {
 
 function generateFakePeople() {
   for (let i = 0; i < 10; i++) {
-    peopleList.createPerson();
+    /*let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
+      peopleList.addPerson(person);
+      */
+    peopleList.createPerson()
   }
   peopleList.removePerson(peopleList.get("link"))
 }

@@ -155,7 +155,7 @@ function getRandomChatMessage() {
   return chatMessages[randomIndex];
 }
 
-function generateFakePeople() {
+async function generateFakePeople() {
   for (let i = 0; i < 10; i++) {
     let person = new Person(peopleList.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
     peopleList.addPerson(person);

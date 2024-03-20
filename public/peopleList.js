@@ -30,18 +30,20 @@ class PeopleList {
 
   createPerson(loginInfo) {
     if (loginInfo == null) {
-      let person = new Person(this.generateUniqueId(), generateName(), random(1, 100), generatePet(), generateHobbies());
-      this.addPerson(person);
+      db.method('createPerson',[
+      1, generateName(), random(1, 100), generatePet(), generateHobbies()])
+      
     } else {
       if (db.get(`${loginInfo.username}`) != null) {
-    db.set(`${loginInfo.username}`,loginInfo)
-    let person = new Person(this.generateUniqueId(), loginInfo.username, loginInfo.age, loginInfo.pet, gloginInfo.hobbies);
-      this.addPerson(person);
+        db.method('createPerson',[
+          1, loginInfo.username, loginInfo.age, loginInfo.pet, gloginInfo.hobbies
+          ])
       }
     }
   }
 
   removePerson(person) {
+    if (this.link != null) {
     if (this.link.id === person.get("id")) {
       this.link = this.link.next;
       this.length--;
@@ -55,6 +57,7 @@ class PeopleList {
         }
         current = current.get("next");
       }
+    }
     }
   }
 
@@ -247,7 +250,7 @@ class PeopleList {
     }
     current = current.get("next") 
     }
-    
+
     let allPosts = []
 
     for (let i = 0; i < possiblePeople.length; i++) {

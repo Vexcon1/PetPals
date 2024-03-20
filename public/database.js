@@ -3,14 +3,14 @@ class Database {
     this.data = {}
   }
 
-  set(index, value) {
-    print('set',index,value)
-    socket.emit('database', { key: 'set', data: index, value: value });
-  }
-
   add(index, value) {
     print(index,value)
     this.data[index] = value
+  }
+
+  method(index,value) {
+    socket.emit('methodServer', { key: index, args1: value });
+    print('sent')
   }
 
    get(index) {
@@ -32,4 +32,27 @@ socket.on('database', (key) => {
   if (key.key == "theDB") {
     db.data = key.theDB
   }
+  if (key.key == "users") {
+    for (let i=0; i<key.value.length; i++) {
+      var server = {
+        id: key.value[i][0],
+        name: key.value[i][1],
+        age: key.value[i][2],
+        pet: key.value[i][3],
+        hobbies: key.value[i][4],
+      }
+     let person = new Person(server.id, server.name, server.age, server.pet, server.hobbies);
+    peopleList.addPerson(person);
+      print(peopleList.get("link"))
+    }
+    boop()
+  }
+});
+
+socket.on('methodClient', (server) => {
+  if (server.key == "createPerson") {
+     let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies);
+    peopleList.addPerson(person);
+    print('new people',person)
+    }
 });

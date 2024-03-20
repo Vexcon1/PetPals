@@ -1,5 +1,6 @@
 class Person {
   constructor(id, name, age, pet, _hobbies) {
+    print('person id',id)
     this.id = id;
     this.name = name;
     this.age = age;
