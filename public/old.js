@@ -141,11 +141,11 @@ function getRandomChatMessage() {
     "How's your day going?",
     "Nice weather today, isn't it?",
     "Did you watch any good movies lately?",
-    "I'm feeling hungry!",
+    "I\'m feeling hungry!",
     "Have you heard the latest news?",
     "What are your plans for the weekend?",
     "I just finished a good book!",
-    "Let's grab coffee sometime!"
+    "Let\'s grab coffee sometime!"
   ];
 
   // Generate a random index

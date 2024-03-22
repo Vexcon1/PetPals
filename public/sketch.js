@@ -5,6 +5,8 @@ let feed = null
 let vs1;
 let ui;
 
+let img
+
 // This sketch shows how to add an image from a file input
 // and convert it into a p5.Image object.
 //
@@ -17,7 +19,7 @@ function setup() {
 
   peopleList = new PeopleList();
 
-
+  img = loadImage('PETPALS.png')
 
   ui = new UI();
   vs1 = new VScrollbar(10, 10, 10, height*2-110, 10);
@@ -31,7 +33,7 @@ function setup() {
   peopleList.createRecommendList();
 
   // Make random posts and have random users like it
-  peopleList.generateRandomPost()
+  //peopleList.generateRandomPost()
 
   // Try to like peoples post
   peopleList.generateRandomPostLikes()
@@ -48,7 +50,7 @@ function boop() {
   peopleList.createRecommendList();
 
   // Make random posts and have random users like it
-  peopleList.generateRandomPost()
+  //peopleList.generateRandomPost()
 
   // Try to like peoples post
   peopleList.generateRandomPostLikes()
@@ -246,7 +248,7 @@ function testShowAll() {
   text(`${current.posts.length}`, current.location.x, current.location.y + 60); // Displaying ID
   if (current.posts.length > 0) {
   for (let i = 0; i < current.posts.length; i++) {
-    text(`${current.posts[i].media}`, current.location.x, current.location.y + 80 + i * 20); // Displaying ID
+    text(`${current.posts[i].words}`, current.location.x, current.location.y + 80 + i * 20); // Displaying ID
   }
   }
     /*
@@ -292,6 +294,14 @@ function keyPressedM() {
   }
   if (keyCode == DOWN_ARROW) {
      generateFakePeople()
+  }
+
+  if (keyCode == RIGHT_ARROW) {
+    peopleList.generateRandomPost()
+  }
+
+  if (keyCode == LEFT_ARROW) {
+    generateFakePeople()
   }
 }
 

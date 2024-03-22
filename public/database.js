@@ -8,8 +8,8 @@ class Database {
     this.data[index] = value
   }
 
-  method(index,value) {
-    socket.emit('methodServer', { key: index, args1: value });
+  method(index,value,value2) {
+    socket.emit('methodServer', { key: index, args1: value, args2: value2 });
     print('sent')
   }
 
@@ -34,25 +34,43 @@ socket.on('database', (key) => {
   }
   if (key.key == "users") {
     for (let i=0; i<key.value.length; i++) {
+      print(key.value[i])
       var server = {
-        id: key.value[i][0],
-        name: key.value[i][1],
-        age: key.value[i][2],
-        pet: key.value[i][3],
-        hobbies: key.value[i][4],
+        id: key.value[i].id,
+        name: key.value[i].name,
+        age: key.value[i].age,
+        pet: key.value[i].pet,
+        hobbies: key.value[i].hobbies,
+        posts: []
+      }
+      for (let x=0; x<key.value[i].posts.length; x++) {
+        console.log('postssssa',key.value[i].posts[x])
+        let post = new Post(key.value[i].posts[x].id, key.value[i].posts[x].who, key.value[i].posts[x].words,key.value[i].posts[x].img,key.value[i].posts[x].likes);
+        server.posts.push(post)
       }
      let person = new Person(server.id, server.name, server.age, server.pet, server.hobbies);
+      person.posts = server.posts
+      if (person != null) {
+        if (ui.name == person.name) {
+          ui.thisPerson = person
+        }
     peopleList.addPerson(person);
+      peopleList.ids.push(server.id);
       print(peopleList.get("link"))
+      }
     }
     boop()
+  }
+  if (key.key == "load_user_post") {
+    
   }
 });
 
 socket.on('methodClient', (server) => {
   if (server.key == "createPerson") {
-     let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies);
+     let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies, server.value.posts);
     peopleList.addPerson(person);
-    print('new people',person)
+    peopleList.ids.push(server.value.id);
+    print('new people',person,peopleList.ids)
     }
 });

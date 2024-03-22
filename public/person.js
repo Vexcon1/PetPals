@@ -30,6 +30,7 @@ class Person {
     }
     let post = new Post(this.id, this.name, txt,null,0);
     this.posts.push(post)
+    db.method("createPost",[this.id, this.name, txt,null,0])
   }
 
   addPostLike(id,pid) {

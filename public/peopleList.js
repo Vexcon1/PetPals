@@ -28,18 +28,14 @@ class PeopleList {
     this.length++;
   } 
 
-  createPerson(loginInfo) {
+  createPerson(loginInfo, extra) {
     if (loginInfo == null) {
       db.method('createPerson',[
       1, generateName(), random(1, 100), generatePet(), generateHobbies()])
-      
     } else {
-      if (db.get(`${loginInfo.username}`) != null) {
-        db.method('createPerson',[
-          1, loginInfo.username, loginInfo.age, loginInfo.pet, gloginInfo.hobbies
-          ])
+      print('sent')
+      db.method('createPerson',loginInfo, extra)
       }
-    }
   }
 
   removePerson(person) {

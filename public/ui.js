@@ -6,20 +6,19 @@ class UI {
   constructor() {
     this.isAccount = false;
 
-    this.loginPage = true;
+    this.startPage = true;
+    this.signInPage = false;
+    this.loginPage = false
     this.hobbiesPage = false;
     this.petTypePage = false;
     this.postTypePage = false;
     this.postsPage = false;
-    if (this.isAccount) {
-      this.loginPage = false;
-      this.postTypePage = true;
-    }
     this.messagingPage = false;
     this.textPage = false;
     this.makePostPage = false;
     this.accountPage = false;
     this.debugPage = false;
+    this.bufferPage = false
 
     this.postPageView = "ForYou";
 
@@ -28,7 +27,7 @@ class UI {
     this.id = "";
     this.username = "";
     this.pet = "";
-    this.email = "";
+    this.password = "";
     this.age = "";
     this.hobbys = [];
     this.thisPerson = this.id;
@@ -91,12 +90,24 @@ class UI {
       return;
     }
 
+    if (this.startPage) {
+      this.runStartPage();
+    }
+    
     if (this.loginPage) {
       this.runLogPage();
+    }
+    
+    if (this.signInPage) {
+      this.runSignPage();
     }
 
     if (this.hobbiesPage) {
       this.runHobbiesPage();
+    }
+
+    if (this.bufferPage) {
+      this.runBufferPage();
     }
 
     if (this.petTypePage) {
@@ -213,6 +224,36 @@ class UI {
     line(370, 38, 357, 45);
   }
 
+  runStartPage()
+  {
+    background(30);
+
+    imageMode(CENTER)
+    image(img, width/2, height/2 - 35, 200, 200)
+
+    noStroke()
+    fill(255);
+    textStyle(BOLD)
+    textAlign(CENTER);
+    textSize(40);
+    text("Welcome to", width/2, height/2 - 150);
+
+    textSize(20);
+    text("sign up", 250, 400)
+    
+    fill(100, 180, 255)
+    text("log in", 150, 400)
+    if (mouseIsPressed && dist(mouseX, mouseY, 150, 400) < 20) {
+      this.startPage = false;
+      this.loginPage = true;
+    }
+
+    if (mouseIsPressed && dist(mouseX, mouseY, 250, 400) < 20) {
+      this.startPage = false;
+      this.signInPage = true;
+    }
+  }
+
   runMessagingPage() {
     background(30);
 
@@ -265,11 +306,43 @@ class UI {
     text("SEND", 330, height - 66);
   }
 
-  runLogPage() {
+  runBufferPage
+  {
+    background(30);
+
+    noFill();
+    stroke(100, 180, 255)
+    strokeWeight(3)
+
+
+    translate(width/2, height/2)
+    rotate(cos(millis()/1000))
+    // Bottom-right.
+    arc(0, 0, 50, 50, 0, HALF_PI)
+
+    push()
+    rotate(tan(millis()/6000))
+    // Bottom-left.
+    arc(0, 0, 60, 60, HALF_PI, PI);
+    pop()
+
+    rotate(cos(millis()/1000))
+    // Top-left.
+    arc(0, 0, 70, 70, PI, PI + QUARTER_PI);
+
+    rotate(tan(millis()/5000))
+    // Top-right.
+    arc(0, 0, 80, 80, PI + QUARTER_PI, TWO_PI);
+  }
+
+  runSignPage() {
     rectMode(CENTER);
     textAlign(CENTER);
     background(30);
 
+    imageMode(CENTER)
+    image(img, width/2, 70, 60, 60)
+    
     noStroke();
     fill(200);
     textStyle(NORMAL);
@@ -293,7 +366,7 @@ class UI {
 
     textStyle(NORMAL);
     textSize(15);
-    text("Email", 200, 230);
+    text("Password", 200, 230);
 
     noFill();
     stroke(150);
@@ -308,7 +381,7 @@ class UI {
 
     noStroke();
     fill(255);
-    if (this.email != null) text(this.email, 200, 255);
+    if (this.password != null) text(this.password, 200, 255);
 
     noStroke();
     fill(200);
@@ -331,7 +404,7 @@ class UI {
     fill(255);
     if (this.age != null) text(this.age, 200, 355);
 
-    if (this.username == "" || this.email == "" || this.age == "") {
+    if (this.username == "" || this.password == "" || this.age == "") {
       noFill();
       stroke(200, 150, 150);
       rect(200, 450, 204, 44, 5);
@@ -351,7 +424,7 @@ class UI {
 
   addToKey(k) {
     if (this.typing == 1 && textWidth(this.username) < 275) this.username += k;
-    if (this.typing == 2 && textWidth(this.email) < 275) this.email += k;
+    if (this.typing == 2 && textWidth(this.password) < 275) this.password += k;
     if (this.typing == 3 && textWidth(this.age) < 20 && key >= 0 && key <= 9)
       this.age += k;
   }
@@ -362,7 +435,7 @@ class UI {
     }
 
     if (this.typing == 2) {
-      this.email = this.email.substring(0, this.email.length - 1);
+      this.password = this.password.substring(0, this.password.length - 1);
     }
 
     if (this.typing == 3) {
@@ -538,6 +611,79 @@ class UI {
     }
   }
 
+  runLogPage() {
+    rectMode(CENTER);
+    textAlign(CENTER);
+    background(30);
+
+     noStroke();
+
+    imageMode(CENTER)
+    image(img, width/2, 80, 60, 60)
+    
+    textSize(40)
+    fill(100, 180, 255)
+    text("LOG IN", width/2, 150)
+    
+    fill(200)
+    textStyle(NORMAL);
+    textSize(15);
+    text("Username", 200, 230);
+
+    noFill();
+    stroke(150);
+    if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
+      fill(50);
+    }
+    if (this.typing == 1) {
+      stroke(190, 210, 220);
+      fill(50);
+    }
+    rect(200, 250, 200, 25, 5);
+
+    noStroke();
+    fill(255);
+    if (this.username != null) text(this.username, 200, 255);
+
+    noStroke();
+    fill(200);
+    textStyle(NORMAL);
+    textSize(15);
+    text("Password", 200, 330);
+
+    noFill();
+    stroke(150);
+    if (mouseX > 100 && mouseX < 300 && mouseY > 335 && mouseY < 365) {
+      fill(50);
+    }
+    if (this.typing == 2) {
+      stroke(190, 210, 220);
+      fill(50);
+    }
+    rect(200, 350, 200, 25, 5);
+
+    noStroke();
+    fill(255);
+    if (this.password != null) text(this.password, 200, 355);
+
+    if (this.username == "" || this.password == "") {
+      noFill();
+      stroke(200, 150, 150);
+      rect(200, 450, 204, 44, 5);
+      fill(200, 100, 100);
+    } else {
+      noFill();
+      stroke(100, 255, 100);
+      rect(200, 450, 204, 44, 5);
+      fill(200);
+    }
+
+    noStroke();
+    textStyle(BOLD);
+    textSize(20);
+    text("Next", 200, 456);
+  }
+
   runPostTypePage() {
     background(30);
 
@@ -650,12 +796,14 @@ class UI {
         this.postsDisplaying = peopleList.createNewsFeed(me);
       }
       if (this.postsDisplaying != null) {
+        var addSizeVs = 0;
         for (let i = 0; i < this.postsDisplaying.length; i++) {
           var addhitee = this.postsDisplaying[i].getHitee();
           if (i - 1 >= 0) {
             addhitee = this.postsDisplaying[i - 1].getHitee();
           }
-          this.postsDisplaying[i].update(i * 130 + 130 + addhitee);
+          addSizeVs = addSizeVs + addhitee + 25;
+          this.postsDisplaying[i].update(addSizeVs);
         }
       }
     }
@@ -665,12 +813,14 @@ class UI {
       }
       // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
+         var addSizeVs = 0;
         for (let i = 0; i < this.postsDisplaying.length; i++) {
           var addhitee = this.postsDisplaying[i].getHitee();
           if (i - 1 >= 0) {
             addhitee = this.postsDisplaying[i - 1].getHitee();
           }
-          this.postsDisplaying[i].update(i * 130 + 130 + addhitee);
+          addSizeVs = addSizeVs + addhitee + 25;
+          this.postsDisplaying[i].update(addSizeVs);
         }
       }
     }
@@ -683,7 +833,7 @@ class UI {
   }
 
   runAccountPage() {
-    let thisName;
+    let thisName = "";
 
     //find the person
 
@@ -805,21 +955,62 @@ class UI {
     fill(40);
     rect(240, 120, 300, 70, 5);
 
-    textSize(10)
+    textSize(30)
     textStyle(NORMAL);
     fill(180);
-    text(
+    this.wrapText(
       int(thisName.get("age")) +
         " year old, proud " +
         thisName.get("pet") +
         " owner",
-      100,
-      105,
+      100, 115, 270, 30
     );
   }
 
+  wrapText(tex, x, y, maxWidth, lineHeight) {
+      let words = tex.split(" ");
+      let line = "";
+
+      for (let i = 0; i < words.length; i++) {
+          let currentWord = words[i];
+          let currentWidth = textWidth(currentWord);
+
+          if (currentWidth > maxWidth) {
+              // If the word is longer than the maxWidth, break it into segments
+              let segments = this.splitLongWord(currentWord, maxWidth);
+              for (let segment of segments) {
+                  let testLine = line + segment + " ";
+                  let testWidth = textWidth(testLine.trim());
+                  if (testWidth > maxWidth && line !== "") {
+                      // Draw the line if it exceeds maxWidth
+                      text(line.trim(), x, y);
+                      line = segment + " "; // Start a new line
+                      y += lineHeight; // Move to the next line
+                  } else {
+                      line = testLine;
+                  }
+              }
+          } else {
+              let testLine = line + currentWord + " ";
+              let testWidth = textWidth(testLine.trim());
+              if (testWidth > maxWidth && line !== "") {
+                  // Draw the line if it exceeds maxWidth
+                  text(line.trim(), x, y);
+                  line = currentWord + " "; // Start a new line
+                  y += lineHeight; // Move to the next line
+              } else {
+                  line = testLine;
+              }
+          }
+      }
+      text(line.trim(), x, y); // Draw the last line
+      this.hite = y; // Update the hite property
+  }
+  
+  //wrapText(this.words, 50, 110, width - 100, 20)
+
   viewProfile() {
-    this.loginPage = false;
+    this.signInPage = false;
     this.hobbiesPage = false;
     this.postsPage = false;
     this.postTypePage = false;
@@ -887,7 +1078,7 @@ class UI {
 
       //can access message, posts, account, and create posts
       if (dist(mouseX, mouseY, 370, 25) < 25) {
-        this.loginPage = false;
+        this.signInPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
         this.postTypePage = false;
@@ -898,7 +1089,7 @@ class UI {
       }
 
       if (dist(mouseX, mouseY, 300, 575) < 15) {
-        this.loginPage = false;
+        this.signInPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
         this.postTypePage = false;
@@ -910,7 +1101,7 @@ class UI {
       }
 
       if (dist(mouseX, mouseY, 100, 575) < 15) {
-        this.loginPage = false;
+        this.signInPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
         this.postTypePage = true;
@@ -921,7 +1112,7 @@ class UI {
       }
 
       if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
-        this.loginPage = false;
+        this.signInPage = false;
         this.hobbiesPage = false;
         this.postsPage = false;
         this.postTypePage = false;
@@ -935,7 +1126,7 @@ class UI {
       }
     }
 
-    if (this.loginPage) {
+    if (this.signInPage) {
       if (mouseX > 100 && mouseX < 300 && mouseY > 135 && mouseY < 165) {
         this.typing = 1;
         return false;
@@ -950,9 +1141,31 @@ class UI {
       }
 
       if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
-        if (this.username != "" && this.email != "" && this.age != "") {
+        if (this.username != "" && this.password != "" && this.age != "") {
           this.petTypePage = true;
-          this.loginPage = false;
+          this.signInPage = false;
+        }
+        this.typing = 0;
+        return true;
+      }
+    }
+
+    if (this.loginPage) {
+      if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
+        this.typing = 1;
+        return false;
+      }
+      if (mouseX > 100 && mouseX < 300 && mouseY > 335 && mouseY < 365) {
+        this.typing = 2;
+        return false;
+      }
+
+      if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
+        if (this.username != "" && this.password != "") {
+          //if correct u and p
+
+
+          // 
         }
         this.typing = 0;
         return true;
@@ -972,21 +1185,13 @@ class UI {
         this.hobbys.length == 3
       ) {
         if (this.isAccount == false) {
-          this.id = await peopleList.generateUniqueId();
-          this.thisPerson = this.id;
-          let person = new Person(
-            this.id,
-            this.username,
-            this.age,
-            this.pet,
-            this.hobbies,
-          );
-          peopleList.addPerson(person);
-          allFriend(person);
-          print("created account");
+          this.thisPerson = new Person(this.id, this.username, "Loading", this.pet, this.hobbies)
+          peopleList.createPerson([1, this.username, this.age, this.pet],[this.username,this.password])
+          //allFriend(person);
+          print("do action");
         }
         this.hobbiesPage = false;
-        this.accountPage = true;
+        this.bufferPage = true;
         this.isAccount = true;
         // create account
         return;
@@ -1054,6 +1259,8 @@ class UI {
 }
 
 function keyTyped() {
+  if (ui.signInPage == true) if (key != "Enter") ui.addToKey(key);
+
   if (ui.loginPage == true) if (key != "Enter") ui.addToKey(key);
 
   if (tp != null) if (key != "Enter") tp.addToKey(key);
@@ -1062,6 +1269,9 @@ function keyTyped() {
 function keyPressed() {
   keyPressedM();
   if (keyCode == BACKSPACE) {
+    if (ui.signInPage == true) {
+      ui.backspace();
+    }
     if (ui.loginPage == true) {
       ui.backspace();
     }
