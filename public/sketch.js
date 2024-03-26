@@ -55,6 +55,8 @@ function boop() {
   // Try to like peoples post
   peopleList.generateRandomPostLikes()
 
+  peopleList.localLogin
+
   showAllPosts()
 }
 
@@ -183,7 +185,7 @@ function generateFakePeople() {
       */
     peopleList.createPerson()
   }
-  peopleList.removePerson(peopleList.get("link"))
+  //peopleList.removePerson(peopleList.get("link"))
 }
 
 function allFriend(id) {
@@ -277,6 +279,7 @@ function testShowAll() {
 
   peopleList.showAllLikes()
   peopleList.showAllrecommend()
+  peopleList.showAllFriends()
   }
 }
 

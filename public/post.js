@@ -198,6 +198,7 @@ splitLongWord(word, maxWidth) {
         mouseY > 40 + this.yscroll &&
         mouseY < 40 + this.yscroll + 35)
       {
+        print(this.id,this.who)
         ui.thisPerson = this.id
         ui.viewProfile()
       }

@@ -63,6 +63,7 @@ class PeopleList {
       if (current.get("name") == person1 || current.get("id") == person1) {
         print("found JESSE")
         current.addFriend(wantFriend);
+        db.method("addFriend",[current.get("id"),wantFriend.get("id")])
       }
       current = current.get("next");
     }
@@ -123,11 +124,11 @@ class PeopleList {
   // Display Method
 
   display() {
-    let current = this.link;
-    while (current) {
-      let info = `ID: ${current.get("id")}, ${current.get("name")}, Age: ${current.get("age")}, Hobbies: ${current.get("hobbies").join(', ')}, Location: (${current.get("location").x.toFixed(2)}, ${current.get("location").y.toFixed(2)})`;
-      current = current.get("next");
-    }
+   // let current = this.link;
+    //while (current) {
+     // let info = `ID: ${current.get("id")}, ${current.get("name")}, Age: ${current.get("age")}, Hobbies: ${current.get("hobbies").join(', ')}, Location: (${current.get("location").x.toFixed(2)}, ${current.get("location").y.toFixed(2)})`;
+     // current = current.get("next");
+    //}
   }
 
   // Algorithms
@@ -319,5 +320,24 @@ class PeopleList {
       }
       current = current.get("next");
     }
+  }
+
+  showAllFriends() {
+    let current = this.link;
+    while (current) {
+      if(dist(current.get("location").x, current.get("location").y, mouseX, mouseY) <= 20) {
+        for (let i=0; i < current.friends.length; i++) {
+          strokeWeight(6)
+          stroke(10,10,255)
+            line(current.location.x, current.location.y, current.friends[i].get("location").x, current.friends[i].get("location").y);
+          }
+        strokeWeight(1)
+      }
+      current = current.get("next");
+    }
+  }
+
+  localLogin() {
+      db.method('login', [ui.username, ui.password])
   }
 }

@@ -26,7 +26,7 @@ socket.emit('database', { key: 'loadDB'});
 
 socket.on('database', (key) => {
     if (key.key == "getA") {
-      print(key)
+     // print(key)
     db.add(key.index,key.sData)
     }
   if (key.key == "theDB") {
@@ -34,7 +34,6 @@ socket.on('database', (key) => {
   }
   if (key.key == "users") {
     for (let i=0; i<key.value.length; i++) {
-      print(key.value[i])
       var server = {
         id: key.value[i].id,
         name: key.value[i].name,
@@ -43,26 +42,28 @@ socket.on('database', (key) => {
         hobbies: key.value[i].hobbies,
         posts: []
       }
+
+     if (server.hobbies == undefined) {
+       server.hobbies = []
+     }
+      
       for (let x=0; x<key.value[i].posts.length; x++) {
         console.log('postssssa',key.value[i].posts[x])
-        let post = new Post(key.value[i].posts[x].id, key.value[i].posts[x].who, key.value[i].posts[x].words,key.value[i].posts[x].img,key.value[i].posts[x].likes);
+        let post = new Post(key.value[i].id, key.value[i].posts[x].who, key.value[i].posts[x].words,key.value[i].posts[x].img,key.value[i].posts[x].likes);
         server.posts.push(post)
       }
      let person = new Person(server.id, server.name, server.age, server.pet, server.hobbies);
       person.posts = server.posts
-      if (person != null) {
-        if (ui.name == person.name) {
+      if (person != null && ui != null) {
+        if (ui.thisPerson.name == person.name) {
           ui.thisPerson = person
         }
     peopleList.addPerson(person);
       peopleList.ids.push(server.id);
-      print(peopleList.get("link"))
+      //print(peopleList.get("link"))
       }
     }
     boop()
-  }
-  if (key.key == "load_user_post") {
-    
   }
 });
 
@@ -71,6 +72,28 @@ socket.on('methodClient', (server) => {
      let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies, server.value.posts);
     peopleList.addPerson(person);
     peopleList.ids.push(server.value.id);
-    print('new people',person,peopleList.ids)
+    //print('new people',person,peopleList.ids)
     }
+  if (server.key == "login") {
+     let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies, server.value.posts);
+    ui.runMethod('correctLogin',person)
+    ui.thisPerson = person
+    peopleList.addPerson(person);
+    peopleList.ids.push(server.value.id);
+    //print('new people',person,peopleList.ids)
+  }
+  if (server.key == "signupSuccess") {
+     let person = new Person(server.value.id, server.value.name, server.value.age, server.value.pet, server.value.hobbies, server.value.posts);
+    ui.runMethod('correctSignup',person)
+    ui.thisPerson = person
+    peopleList.addPerson(person);
+    peopleList.ids.push(server.value.id);
+    //print('new people',person,peopleList.ids)
+  }
+  if (server.key == "signupFail") {
+    ui.runMethod('signupFail')
+  }
+  if (server.key == "loginFail") {
+    ui.runMethod('loginFail')
+  }
 });

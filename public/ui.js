@@ -8,7 +8,7 @@ class UI {
 
     this.startPage = true;
     this.signInPage = false;
-    this.loginPage = false
+    this.loginPage = false;
     this.hobbiesPage = false;
     this.petTypePage = false;
     this.postTypePage = false;
@@ -18,7 +18,7 @@ class UI {
     this.makePostPage = false;
     this.accountPage = false;
     this.debugPage = false;
-    this.bufferPage = false
+    this.bufferPage = false;
 
     this.postPageView = "ForYou";
 
@@ -31,8 +31,13 @@ class UI {
     this.age = "";
     this.hobbys = [];
     this.thisPerson = this.id;
+    this.thisUser = null;
 
     this.postsDisplaying = null;
+    this.failedToSignUp = false;
+    this.failedToLogIn = false;
+    this.failedToSignUpReason = "";
+    this.failedToLogInReason = "";
 
     this.pets = [
       "Dog",
@@ -93,11 +98,11 @@ class UI {
     if (this.startPage) {
       this.runStartPage();
     }
-    
+
     if (this.loginPage) {
       this.runLogPage();
     }
-    
+
     if (this.signInPage) {
       this.runSignPage();
     }
@@ -224,25 +229,24 @@ class UI {
     line(370, 38, 357, 45);
   }
 
-  runStartPage()
-  {
+  runStartPage() {
     background(30);
 
-    imageMode(CENTER)
-    image(img, width/2, height/2 - 35, 200, 200)
+    imageMode(CENTER);
+    image(img, width / 2, height / 2 - 35, 200, 200);
 
-    noStroke()
+    noStroke();
     fill(255);
-    textStyle(BOLD)
+    textStyle(BOLD);
     textAlign(CENTER);
     textSize(40);
-    text("Welcome to", width/2, height/2 - 150);
+    text("Welcome to", width / 2, height / 2 - 150);
 
     textSize(20);
-    text("sign up", 250, 400)
-    
-    fill(100, 180, 255)
-    text("log in", 150, 400)
+    text("sign up", 250, 400);
+
+    fill(100, 180, 255);
+    text("log in", 150, 400);
     if (mouseIsPressed && dist(mouseX, mouseY, 150, 400) < 20) {
       this.startPage = false;
       this.loginPage = true;
@@ -306,31 +310,29 @@ class UI {
     text("SEND", 330, height - 66);
   }
 
-  runBufferPage
-  {
+  runBufferPage() {
     background(30);
 
     noFill();
-    stroke(100, 180, 255)
-    strokeWeight(3)
+    stroke(100, 180, 255);
+    strokeWeight(3);
 
-
-    translate(width/2, height/2)
-    rotate(cos(millis()/1000))
+    translate(width / 2, height / 2);
+    rotate(cos(millis() / 1000));
     // Bottom-right.
-    arc(0, 0, 50, 50, 0, HALF_PI)
+    arc(0, 0, 50, 50, 0, HALF_PI);
 
-    push()
-    rotate(tan(millis()/6000))
+    push();
+    rotate(tan(millis() / 6000));
     // Bottom-left.
     arc(0, 0, 60, 60, HALF_PI, PI);
-    pop()
+    pop();
 
-    rotate(cos(millis()/1000))
+    rotate(cos(millis() / 1000));
     // Top-left.
     arc(0, 0, 70, 70, PI, PI + QUARTER_PI);
 
-    rotate(tan(millis()/5000))
+    rotate(tan(millis() / 5000));
     // Top-right.
     arc(0, 0, 80, 80, PI + QUARTER_PI, TWO_PI);
   }
@@ -340,9 +342,9 @@ class UI {
     textAlign(CENTER);
     background(30);
 
-    imageMode(CENTER)
-    image(img, width/2, 70, 60, 60)
-    
+    imageMode(CENTER);
+    image(img, width / 2, 70, 60, 60);
+
     noStroke();
     fill(200);
     textStyle(NORMAL);
@@ -420,6 +422,18 @@ class UI {
     textStyle(BOLD);
     textSize(20);
     text("Next", 200, 456);
+
+    if (this.failedToSignUp == true) {
+      fill(255, 100, 100)
+      rect(200, 500, 130, 30, 10)
+      fill(255);
+      textSize(10);
+      text(
+        "failed to create account.\nReason: " + this.failedToSignUpReason,
+        200,
+        497,
+      );
+    }
   }
 
   addToKey(k) {
@@ -616,16 +630,16 @@ class UI {
     textAlign(CENTER);
     background(30);
 
-     noStroke();
+    noStroke();
 
-    imageMode(CENTER)
-    image(img, width/2, 80, 60, 60)
-    
-    textSize(40)
-    fill(100, 180, 255)
-    text("LOG IN", width/2, 150)
-    
-    fill(200)
+    imageMode(CENTER);
+    image(img, width / 2, 80, 60, 60);
+
+    textSize(40);
+    fill(100, 180, 255);
+    text("LOG IN", width / 2, 150);
+
+    fill(200);
     textStyle(NORMAL);
     textSize(15);
     text("Username", 200, 230);
@@ -682,6 +696,18 @@ class UI {
     textStyle(BOLD);
     textSize(20);
     text("Next", 200, 456);
+
+    if (this.failedToLogIn == true) {
+      fill(255, 100, 100)
+      rect(200, 506, 210, 45, 10)
+      fill(255);
+      textSize(10);
+      text(
+        "failed to log in.\nReason: " + this.failedToLogInReason,
+        200,
+        497,
+      );
+    }
   }
 
   runPostTypePage() {
@@ -813,7 +839,7 @@ class UI {
       }
       // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
-         var addSizeVs = 0;
+        var addSizeVs = 0;
         for (let i = 0; i < this.postsDisplaying.length; i++) {
           var addhitee = this.postsDisplaying[i].getHitee();
           if (i - 1 >= 0) {
@@ -833,11 +859,12 @@ class UI {
   }
 
   runAccountPage() {
-    let thisName = "";
+    let thisName = new Person(1, "Unknown", 0, "", "", []);
 
     //find the person
-
-    thisName = peopleList.getPerson(this.thisPerson);
+    if (this.thisPerson != null) {
+      thisName = peopleList.getPerson(this.thisPerson);
+    }
 
     background(30);
 
@@ -951,11 +978,11 @@ class UI {
     }
 
     rectMode(CENTER);
-    textAlign(LEFT)
+    textAlign(LEFT);
     fill(40);
     rect(240, 120, 300, 70, 5);
 
-    textSize(30)
+    textSize(30);
     textStyle(NORMAL);
     fill(180);
     this.wrapText(
@@ -963,53 +990,57 @@ class UI {
         " year old, proud " +
         thisName.get("pet") +
         " owner",
-      100, 115, 270, 30
+      100,
+      115,
+      270,
+      30,
     );
   }
 
   wrapText(tex, x, y, maxWidth, lineHeight) {
-      let words = tex.split(" ");
-      let line = "";
+    let words = tex.split(" ");
+    let line = "";
 
-      for (let i = 0; i < words.length; i++) {
-          let currentWord = words[i];
-          let currentWidth = textWidth(currentWord);
+    for (let i = 0; i < words.length; i++) {
+      let currentWord = words[i];
+      let currentWidth = textWidth(currentWord);
 
-          if (currentWidth > maxWidth) {
-              // If the word is longer than the maxWidth, break it into segments
-              let segments = this.splitLongWord(currentWord, maxWidth);
-              for (let segment of segments) {
-                  let testLine = line + segment + " ";
-                  let testWidth = textWidth(testLine.trim());
-                  if (testWidth > maxWidth && line !== "") {
-                      // Draw the line if it exceeds maxWidth
-                      text(line.trim(), x, y);
-                      line = segment + " "; // Start a new line
-                      y += lineHeight; // Move to the next line
-                  } else {
-                      line = testLine;
-                  }
-              }
+      if (currentWidth > maxWidth) {
+        // If the word is longer than the maxWidth, break it into segments
+        let segments = this.splitLongWord(currentWord, maxWidth);
+        for (let segment of segments) {
+          let testLine = line + segment + " ";
+          let testWidth = textWidth(testLine.trim());
+          if (testWidth > maxWidth && line !== "") {
+            // Draw the line if it exceeds maxWidth
+            text(line.trim(), x, y);
+            line = segment + " "; // Start a new line
+            y += lineHeight; // Move to the next line
           } else {
-              let testLine = line + currentWord + " ";
-              let testWidth = textWidth(testLine.trim());
-              if (testWidth > maxWidth && line !== "") {
-                  // Draw the line if it exceeds maxWidth
-                  text(line.trim(), x, y);
-                  line = currentWord + " "; // Start a new line
-                  y += lineHeight; // Move to the next line
-              } else {
-                  line = testLine;
-              }
+            line = testLine;
           }
+        }
+      } else {
+        let testLine = line + currentWord + " ";
+        let testWidth = textWidth(testLine.trim());
+        if (testWidth > maxWidth && line !== "") {
+          // Draw the line if it exceeds maxWidth
+          text(line.trim(), x, y);
+          line = currentWord + " "; // Start a new line
+          y += lineHeight; // Move to the next line
+        } else {
+          line = testLine;
+        }
       }
-      text(line.trim(), x, y); // Draw the last line
-      this.hite = y; // Update the hite property
+    }
+    text(line.trim(), x, y); // Draw the last line
+    this.hite = y; // Update the hite property
   }
-  
+
   //wrapText(this.words, 50, 110, width - 100, 20)
 
   viewProfile() {
+    if (this.isAccount == true) {
     this.signInPage = false;
     this.hobbiesPage = false;
     this.postsPage = false;
@@ -1018,6 +1049,7 @@ class UI {
     this.messagingPage = false;
     this.accountPage = true;
     this.textPage = false;
+    }
   }
 
   async mouseRelease() {
@@ -1127,6 +1159,12 @@ class UI {
     }
 
     if (this.signInPage) {
+      if (dist(mouseX, mouseY, width/2, 70) < 30)
+      {
+        this.startPage = true
+        this.signInPage = false
+      }
+      
       if (mouseX > 100 && mouseX < 300 && mouseY > 135 && mouseY < 165) {
         this.typing = 1;
         return false;
@@ -1151,6 +1189,13 @@ class UI {
     }
 
     if (this.loginPage) {
+
+      if (dist(mouseX, mouseY, width/2, 80) < 30)
+      {
+        this.startPage = true
+        this.loginPage = false
+      }
+      
       if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
         this.typing = 1;
         return false;
@@ -1163,9 +1208,10 @@ class UI {
       if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
         if (this.username != "" && this.password != "") {
           //if correct u and p
+          peopleList.localLogin();
+          print("done?");
 
-
-          // 
+          //
         }
         this.typing = 0;
         return true;
@@ -1185,8 +1231,20 @@ class UI {
         this.hobbys.length == 3
       ) {
         if (this.isAccount == false) {
-          this.thisPerson = new Person(this.id, this.username, "Loading", this.pet, this.hobbies)
-          peopleList.createPerson([1, this.username, this.age, this.pet],[this.username,this.password])
+          /*this.thisUser = new Person(
+            this.id,
+            this.username,
+            "Loading",
+            this.pet,
+            this.hobbies,
+          );
+          this.thisPerson = this.username;
+          */
+          peopleList.createPerson(
+            [1, this.username, this.age, this.pet, this.hobbies],
+            [this.username, this.password],
+          );
+
           //allFriend(person);
           print("do action");
         }
@@ -1246,6 +1304,57 @@ class UI {
           }
         }
       }
+    }
+  }
+
+  runMethod(method, args) {
+    if (method == "correctLogin") {
+      this.loginPage = false;
+      this.isAccount = true;
+      this.signInPage = false;
+      this.hobbiesPage = false;
+      this.postsPage = false;
+      this.postTypePage = false;
+      this.makePostPage = false;
+      this.messagingPage = false;
+      this.postTypePage = true;
+      this.textPage = false;
+      this.thisUser = args;
+      this.id = args.id
+      this.thisPerson = args.name;
+    }
+    if (method == "correctSignup") {
+      this.loginPage = false;
+      this.isAccount = true;
+      this.signInPage = false;
+      this.hobbiesPage = false;
+      this.postsPage = false;
+      this.postTypePage = false;
+      this.makePostPage = false;
+      this.messagingPage = false;
+      this.postTypePage = true;
+      this.textPage = false;
+      this.bufferPage = false;
+      this.thisUser = args;
+      this.id = args.id
+      this.thisPerson = args.name;
+    }
+    if (method == "signupFail") {
+      print('hello')
+      this.hobbiesPage = false;
+      this.petTypePage = false;
+      this.signInPage = true;
+      this.failedToSignUp = true;
+      this.bufferPage = false;
+      this.isAccount = false;
+      this.failedToSignUpReason = "User taken >:(";
+      this.username = "";
+      this.password = "";
+    }
+    if (method == "loginFail") {
+      // login failed
+      this.failedToLogIn = true;
+      this.failedToLogInReason = "Username and/or password does\nnot match account in our system.";
     }
   }
 
