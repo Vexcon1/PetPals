@@ -12,6 +12,10 @@ class PeopleList {
     this[data_name] = data_set;
   }
 
+  deSeralizer(data) {
+    return serializerClient.deserialize(data)
+  }
+
   // User Actions
   addPerson(person) {
     if (!this.link) {
@@ -85,7 +89,7 @@ class PeopleList {
   }
 
   getPerson(id) {
-    let current = this.link;
+    let current = deSeralizer(this.link)
     while (current) {
       if (current.get("id") === id) {
         return current;

@@ -1,6 +1,6 @@
 class Person {
   constructor(id, name, age, pet, _hobbies) {
-    console.log('person id',id)
+    //console.log('person id',id)
     this.id = id;
     this.name = name;
     this.age = age;

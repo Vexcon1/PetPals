@@ -3,8 +3,9 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const StormDB = require("stormdb");
-const serverClass = require("./serverClass.js")
-const userClass = require("./userClass.js")
+var serverClass = require("./serverClass.js")
+var userClass = require("./userClass.js")
+const Serializer = require("./Serializer.js")
 
 // start db with "./db.stormdb" storage location
 const engine = new StormDB.localFileEngine("./db.stormdb");
@@ -12,12 +13,18 @@ const db = new StormDB(engine);
 
 const port = process.env.PORT || 3000;
 
+var serializerServer = new Serializer([serverClass]);
+var serializerClient = new Serializer([userClass]);
+
 // set default db value if db is empty
 db.default({  userList: serverClass, users: [], accounts: [], ID_Index: 0 });
 
 app.use(express.static("public"));
 
-const newUserA = new userClass(1, "A", 20, "dog", ["swimming", "running", "coding"])
+if (db.get(`ID_Index`).value() >= 1) {
+  serverClass = serializerServer.deserialize(db.get(`userList`).value())
+}
+
 
 // link list go again
 
@@ -53,7 +60,7 @@ io.on("connection", (socket) => {
   socket.on("methodServer", async (payload) => {
     var { key, args1, args2 } = payload;
 
-    console.log(payload)
+    console.log(payload,(key == "login"))
 
     if (key == "increase") {
       var ind = db.get(`${data}`).value();
@@ -61,14 +68,31 @@ io.on("connection", (socket) => {
     }
     if (key == "createPerson") {
       var ind = db.get(`ID_Index`).value();
+      var isAble = true
+
+       if (args2 != null) {
+      let userListA = db.get(`accounts`).value();
+      for (let i=0; i<userListA.length; i++) {
+        console.log(userListA[i].username, args2[0])
+        if (userListA[i].username == args2[0]) {
+          isAble = false
+            socket.emit("methodClient", { key: "signupFail" });
+          break;
+          }
+        }
+      }
+    
+
+    if (isAble == true) {
+      
 
       args1[0] = ind;
       
-      var newUser = new userClass(args1[0],args1[1],args1[2],args1[3],args1[4])
+      var newUser = new userClass(ind,args1[1],args1[2],args1[3],args1[4])
 
+      var serial = serializerClient.serialize(newUser)
 
-
-      serverClass.addPerson(newUser)
+      serverClass.addPerson(serial)
 
       db.set(`ID_Index`, ind + 1).save();
 
@@ -76,14 +100,17 @@ io.on("connection", (socket) => {
 
       if (args2 != null) {
         db.get(`accounts`).push({
-          id: args1[0],
+          id: ind,
           username: args2[0],
           password: args2[1],
           link: newUser
         }).save()
-      }
+        socket.emit("methodClient", { key: "signupSuccess", value: newUser });
+      } else {
 
       socket.emit("methodClient", { key: "createPerson", value: newUser });
+      }
+    }
     }
 
     if (key == "createPost") {
@@ -103,6 +130,44 @@ io.on("connection", (socket) => {
           console.log("push", userList[i].posts);
           break;
         }
+      }
+    }
+
+    if (key == "addFriend") {
+
+      var newUser = new   userClass(ind,args1[1],args1[2],args1[3],args1[4])
+      
+      let user1 = serverClass.getPerson(args1[0])
+      let user2 = serverClass.getPerson(args1[1])
+
+      console.log(user1,user2,serverClass.link)
+
+      if (user1 != undefined && user2 != undefined) {
+      user1.addFriend(user2);
+      }
+    }
+
+    if (key == "login") {
+      let username = args1[0]
+      let password = args1[1]
+
+      let foundAccount = false
+
+      let userList = db.get(`accounts`).value()
+
+      for (let i=0; i<userList.length; i++) {
+        console.log(userList[i].username, username, userList[i].password, password)
+        if (userList[i].username == username) {
+          if (userList[i].password == password) {
+            let user = userList[i].link
+            socket.emit("methodClient", { key: "login", value: user });
+            foundAccount = true
+            break;
+          }
+        }
+      }
+      if (foundAccount == false) {
+        socket.emit("methodClient", { key: "loginFail" });
       }
     }
   });
