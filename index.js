@@ -5,7 +5,6 @@ const io = require("socket.io")(http);
 const StormDB = require("stormdb");
 var serverClass = require("./serverClass.js")
 var userClass = require("./userClass.js")
-const Serializer = require("./Serializer.js")
 
 // start db with "./db.stormdb" storage location
 const engine = new StormDB.localFileEngine("./db.stormdb");
@@ -13,18 +12,14 @@ const db = new StormDB(engine);
 
 const port = process.env.PORT || 3000;
 
-var serializerServer = new Serializer([serverClass]);
-var serializerClient = new Serializer([userClass]);
-
 // set default db value if db is empty
 db.default({  userList: serverClass, users: [], accounts: [], ID_Index: 0 });
 
 app.use(express.static("public"));
 
 if (db.get(`ID_Index`).value() >= 1) {
-  serverClass = serializerServer.deserialize(db.get(`userList`).value())
+  serverClass = db.get(`userList`).value()
 }
-
 
 // link list go again
 
@@ -81,16 +76,16 @@ io.on("connection", (socket) => {
           }
         }
       }
-    
+
 
     if (isAble == true) {
-      
+
 
       args1[0] = ind;
-      
+
       var newUser = new userClass(ind,args1[1],args1[2],args1[3],args1[4])
 
-      var serial = serializerClient.serialize(newUser)
+      var serial = newUser
 
       serverClass.addPerson(serial)
 
@@ -109,6 +104,8 @@ io.on("connection", (socket) => {
       } else {
 
       socket.emit("methodClient", { key: "createPerson", value: newUser });
+
+        db.set(`userList`, serverClass).save()
       }
     }
     }
@@ -136,7 +133,7 @@ io.on("connection", (socket) => {
     if (key == "addFriend") {
 
       var newUser = new   userClass(ind,args1[1],args1[2],args1[3],args1[4])
-      
+
       let user1 = serverClass.getPerson(args1[0])
       let user2 = serverClass.getPerson(args1[1])
 
