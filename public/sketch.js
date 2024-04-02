@@ -36,7 +36,7 @@ function setup() {
   //peopleList.generateRandomPost()
 
   // Try to like peoples post
-  peopleList.generateRandomPostLikes()
+  //peopleList.generateRandomPostLikes()
 
   showAllPosts()
 

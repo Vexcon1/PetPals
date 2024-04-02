@@ -12,6 +12,7 @@ class UI {
     this.hobbiesPage = false;
     this.petTypePage = false;
     this.postTypePage = false;
+    this.homePage = false;
     this.postsPage = false;
     this.messagingPage = false;
     this.textPage = false;
@@ -95,6 +96,11 @@ class UI {
       return;
     }
 
+    if (this.homePage)
+    {
+      this.runHomePage()
+    }
+    
     if (this.startPage) {
       this.runStartPage();
     }
@@ -229,6 +235,65 @@ class UI {
     line(370, 38, 357, 45);
   }
 
+  runHomePage()
+  {
+    background(30);
+
+    textStyle(NORMAL)
+    textSize(20)
+    fill(255)
+    textAlign(CENTER)
+    noStroke()
+    text("Welcome back", width/2, 50)
+
+    textSize(60)
+    fill(100, 180, 255)
+    text(this.username, width/2, 100)
+
+    image(img, width/2, 200, 150, 150)
+
+    textSize(20)
+    fill(255)
+    text("-  posts  -  create post  -  account  -", width/2, 320)
+
+    for (let i = 0; i < 3; i++)
+      {
+        textStyle(NORMAL)
+        fill(40)
+        rectMode(CENTER)
+
+        rect(i * 125 + 75, 455, 100, 200, 10)
+
+        fill(100, 180, 255)
+        ellipse(i * 125 + 75, 420, 60)
+
+        fill(50)
+        rect(i*125+75, 370, 80, 20, 5)
+
+        textStyle(BOLD)
+        fill(255)
+        textSize(15)
+        text("Jesse", i*125+75, 375)
+
+        for (let j = 0; j< 3; j++)
+          {
+            fill(50)
+            rect(i*125+75, j*30 + 470, 80, 20, 3)
+
+            fill(255)
+            text("#", i*125+75, j*30 + 475)
+          }
+
+        fill(40)
+        rect(i*125+75, 560, 100, 30)
+
+        textSize(20)
+        textStyle(BOLD)
+        fill(100, 180, 255)
+        text("Follow", i*125+75, 565)
+      }
+  }
+
   runStartPage() {
     background(30);
 
@@ -317,6 +382,8 @@ class UI {
     stroke(100, 180, 255);
     strokeWeight(3);
 
+    push()
+    
     translate(width / 2, height / 2);
     rotate(cos(millis() / 1000));
     // Bottom-right.
@@ -335,6 +402,8 @@ class UI {
     rotate(tan(millis() / 5000));
     // Top-right.
     arc(0, 0, 80, 80, PI + QUARTER_PI, TWO_PI);
+
+    pop()
   }
 
   runSignPage() {
@@ -1062,7 +1131,10 @@ class UI {
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195) {
           let personFriend = peopleList.getPerson(this.thisPerson);
           print(personFriend);
-          peopleList.friendPerson(this.id, personFriend);
+          if (peopleList.findIfFriend(this.id, personFriend) == true)
+            peopleList.unFriendPerson(this.id, personFriend)
+          else
+            peopleList.friendPerson(this.id, personFriend);
           //follow button
         }
       }

@@ -1,6 +1,7 @@
 class Post {
-  constructor(id, who, words, img, likes) {
+  constructor(id, pid, who, words, img, likes) {
     this.id = id
+    this.postId = pid
     this.who = who;
     this.words = words;
     this.img = img;
@@ -25,6 +26,9 @@ class Post {
     this.yscroll = Pos+a;
     //this.yscrollIndex = a
     this.display();
+    if (this.likesUser.includes(ui.id)) {
+      this.liked = true
+    }
   }
 
   
@@ -36,7 +40,7 @@ class Post {
     rectMode(CORNER);
     fill(40);
     noStroke();
-    rect(25, 25, width - 50, this.hite, 20);
+    rect(25, 25, width - 50, this.hite, 10);
 
     fill(100, 180, 255);
     ellipse(65, 60, 40, 40);
@@ -184,9 +188,11 @@ splitLongWord(word, maxWidth) {
       if (this.liked == false) {
         this.liked = true;
         this.likes ++
+        peopleList.likePost(ui.id,this.id,this.postId)
       } else if (this.liked == true) {
         this.liked = false;
         this.likes --
+        peopleList.unlikePost(ui.id,this.id,this.postId)
       }
     }
 

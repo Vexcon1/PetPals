@@ -28,9 +28,10 @@ class Person {
     if (txt == undefined) {
       txt = getRandomChatMessage()
     }
-    let post = new Post(this.id, this.name, txt,null,0);
+    peopleList.set("postLength",peopleList.get("postLength")+1)
+    let post = new Post(this.id, peopleList.get("postLength"), this.name, txt,null,0);
     this.posts.push(post)
-    db.method("createPost",[this.id, this.name, txt,null,0])
+    db.method("createPost",[this.id, peopleList.get("postLength"), this.name, txt, null,0])
   }
 
   addPostLike(id,pid) {

@@ -4,6 +4,7 @@ class PeopleList {
     this.link = null;
     this.length = 0;
     this.ids = []
+    this.postLength = 0;
   }
   // Accessor methods
   get(data_name) {
@@ -110,15 +111,12 @@ class PeopleList {
       }
   }
 
-  likePersonPost(id,pid) {
-    let current = this.link;
-    while (current) {
-      if (current.get("id") === id) {
-        current.get("posts")
-        break;
-      }
-      current = current.get("next");
-    }
+  likePost(uid,id,pid) {
+    db.method('likePost',[uid,id,pid])
+  }
+
+  unlikePost(uid,id,pid) {
+    db.method('unlikePost',[uid,id,pid])
   }
 
   // Display Method
@@ -180,6 +178,7 @@ class PeopleList {
              this.friendPerson(current.id,personLike)
             current.get("posts")[i].get("likesUser").push(personLike.get("id"))
                 current.get("posts")[i].set("likes", current.get("posts")[i].get("likes") + 1)
+    this.likePost(personLike.id,current.id,current.get("posts")[i].postId)
            }
         }
       }
