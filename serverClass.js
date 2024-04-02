@@ -16,6 +16,17 @@ class PeopleList {
     return serializerClient.deserialize(data)
   }
 
+  deAll() {
+    if (!this.link) {
+    this.link = serializerClient.deserialize(this.link)
+    let current = this.link
+    while (current != null) {
+      current.set("next",serializerClient.deserialize(current))
+      current = current.get("next")
+      }
+    }
+  }
+
   // User Actions
   addPerson(person) {
     if (!this.link) {
@@ -89,7 +100,7 @@ class PeopleList {
   }
 
   getPerson(id) {
-    let current = deSeralizer(this.link)
+    let current = this.link
     while (current) {
       if (current.get("id") === id) {
         return current;
@@ -122,6 +133,6 @@ class PeopleList {
   }
 }
 
-const userClass = new PeopleList();
+var a = new PeopleList()
 
-module.exports = userClass;
+module.exports = a;
