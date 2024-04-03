@@ -6,20 +6,7 @@ class UI {
   constructor() {
     this.isAccount = false;
 
-    this.startPage = true;
-    this.signInPage = false;
-    this.loginPage = false;
-    this.hobbiesPage = false;
-    this.petTypePage = false;
-    this.postTypePage = false;
-    this.homePage = false;
-    this.postsPage = false;
-    this.messagingPage = false;
-    this.textPage = false;
-    this.makePostPage = false;
-    this.accountPage = false;
-    this.debugPage = false;
-    this.bufferPage = false;
+    this.page = "start"
 
     this.postPageView = "ForYou";
 
@@ -91,65 +78,66 @@ class UI {
   }
 
   update() {
-    if (this.debugPage) {
+    if (this.page == "debug") {
       this.runDebugPage();
       return;
     }
 
-    if (this.homePage)
+    if (this.page == "home")
     {
       this.runHomePage()
     }
     
-    if (this.startPage) {
+    if (this.page == "start") {
       this.runStartPage();
     }
 
-    if (this.loginPage) {
+    if (this.page == "login") {
       this.runLogPage();
     }
 
-    if (this.signInPage) {
+    if (this.page == "signin") {
       this.runSignPage();
     }
 
-    if (this.hobbiesPage) {
+    if (this.page == "hobbies") {
       this.runHobbiesPage();
     }
 
-    if (this.bufferPage) {
+    if (this.page == "buffer") {
       this.runBufferPage();
     }
 
-    if (this.petTypePage) {
+    if (this.page == "petType") {
       this.runPetSelectionPage();
     }
 
-    if (this.postsPage) {
+    if (this.page == "posts") {
       this.runPostsPage();
     }
 
-    if (this.postTypePage) {
+    if (this.page == "postType") {
       this.runPostTypePage();
     }
 
-    if (this.messagingPage) {
+    if (this.page == "messaging") {
       this.runMessagingPage();
     }
 
-    if (this.textPage) {
+    if (this.page == "text") {
       this.runTextPage();
     }
 
-    if (this.makePostPage) {
+    if (this.page == "makePost") {
       this.runMakePostPage();
     }
 
-    if (this.accountPage) {
+    if (this.page == "account") {
       this.runAccountPage();
     }
 
-    this.runBottomMenu();
+    if (this.page != "home")
+      this.runBottomMenu();
   }
 
   runDebugPage() {
@@ -313,13 +301,11 @@ class UI {
     fill(100, 180, 255);
     text("log in", 150, 400);
     if (mouseIsPressed && dist(mouseX, mouseY, 150, 400) < 20) {
-      this.startPage = false;
-      this.loginPage = true;
+      this.page = "login"
     }
 
     if (mouseIsPressed && dist(mouseX, mouseY, 250, 400) < 20) {
-      this.startPage = false;
-      this.signInPage = true;
+      this.page = "signin"
     }
   }
 
@@ -1110,24 +1096,43 @@ class UI {
 
   viewProfile() {
     if (this.isAccount == true) {
-    this.signInPage = false;
-    this.hobbiesPage = false;
-    this.postsPage = false;
-    this.postTypePage = false;
-    this.makePostPage = false;
-    this.messagingPage = false;
-    this.accountPage = true;
-    this.textPage = false;
+    this.page = "account";
     }
   }
 
   async mouseRelease() {
     if (dist(mouseX, mouseY, 15, 15) < 10) {
-      this.debugPage = !this.debugPage;
+      if (this.page == "debug")
+        this.page = "home"
+      else
+        this.page = "debug"
     }
 
     if (this.isAccount == true) {
-      if (this.accountPage && this.thisPerson != this.id) {
+      if(this.page == "home")
+      {
+        if (300 < mouseY && mouseY < 330)
+        {
+          if (75 < mouseX && mouseX < 125)
+          {
+            this.page = "postType"
+          }
+
+          if (150 < mouseX && mouseX < 230)
+          {
+            tp = new PostCreator(this.id, this.username, " ", null, 200);
+            this.page = "makePost"
+          }
+
+          if (260 < mouseX && mouseX< 320)
+          {
+            this.thisPerson = this.id
+            this.page = "account"
+          }
+        }
+      }
+      
+      if (this.page == "account" && this.thisPerson != this.id) {
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195) {
           let personFriend = peopleList.getPerson(this.thisPerson);
           print(personFriend);
@@ -1139,7 +1144,7 @@ class UI {
         }
       }
 
-      if (this.postTypePage) {
+      if (this.page == "postType") {
         if (
           mouseX > width / 2 - 75 &&
           mouseX < width / 2 + 75 &&
@@ -1148,8 +1153,7 @@ class UI {
         ) {
           //top
           this.postPageView = "ForYou";
-          this.postsPage = true;
-          this.postTypePage = false;
+          this.page = "posts"
           this.postsDisplaying = null;
         }
 
@@ -1161,8 +1165,7 @@ class UI {
         ) {
           //middle
           this.postPageView = "Popular";
-          this.postsPage = true;
-          this.postTypePage = false;
+          this.page = "posts"
           this.postsDisplaying = null;
         }
 
@@ -1174,67 +1177,37 @@ class UI {
         ) {
           //bottom
           this.postPageView = "Newest";
-          this.postsPage = true;
-          this.postTypePage = false;
+          this.page = "posts"
           this.postsDisplaying = null;
         }
       }
 
       //can access message, posts, account, and create posts
       if (dist(mouseX, mouseY, 370, 25) < 25) {
-        this.signInPage = false;
-        this.hobbiesPage = false;
-        this.postsPage = false;
-        this.postTypePage = false;
-        this.makePostPage = false;
-        this.accountPage = false;
-        this.messagingPage = true;
-        this.textPage = false;
+        this.page = "messaging";
       }
 
       if (dist(mouseX, mouseY, 300, 575) < 15) {
-        this.signInPage = false;
-        this.hobbiesPage = false;
-        this.postsPage = false;
-        this.postTypePage = false;
-        this.makePostPage = false;
-        this.messagingPage = false;
         this.thisPerson = this.id;
-        this.accountPage = true;
-        this.textPage = false;
+        this.page = "account";
       }
 
       if (dist(mouseX, mouseY, 100, 575) < 15) {
-        this.signInPage = false;
-        this.hobbiesPage = false;
-        this.postsPage = false;
-        this.postTypePage = true;
-        this.makePostPage = false;
-        this.accountPage = false;
-        this.messagingPage = false;
-        this.textPage = false;
+        this.page = "postType";
       }
 
       if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
-        this.signInPage = false;
-        this.hobbiesPage = false;
-        this.postsPage = false;
-        this.postTypePage = false;
-        this.accountPage = false;
-        this.messagingPage = false;
-        this.textPage = false;
 
         tp = new PostCreator(this.id, this.username, " ", null, 200);
 
-        this.makePostPage = true;
+        this.page = "makePost";
       }
     }
 
-    if (this.signInPage) {
+    if (this.page == "signin") {
       if (dist(mouseX, mouseY, width/2, 70) < 30)
       {
-        this.startPage = true
-        this.signInPage = false
+        this.page = "start"
       }
       
       if (mouseX > 100 && mouseX < 300 && mouseY > 135 && mouseY < 165) {
@@ -1252,20 +1225,18 @@ class UI {
 
       if (mouseX > 100 && mouseX < 300 && mouseY > 430 && mouseY < 470) {
         if (this.username != "" && this.password != "" && this.age != "") {
-          this.petTypePage = true;
-          this.signInPage = false;
+          this.page = "petType";
         }
         this.typing = 0;
         return true;
       }
     }
 
-    if (this.loginPage) {
+    if (this.page == "login") {
 
       if (dist(mouseX, mouseY, width/2, 80) < 30)
       {
-        this.startPage = true
-        this.loginPage = false
+        this.page = "start"
       }
       
       if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
@@ -1294,7 +1265,7 @@ class UI {
     //rect(200, 250, 200, 25, 5);
     //rect(200, 350, 200, 25, 5);
 
-    if (this.hobbiesPage) {
+    if (this.page == "hobbies") {
       if (
         mouseX > 135 &&
         mouseX < 265 &&
@@ -1320,8 +1291,7 @@ class UI {
           //allFriend(person);
           print("do action");
         }
-        this.hobbiesPage = false;
-        this.bufferPage = true;
+        this.page = "buffer";
         this.isAccount = true;
         // create account
         return;
@@ -1347,7 +1317,7 @@ class UI {
       }
     }
 
-    if (this.petTypePage) {
+    if (this.page == "petType") {
       if (
         mouseX > 135 &&
         mouseX < 265 &&
@@ -1355,8 +1325,7 @@ class UI {
         mouseY < 135 &&
         this.pet != ""
       ) {
-        this.petTypePage = false;
-        this.hobbiesPage = true;
+        this.page = "hobbies";
         return;
       }
 
@@ -1381,44 +1350,23 @@ class UI {
 
   runMethod(method, args) {
     if (method == "correctLogin") {
-      this.loginPage = false;
       this.isAccount = true;
-      this.signInPage = false;
-      this.hobbiesPage = false;
-      this.postsPage = false;
-      this.postTypePage = false;
-      this.makePostPage = false;
-      this.messagingPage = false;
-      this.postTypePage = true;
-      this.textPage = false;
+      this.page = "home"
       this.thisUser = args;
       this.id = args.id
       this.thisPerson = args.name;
     }
     if (method == "correctSignup") {
-      this.loginPage = false;
       this.isAccount = true;
-      this.signInPage = false;
-      this.hobbiesPage = false;
-      this.postsPage = false;
-      this.postTypePage = false;
-      this.makePostPage = false;
-      this.messagingPage = false;
-      this.postTypePage = true;
-      this.textPage = false;
-      this.bufferPage = false;
+      this.page = "home"
       this.thisUser = args;
       this.id = args.id
       this.thisPerson = args.name;
     }
     if (method == "signupFail") {
       print('hello')
-      this.hobbiesPage = false;
-      this.petTypePage = false;
-      this.signInPage = true;
+      this.page = "signin"
       this.failedToSignUp = true;
-      this.bufferPage = false;
-      this.isAccount = false;
       this.failedToSignUpReason = "User taken >:(";
       this.username = "";
       this.password = "";
@@ -1440,9 +1388,9 @@ class UI {
 }
 
 function keyTyped() {
-  if (ui.signInPage == true) if (key != "Enter") ui.addToKey(key);
+  if (ui.get("page") == "signin") if (key != "Enter") ui.addToKey(key);
 
-  if (ui.loginPage == true) if (key != "Enter") ui.addToKey(key);
+  if (ui.get("page") == "login") if (key != "Enter") ui.addToKey(key);
 
   if (tp != null) if (key != "Enter") tp.addToKey(key);
 }
@@ -1450,10 +1398,10 @@ function keyTyped() {
 function keyPressed() {
   keyPressedM();
   if (keyCode == BACKSPACE) {
-    if (ui.signInPage == true) {
+    if (ui.get("page") == "signin") {
       ui.backspace();
     }
-    if (ui.loginPage == true) {
+    if (ui.get("page") == "login") {
       ui.backspace();
     }
 
@@ -1463,11 +1411,11 @@ function keyPressed() {
 
 function mouseReleased() {
   ui.mouseRelease();
-  if (post != null) post.mouseRelease();
-
+  // if (post != null && ui.get("postsPage") == true)             post.mouseRelease();
+  
   if (tp != null) tp.mouseRelease();
 
-  if (ui.postsDisplaying != null) {
+  if (ui.postsDisplaying != null && ui.get("page") == "posts") {
     for (let i = 0; i < ui.postsDisplaying.length; i++) {
       ui.postsDisplaying[i].mouseRelease();
     }

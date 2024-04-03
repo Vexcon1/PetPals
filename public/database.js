@@ -57,8 +57,8 @@ socket.on("database", (key) => {
           key.value[i].posts[x].words,
           key.value[i].posts[x].img,
           key.value[i].posts[x].likes,
-           key.value[i].posts[x].likesUser
         );
+        post.set("likesUser", key.value[i].posts[x].likesUser)
         server.posts.push(post);
       }
       let person = new Person(
@@ -71,8 +71,8 @@ socket.on("database", (key) => {
 
       person.posts = server.posts;
       if (person != null && ui != null) {
-        if (ui.thisPerson.name == person.name) {
-          ui.thisPerson = person;
+        if (ui.get("thisPerson").name == person.name) {
+          ui.set("thisPerson", person);
         }
 
         if (server.friends != null) {
@@ -83,7 +83,7 @@ socket.on("database", (key) => {
         }
 
         peopleList.addPerson(person);
-        peopleList.ids.push(server.id);
+        peopleList.get("ids").push(server.id);
         //print(peopleList.get("link"))
       }
     }
@@ -102,7 +102,7 @@ socket.on("methodClient", (server) => {
       server.value.posts,
     );
     peopleList.addPerson(person);
-    peopleList.ids.push(server.value.id);
+    peopleList.get("ids").push(server.value.id);
     //print('new people',person,peopleList.ids)
 
     if (server.key == "fixFriends") {
@@ -124,9 +124,9 @@ socket.on("methodClient", (server) => {
       server.value.posts,
     );
     ui.runMethod("correctLogin", person);
-    ui.thisPerson = person;
+    ui.set("thisPerson", person);
     peopleList.addPerson(person);
-    peopleList.ids.push(server.value.id);
+    peopleList.get("ids").push(server.value.id);
     //print('new people',person,peopleList.ids)
   }
   if (server.key == "signupSuccess") {
@@ -139,7 +139,7 @@ socket.on("methodClient", (server) => {
       server.value.posts,
     );
     ui.runMethod("correctSignup", person);
-    ui.thisPerson = person;
+    ui.set("thisPerson", person);
     peopleList.addPerson(person);
     peopleList.ids.push(server.value.id);
     //print('new people',person,peopleList.ids)

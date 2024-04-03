@@ -53,7 +53,7 @@ function boop() {
   //peopleList.generateRandomPost()
 
   // Try to like peoples post
-  peopleList.generateRandomPostLikes()
+  //peopleList.generateRandomPostLikes()
 
   peopleList.localLogin
 

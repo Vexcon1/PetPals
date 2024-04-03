@@ -8,6 +8,7 @@ class Post {
     this.likes = likes;
     this.liked = false;
     this.likesUser = []
+    this.preLoad = false
 
     this.hite = 85;
 
@@ -26,8 +27,15 @@ class Post {
     this.yscroll = Pos+a;
     //this.yscrollIndex = a
     this.display();
+    this.load();
+  }
+
+  load() {
+    if (this.preLoad == false) {
+      this.preLoad = true
     if (this.likesUser.includes(ui.id)) {
       this.liked = true
+    }
     }
   }
 
@@ -131,6 +139,7 @@ class Post {
   }
   
  wrapText(tex, x, y, maxWidth, lineHeight) {
+   if (tex != null) {
     let words = tex.split(" ");
     let line = "";
 
@@ -168,6 +177,7 @@ class Post {
     }
     text(line.trim(), x, y); // Draw the last line
     this.hite = y; // Update the hite property
+   }
 }
 
 splitLongWord(word, maxWidth) {
