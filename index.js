@@ -19,12 +19,12 @@ app.use(express.static("public"));
 // link list go again
 
 function findIndex(array, element) {
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] === element) {
-            return i; // Return the index if element is found
-        }
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === element) {
+      return i; // Return the index if element is found
     }
-    return -1; // Return -1 if element is not found
+  }
+  return -1; // Return -1 if element is not found
 }
 
 io.on("connection", (socket) => {
@@ -92,7 +92,15 @@ io.on("connection", (socket) => {
 
         db.set(`ID_Index`, ind + 1).save();
 
+        console.log(db.get(`users`).value().length);
+
         db.get(`users`).push(newUser).save();
+
+        console.log(db.get(`users`).value().length);
+
+        console.log(
+          db.get(`users`).value()[db.get(`users`).value().length - 1],
+        );
 
         if (args2 != null) {
           db.get(`accounts`)
@@ -100,7 +108,7 @@ io.on("connection", (socket) => {
               id: ind,
               username: args2[0],
               password: args2[1],
-              link: newUser,
+              index: db.get(`users`).value().length - 1,
             })
             .save();
           socket.emit("methodClient", { key: "signupSuccess", value: newUser });
@@ -137,7 +145,7 @@ io.on("connection", (socket) => {
           let thePosts = db.get(`users`).get(i).get(`posts`).value();
           for (let x = 0; x < thePosts.length; x++) {
             if (
-        db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
+              db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
               args1[2]
             ) {
               console.log("yep");
@@ -158,13 +166,13 @@ io.on("connection", (socket) => {
           let thePosts = db.get(`users`).get(i).get(`posts`).value();
           for (let x = 0; x < thePosts.length; x++) {
             if (
-        db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
+              db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
               args1[2]
             ) {
               console.log("yep");
               var theyPost = db.get(`users`).get(i).get(`posts`).get(x);
               theyPost.set("likes", theyPost.get("likes").value() - 1).save();
-              var daelete = findIndex(args1[0])
+              var daelete = findIndex(args1[0]);
               theyPost.get("likesUser").get(daelete).delete(true);
               console.log(theyPost);
             }
@@ -185,6 +193,8 @@ io.on("connection", (socket) => {
           user2 = userList[i];
         }
       }
+
+      console.log(user1, user2);
 
       if (user1 != undefined && user2 != undefined) {
         user1.friends.push(user2.id);
@@ -207,7 +217,7 @@ io.on("connection", (socket) => {
       for (let i = 0; i < userList.length; i++) {
         if (userList[i].username == username) {
           if (userList[i].password == password) {
-            let user = userList[i].link;
+            let user = db.get(`users`).value()[userList[i].index];
             socket.emit("methodClient", { key: "login", value: user });
             foundAccount = true;
             break;
