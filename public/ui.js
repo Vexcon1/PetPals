@@ -1,3 +1,5 @@
+//const { Color } = require("p5");
+
 let tp;
 
 let post;
@@ -6,7 +8,7 @@ class UI {
   constructor() {
     this.isAccount = false;
 
-    this.page = "start"
+    this.page = "start";
 
     this.postPageView = "ForYou";
 
@@ -83,11 +85,10 @@ class UI {
       return;
     }
 
-    if (this.page == "home")
-    {
-      this.runHomePage()
+    if (this.page == "home") {
+      this.runHomePage();
     }
-    
+
     if (this.page == "start") {
       this.runStartPage();
     }
@@ -136,8 +137,7 @@ class UI {
       this.runAccountPage();
     }
 
-    if (this.page != "home")
-      this.runBottomMenu();
+    if (this.page != "home") this.runBottomMenu();
   }
 
   runDebugPage() {
@@ -167,10 +167,10 @@ class UI {
     strokeWeight(2);
 
     if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
-      stroke(230, 240, 255);
+      stroke(255, 203, 150);
       strokeWeight(2);
     } else {
-      stroke(100, 180, 255);
+      stroke(255, 153, 100);
       strokeWeight(2);
     }
     rect(200, 575, 35, 27, 5);
@@ -204,82 +204,112 @@ class UI {
     fill(50);
     triangle(110, 575, 95, 568, 95, 582);
 
-    fill(40);
-
-    stroke(200);
-    if (dist(mouseX, mouseY, 370, 25) < 25) stroke(100, 180, 255);
-    strokeWeight(3);
-
-    rect(370, 25, 40, 25, 5);
-
-    stroke(40);
-    line(368, 35, 357, 45);
-
-    stroke(200);
-
-    if (dist(mouseX, mouseY, 370, 25) < 25) stroke(100, 180, 255);
-
-    line(360, 38, 357, 45);
-    line(370, 38, 357, 45);
+    image(img, 375, 25, 30, 30);
   }
 
-  runHomePage()
-  {
+  assignColor(id) {
+    let a = id.charCodeAt(1) - 96;
+    print(a)
+    if (a <= 2) return color(100, 180, 255);
+    else if (a <= 4) return color(255, 141, 163);
+    else if (a <= 7) return color(181, 167, 255);
+    else return color(255, 153, 100);
+  }
+
+  runHomePage() {
     background(30);
 
-    textStyle(NORMAL)
-    textSize(20)
-    fill(255)
-    textAlign(CENTER)
-    noStroke()
-    text("Welcome back", width/2, 50)
+    textStyle(NORMAL);
+    textSize(20);
+    fill(255, 153, 100);
+    textAlign(CENTER);
+    noStroke();
+    text("Welcome back", width / 2, 50);
 
-    textSize(60)
-    fill(100, 180, 255)
-    text(this.username, width/2, 100)
+    textSize(60);
+    fill(100, 180, 255);
+    text(this.username, width / 2, 100);
 
-    image(img, width/2, 200, 150, 150)
+    image(img, width / 2, 200, 150, 150);
 
-    textSize(20)
-    fill(255)
-    text("-  posts  -  create post  -  account  -", width/2, 320)
-
-    for (let i = 0; i < 3; i++)
-      {
-        textStyle(NORMAL)
-        fill(40)
-        rectMode(CENTER)
-
-        rect(i * 125 + 75, 455, 100, 200, 10)
-
-        fill(100, 180, 255)
-        ellipse(i * 125 + 75, 420, 60)
-
-        fill(50)
-        rect(i*125+75, 370, 80, 20, 5)
-
-        textStyle(BOLD)
-        fill(255)
-        textSize(15)
-        text("Jesse", i*125+75, 375)
-
-        for (let j = 0; j< 3; j++)
-          {
-            fill(50)
-            rect(i*125+75, j*30 + 470, 80, 20, 3)
-
-            fill(255)
-            text("#", i*125+75, j*30 + 475)
-          }
-
-        fill(40)
-        rect(i*125+75, 560, 100, 30)
-
-        textSize(20)
-        textStyle(BOLD)
-        fill(100, 180, 255)
-        text("Follow", i*125+75, 565)
+    textSize(20);
+    fill(255);
+    text("-  posts  -  create post  -  account  -", width / 2, 320);
+    let possible = peopleList.suggestFriend(this.thisUser);
+    let top1 = 0
+    let top1Spot = null
+    let top2 = 0
+    let top2Spot = null
+    let top3 = 0
+    let top3Spot = null
+    let final = []
+    for (let i = 0; i < possible.length; i++) {
+      if (possible[i].points > top1) {
+        top1Spot = possible[i].link
+        top1 = possible[i].points
+      } else if (possible[i].points > top2) {
+        top2Spot = possible[i].link
+        top2 = possible[i].points
+      } else if (possible[i].points > top3) {
+        top3Spot = possible[i].link
+        top3 = possible[i].points
       }
+    }
+    final.push(top1Spot)
+    final.push(top2Spot)
+    final.push(top3Spot)
+    for (let i = 0; i < 3; i++) {
+      let current = final[i];
+      if (final.length <= 0) {
+        break;
+      }
+      if (this.thisUser == null) {
+        current = new Person(
+          "None",
+          "None",
+          "None",
+          "None",
+          "None",
+          "None",
+          "None",
+          "None",
+          "None",
+        );
+      }
+      textStyle(NORMAL);
+      fill(40);
+      rectMode(CENTER);
+
+      rect(i * 125 + 75, 455, 100, 200, 10);
+
+      fill(100, 180, 255);
+      ellipse(i * 125 + 75, 420, 60);
+
+      fill(50);
+      rect(i * 125 + 75, 370, 80, 20, 5);
+
+      textStyle(BOLD);
+      fill(255);
+      textSize(15);
+      text(current.name, i * 125 + 75, 375);
+
+      for (let j = 0; j < 3; j++) {
+        let hob = current.hobbies[j];
+        fill(50);
+        rect(i * 125 + 75, j * 30 + 470, 80, 20, 3);
+
+        fill(255);
+        text(hob, i * 125 + 75, j * 30 + 475);
+      }
+
+      fill(40);
+      rect(i * 125 + 75, 560, 100, 30);
+
+      textSize(20);
+      textStyle(BOLD);
+      fill(100, 180, 255);
+      text("Follow", i * 125 + 75, 565);
+    }
   }
 
   runStartPage() {
@@ -295,17 +325,18 @@ class UI {
     textSize(40);
     text("Welcome to", width / 2, height / 2 - 150);
 
+    fill(255, 153, 100);
     textSize(20);
     text("sign up", 250, 400);
 
-    fill(100, 180, 255);
+    fill(255);
     text("log in", 150, 400);
     if (mouseIsPressed && dist(mouseX, mouseY, 150, 400) < 20) {
-      this.page = "login"
+      this.page = "login";
     }
 
     if (mouseIsPressed && dist(mouseX, mouseY, 250, 400) < 20) {
-      this.page = "signin"
+      this.page = "signin";
     }
   }
 
@@ -368,8 +399,8 @@ class UI {
     stroke(100, 180, 255);
     strokeWeight(3);
 
-    push()
-    
+    push();
+
     translate(width / 2, height / 2);
     rotate(cos(millis() / 1000));
     // Bottom-right.
@@ -389,7 +420,7 @@ class UI {
     // Top-right.
     arc(0, 0, 80, 80, PI + QUARTER_PI, TWO_PI);
 
-    pop()
+    pop();
   }
 
   runSignPage() {
@@ -401,7 +432,7 @@ class UI {
     image(img, width / 2, 70, 60, 60);
 
     noStroke();
-    fill(200);
+    fill(255, 153, 100);
     textStyle(NORMAL);
     textSize(15);
     text("Name", 200, 130);
@@ -421,6 +452,7 @@ class UI {
     fill(255);
     if (this.username != null) text(this.username, 200, 155);
 
+    fill(100, 180, 255);
     textStyle(NORMAL);
     textSize(15);
     text("Password", 200, 230);
@@ -441,7 +473,7 @@ class UI {
     if (this.password != null) text(this.password, 200, 255);
 
     noStroke();
-    fill(200);
+    fill(255, 153, 100);
     textStyle(NORMAL);
     textSize(15);
     text("Age", 200, 330);
@@ -463,12 +495,12 @@ class UI {
 
     if (this.username == "" || this.password == "" || this.age == "") {
       noFill();
-      stroke(200, 150, 150);
+      stroke(255, 153, 100);
       rect(200, 450, 204, 44, 5);
-      fill(200, 100, 100);
+      fill(100, 180, 255);
     } else {
       noFill();
-      stroke(100, 255, 100);
+      stroke(100, 180, 255);
       rect(200, 450, 204, 44, 5);
       fill(200);
     }
@@ -479,8 +511,8 @@ class UI {
     text("Next", 200, 456);
 
     if (this.failedToSignUp == true) {
-      fill(255, 100, 100)
-      rect(200, 500, 130, 30, 10)
+      fill(255, 100, 100);
+      rect(200, 500, 130, 30, 10);
       fill(255);
       textSize(10);
       text(
@@ -694,7 +726,7 @@ class UI {
     fill(100, 180, 255);
     text("LOG IN", width / 2, 150);
 
-    fill(200);
+    fill(100, 180, 255);
     textStyle(NORMAL);
     textSize(15);
     text("Username", 200, 230);
@@ -715,7 +747,7 @@ class UI {
     if (this.username != null) text(this.username, 200, 255);
 
     noStroke();
-    fill(200);
+    fill(100, 180, 255);
     textStyle(NORMAL);
     textSize(15);
     text("Password", 200, 330);
@@ -737,12 +769,12 @@ class UI {
 
     if (this.username == "" || this.password == "") {
       noFill();
-      stroke(200, 150, 150);
+      stroke(255, 153, 100);
       rect(200, 450, 204, 44, 5);
-      fill(200, 100, 100);
+      fill(100, 180, 255);
     } else {
       noFill();
-      stroke(100, 255, 100);
+      stroke(100, 180, 255);
       rect(200, 450, 204, 44, 5);
       fill(200);
     }
@@ -750,18 +782,14 @@ class UI {
     noStroke();
     textStyle(BOLD);
     textSize(20);
-    text("Next", 200, 456);
+    text("Log In", 200, 456);
 
     if (this.failedToLogIn == true) {
-      fill(255, 100, 100)
-      rect(200, 506, 210, 45, 10)
+      fill(255, 100, 100);
+      rect(200, 506, 210, 45, 10);
       fill(255);
       textSize(10);
-      text(
-        "failed to log in.\nReason: " + this.failedToLogInReason,
-        200,
-        497,
-      );
+      text("failed to log in.\nReason: " + this.failedToLogInReason, 200, 497);
     }
   }
 
@@ -857,7 +885,7 @@ class UI {
 
     if (this.postPageView == "Newest") {
       if (this.postsDisplaying == null) {
-        this.postsDisplaying = peopleList.createAllPostList();
+        this.postsDisplaying = peopleList.createAllPostList().reverse();
       }
       if (this.postsDisplaying != null) {
         var addSizeVs = 0;
@@ -874,7 +902,7 @@ class UI {
     if (this.postPageView == "ForYou") {
       if (this.postsDisplaying == null) {
         let me = peopleList.getPerson(this.id);
-        this.postsDisplaying = peopleList.createNewsFeed(me);
+        this.postsDisplaying = peopleList.createNewsFeed(me).reverse();
       }
       if (this.postsDisplaying != null) {
         var addSizeVs = 0;
@@ -892,7 +920,6 @@ class UI {
       if (this.postsDisplaying == null) {
         this.postsDisplaying = await peopleList.createPopularFeed();
       }
-      // print(this.postsDisplaying)
       if (this.postsDisplaying != null) {
         var addSizeVs = 0;
         for (let i = 0; i < this.postsDisplaying.length; i++) {
@@ -932,6 +959,14 @@ class UI {
     fill(100, 180, 255);
 
     ellipse(50, 50, 60, 60);
+
+    if (this.thisPerson != null) {
+    textAlign(CENTER);
+    fill(255);
+    textStyle(NORMAL);
+    textSize(50);
+    text(this.thisPerson.get("name").charAt(0), 60, 6);
+    }
 
     textAlign(LEFT);
     textStyle(BOLD);
@@ -1096,50 +1131,49 @@ class UI {
 
   viewProfile() {
     if (this.isAccount == true) {
-    this.page = "account";
+      this.page = "account";
     }
   }
 
   async mouseRelease() {
     if (dist(mouseX, mouseY, 15, 15) < 10) {
-      if (this.page == "debug")
-        this.page = "home"
-      else
-        this.page = "debug"
+      if (this.page == "debug") { 
+        if (this.isAccount == false) {
+        this.page = "start"
+        } else {
+        this.page = "home";
+        }
+      }
+      else {
+        this.page = "debug";
+      }
     }
 
     if (this.isAccount == true) {
-      if(this.page == "home")
-      {
-        if (300 < mouseY && mouseY < 330)
-        {
-          if (75 < mouseX && mouseX < 125)
-          {
-            this.page = "postType"
+      if (this.page == "home") {
+        if (300 < mouseY && mouseY < 330) {
+          if (75 < mouseX && mouseX < 125) {
+            this.page = "postType";
           }
 
-          if (150 < mouseX && mouseX < 230)
-          {
-            tp = new PostCreator(this.id, this.username, " ", null, 200);
-            this.page = "makePost"
+          if (150 < mouseX && mouseX < 230) {
+            tp = new PostCreator(this.id, 0, this.username, " ", null, 200);
+            this.page = "makePost";
           }
 
-          if (260 < mouseX && mouseX< 320)
-          {
-            this.thisPerson = this.id
-            this.page = "account"
+          if (260 < mouseX && mouseX < 320) {
+            this.thisPerson = this.id;
+            this.page = "account";
           }
         }
       }
-      
+
       if (this.page == "account" && this.thisPerson != this.id) {
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195) {
           let personFriend = peopleList.getPerson(this.thisPerson);
-          print(personFriend);
           if (peopleList.findIfFriend(this.id, personFriend) == true)
-            peopleList.unFriendPerson(this.id, personFriend)
-          else
-            peopleList.friendPerson(this.id, personFriend);
+            peopleList.unFriendPerson(this.id, personFriend);
+          else peopleList.friendPerson(this.id, personFriend);
           //follow button
         }
       }
@@ -1153,7 +1187,7 @@ class UI {
         ) {
           //top
           this.postPageView = "ForYou";
-          this.page = "posts"
+          this.page = "posts";
           this.postsDisplaying = null;
         }
 
@@ -1165,7 +1199,7 @@ class UI {
         ) {
           //middle
           this.postPageView = "Popular";
-          this.page = "posts"
+          this.page = "posts";
           this.postsDisplaying = null;
         }
 
@@ -1177,39 +1211,40 @@ class UI {
         ) {
           //bottom
           this.postPageView = "Newest";
-          this.page = "posts"
+          this.page = "posts";
           this.postsDisplaying = null;
         }
       }
 
       //can access message, posts, account, and create posts
-      if (dist(mouseX, mouseY, 370, 25) < 25) {
-        this.page = "messaging";
-      }
 
-      if (dist(mouseX, mouseY, 300, 575) < 15) {
-        this.thisPerson = this.id;
-        this.page = "account";
-      }
+      if (this.page != "home") {
+        if (dist(mouseX, mouseY, 375, 25) < 15) {
+          this.page = "home";
+        }
 
-      if (dist(mouseX, mouseY, 100, 575) < 15) {
-        this.page = "postType";
-      }
+        if (dist(mouseX, mouseY, 300, 575) < 15) {
+          this.thisPerson = this.id;
+          this.page = "account";
+        }
 
-      if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
+        if (dist(mouseX, mouseY, 100, 575) < 15) {
+          this.page = "postType";
+        }
 
-        tp = new PostCreator(this.id, this.username, " ", null, 200);
+        if (mouseX > 180 && mouseX < 220 && mouseY > 560 && mouseY < 590) {
+          tp = new PostCreator(this.id, 0, this.username, " ", null, 200);
 
-        this.page = "makePost";
+          this.page = "makePost";
+        }
       }
     }
 
     if (this.page == "signin") {
-      if (dist(mouseX, mouseY, width/2, 70) < 30)
-      {
-        this.page = "start"
+      if (dist(mouseX, mouseY, width / 2, 70) < 30) {
+        this.page = "start";
       }
-      
+
       if (mouseX > 100 && mouseX < 300 && mouseY > 135 && mouseY < 165) {
         this.typing = 1;
         return false;
@@ -1233,12 +1268,10 @@ class UI {
     }
 
     if (this.page == "login") {
-
-      if (dist(mouseX, mouseY, width/2, 80) < 30)
-      {
-        this.page = "start"
+      if (dist(mouseX, mouseY, width / 2, 80) < 30) {
+        this.page = "start";
       }
-      
+
       if (mouseX > 100 && mouseX < 300 && mouseY > 235 && mouseY < 265) {
         this.typing = 1;
         return false;
@@ -1252,9 +1285,7 @@ class UI {
         if (this.username != "" && this.password != "") {
           //if correct u and p
           peopleList.localLogin();
-          print("done?");
-
-          //
+          //print("done?");
         }
         this.typing = 0;
         return true;
@@ -1289,7 +1320,6 @@ class UI {
           );
 
           //allFriend(person);
-          print("do action");
         }
         this.page = "buffer";
         this.isAccount = true;
@@ -1351,21 +1381,21 @@ class UI {
   runMethod(method, args) {
     if (method == "correctLogin") {
       this.isAccount = true;
-      this.page = "home"
+      this.page = "home";
       this.thisUser = args;
-      this.id = args.id
+      this.id = args.id;
       this.thisPerson = args.name;
     }
     if (method == "correctSignup") {
       this.isAccount = true;
-      this.page = "home"
+      this.page = "home";
       this.thisUser = args;
-      this.id = args.id
+      this.id = args.id;
       this.thisPerson = args.name;
     }
     if (method == "signupFail") {
-      print('hello')
-      this.page = "signin"
+      //print("hello");
+      this.page = "signin";
       this.failedToSignUp = true;
       this.failedToSignUpReason = "User taken >:(";
       this.username = "";
@@ -1374,7 +1404,8 @@ class UI {
     if (method == "loginFail") {
       // login failed
       this.failedToLogIn = true;
-      this.failedToLogInReason = "Username and/or password does\nnot match account in our system.";
+      this.failedToLogInReason =
+        "Username and/or password does\nnot match account in our system.";
     }
   }
 
@@ -1412,7 +1443,7 @@ function keyPressed() {
 function mouseReleased() {
   ui.mouseRelease();
   // if (post != null && ui.get("postsPage") == true)             post.mouseRelease();
-  
+
   if (tp != null) tp.mouseRelease();
 
   if (ui.postsDisplaying != null && ui.get("page") == "posts") {
@@ -1556,7 +1587,7 @@ class PostCreator extends Post {
       mouseY < this.hite + 95
     ) {
       this.typing = false;
-      print(this.id);
+      //print(this.id);
       let personA = peopleList.getPerson(this.id);
       allFriend(personA);
       if (personA != null) {
@@ -1585,14 +1616,16 @@ function VScrollbar(xp, yp, sw, sh, l) {
   this.ratio = (sh / heighttowidth) * 2;
   this.xpos = xp - this.swidth / 2; // x and y position of bar
   this.ypos = yp;
-  this.spos = this.ypos; // Set slider position to the top
+  this.spos = this.ypos + 5; // Set slider position to the top
   this.newspos = this.spos;
-  this.sposMin = this.ypos; // max and min values of slider
-  this.sposMax = this.ypos + this.sheight - this.swidth;
+  this.sposMin = this.ypos - 0.1; // max and min values of slider
+  this.sposMax = 500;
   this.loose = l; // how loose/heavy
   this.over = false; // is the mouse over the slider?
   this.locked = false;
   this.itemAmount = 0;
+
+  this.downFix = 0;
 
   this.update = function () {
     if (this.overEvent()) {
@@ -1616,6 +1649,14 @@ function VScrollbar(xp, yp, sw, sh, l) {
     if (abs(this.newspos - this.spos) > 1) {
       this.spos = this.spos + (this.newspos - this.spos) / this.loose;
     }
+    //print(this.spos, this.ypos, this.sposMax, this.swidth, this.downFix);
+    if (this.spos >= this.sposMax - 2) {
+      this.downFix = this.downFix + 500;
+      this.spos = 0;
+    }
+    if (this.spos <= this.sposMin + 2 && this.sposMin < 5) {
+      this.spos = 0;
+    }
   };
 
   this.up = function () {
@@ -1634,8 +1675,8 @@ function VScrollbar(xp, yp, sw, sh, l) {
 
   this.overEvent = function () {
     if (
-      mouseX > this.xpos &&
-      mouseX < this.xpos + this.swidth &&
+      mouseX > this.xpos - 5 &&
+      mouseX < this.xpos - 5 + this.swidth &&
       mouseY > this.ypos &&
       mouseY < this.ypos + this.sheight
     ) {
@@ -1674,9 +1715,9 @@ function VScrollbar(xp, yp, sw, sh, l) {
     var scrollbarWidth = this.swidth;
     var heighttowidth = scrollbarHeight - scrollbarWidth;
     var lengt = this.sheight / numElements;
-    this.ratio = numElements;
-    this.spoxMin = 0;
-    this.sposMax = this.sheight;
+    this.ratio = numElements / 2;
+    this.sposMin = -0.1;
+    this.sposMax = 500;
     this.itemAmount = numElements;
   };
 

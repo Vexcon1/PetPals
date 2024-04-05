@@ -7,6 +7,8 @@ let ui;
 
 let img
 
+let testViewSubject = null
+
 // This sketch shows how to add an image from a file input
 // and convert it into a p5.Image object.
 //
@@ -206,7 +208,9 @@ function drawNodeList() {
     ellipse(current.location.x, current.location.y, 20, 20);
     fill(255, 0, 0);
     textAlign(CENTER, CENTER);
+    textSize(15)
     text(current.name, current.location.x, current.location.y + 20);
+    textSize(13)
     text(current.id, current.location.x, current.location.y + 40); // Displaying ID
     text(`${current.posts.length}`, current.location.x, current.location.y + 60); // Displaying ID
     current = current.get("next");
@@ -232,7 +236,7 @@ function testShowAll() {
 
   drawNodeList()
 
-  let current = peopleList.get("link");
+  let current = testViewSubject;
 
   if (current != null) {
     
@@ -245,11 +249,16 @@ function testShowAll() {
   fill(255, 0, 0);
   textSize(15)
   textAlign(CENTER, CENTER);
+    textSize(15)
   text(current.name, current.location.x, current.location.y + 20);
+    textSize(13)
   text(current.id, current.location.x, current.location.y + 40); // Displaying ID
+    textSize(13)
   text(`${current.posts.length}`, current.location.x, current.location.y + 60); // Displaying ID
   if (current.posts.length > 0) {
+    fill(200,2,2)
   for (let i = 0; i < current.posts.length; i++) {
+    textSize(10)
     text(`${current.posts[i].words}`, current.location.x, current.location.y + 80 + i * 20); // Displaying ID
   }
   }
@@ -273,7 +282,7 @@ function testShowAll() {
   for (let i=0; i < friendList.length; i++) {
     strokeWeight(2)
     stroke(0,0,0)
-      line(current.location.x, current.location.y, friendList[i].get("location").x, friendList[i].get("location").y);
+      line(current.location.x, current.location.y, friendList[i].link.get("location").x, friendList[i].link.get("location").y);
   }
   strokeWeight(1)
 

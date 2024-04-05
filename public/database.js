@@ -4,7 +4,6 @@ class Database {
   }
 
   add(index, value) {
-    print(index, value);
     this.data[index] = value;
   }
 
@@ -26,21 +25,21 @@ socket.emit("database", { key: "loadDB" });
 
 socket.on("database", (key) => {
   if (key.key == "getA") {
-    // print(key)
     db.add(key.index, key.sData);
   }
   if (key.key == "theDB") {
     //db.data = key.theDB
   }
   if (key.key == "users") {
-    print(key);
     for (let i = 0; i < key.value.length; i++) {
+      if (peopleList.ids.includes(key.value[i].id) != true) {
       var server = {
         id: key.value[i].id,
         name: key.value[i].name,
         age: key.value[i].age,
         pet: key.value[i].pet,
         hobbies: key.value[i].hobbies,
+        friends: key.value[i].friends,
         posts: [],
       };
 
@@ -49,7 +48,7 @@ socket.on("database", (key) => {
       }
 
       for (let x = 0; x < key.value[i].posts.length; x++) {
-        console.log("postssssa", key.value[i].posts[x]);
+        //console.log("postssssa", key.value[i].posts[x]);
         let post = new Post(
           key.value[i].id,
           key.value[i].posts[x].postId,
@@ -58,7 +57,7 @@ socket.on("database", (key) => {
           key.value[i].posts[x].img,
           key.value[i].posts[x].likes,
         );
-        post.set("likesUser", key.value[i].posts[x].likesUser)
+        post.set("likesUser", key.value[i].posts[x].likesUser);
         server.posts.push(post);
       }
       let person = new Person(
@@ -70,23 +69,30 @@ socket.on("database", (key) => {
       );
 
       person.posts = server.posts;
+
+      if (server.friends != null) {
+        for (let i = 0; i < server.friends.length; i++) {
+          print("friend", server.friends[i]);
+          let newFriend = peopleList.getPerson(server.friends[i]);
+          if (newFriend == null) {
+          person.friendsID.push(server.friends[i])
+          } else {
+          person.addFriend(newFriend);
+          }
+        }
+      }
+
       if (person != null && ui != null) {
         if (ui.get("thisPerson").name == person.name) {
           ui.set("thisPerson", person);
         }
 
-        if (server.friends != null) {
-          for (let i = 0; i < server.friends.length; i++) {
-            let newFriend = peopleList.getPerson(server.friends[i]);
-            person.addFriend(newFriend);
-          }
-        }
-
         peopleList.addPerson(person);
         peopleList.get("ids").push(server.id);
-        //print(peopleList.get("link"))
       }
     }
+    }
+    peopleList.fixFriends()
     boop();
   }
 });
@@ -103,18 +109,9 @@ socket.on("methodClient", (server) => {
     );
     peopleList.addPerson(person);
     peopleList.get("ids").push(server.value.id);
-    //print('new people',person,peopleList.ids)
-
-    if (server.key == "fixFriends") {
-      if (server.friends != null) {
-        for (let i = 0; i < server.friends.length; i++) {
-          let newFriend = peopleList.getPerson(server.friends[i]);
-          person.addFriend(newFriend);
-        }
-      }
-    }
   }
   if (server.key == "login") {
+    if (peopleList.getPerson(server.value.id) == null) {
     let person = new Person(
       server.value.id,
       server.value.name,
@@ -123,13 +120,21 @@ socket.on("methodClient", (server) => {
       server.value.hobbies,
       server.value.posts,
     );
+    
     ui.runMethod("correctLogin", person);
     ui.set("thisPerson", person);
     peopleList.addPerson(person);
     peopleList.get("ids").push(server.value.id);
-    //print('new people',person,peopleList.ids)
+    testViewSubject = person
+    } else {
+      let person = peopleList.getPerson(server.value.id)
+      ui.runMethod("correctLogin", person);
+      ui.set("thisPerson", person);
+      testViewSubject = person
+    }
   }
   if (server.key == "signupSuccess") {
+    if (peopleList.getPerson(server.value.id) == null) {
     let person = new Person(
       server.value.id,
       server.value.name,
@@ -142,12 +147,26 @@ socket.on("methodClient", (server) => {
     ui.set("thisPerson", person);
     peopleList.addPerson(person);
     peopleList.ids.push(server.value.id);
-    //print('new people',person,peopleList.ids)
+      testViewSubject = person
+    } else {
+      let person = peopleList.getPerson(server.value.id)
+      ui.runMethod("correctLogin", person);
+      ui.set("thisPerson", person);
+      testViewSubject = person
+    }
   }
   if (server.key == "signupFail") {
     ui.runMethod("signupFail");
   }
   if (server.key == "loginFail") {
     ui.runMethod("loginFail");
+  }
+  if (server.key == "fixFriends") {
+    if (server.friends != null) {
+      for (let i = 0; i < server.friends.length; i++) {
+        let newFriend = peopleList.getPerson(server.friends[i]);
+        person.addFriend(newFriend);
+      }
+    }
   }
 });
