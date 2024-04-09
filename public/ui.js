@@ -8,7 +8,7 @@ class UI {
   constructor() {
     this.isAccount = false;
 
-    this.page = "start";
+    this.page = "buffer";
 
     this.postPageView = "ForYou";
 
@@ -22,6 +22,8 @@ class UI {
     this.hobbys = [];
     this.thisPerson = this.id;
     this.thisUser = null;
+
+    this.recommends = [];
 
     this.postsDisplaying = null;
     this.failedToSignUp = false;
@@ -209,7 +211,6 @@ class UI {
 
   assignColor(id) {
     let a = id.charCodeAt(1) - 96;
-    print(a)
     if (a <= 2) return color(100, 180, 255);
     else if (a <= 4) return color(255, 141, 163);
     else if (a <= 7) return color(181, 167, 255);
@@ -234,7 +235,17 @@ class UI {
 
     textSize(20);
     fill(255);
-    text("-  posts  -  create post  -  account  -", width / 2, 320);
+    text("-            -                      -                -", width / 2, 320);
+
+    textStyle(NORMAL)
+    fill(100, 180, 255)
+    textSize(20)
+    text("posts", 86.5, 320)
+    text("account", 302, 320)
+
+    fill(255, 153, 100)
+    text("create post", 189, 320)
+    
     let possible = peopleList.suggestFriend(this.thisUser);
     let top1 = 0
     let top1Spot = null
@@ -258,11 +269,13 @@ class UI {
     final.push(top1Spot)
     final.push(top2Spot)
     final.push(top3Spot)
-    for (let i = 0; i < 3; i++) {
+
+    this.recommends[0] = top1Spot
+    this.recommends[1] = top2Spot
+    this.recommends[2] = top3Spot
+    
+    for (let i = 0; i < final.length; i++) {
       let current = final[i];
-      if (final.length <= 0) {
-        break;
-      }
       if (this.thisUser == null) {
         current = new Person(
           "None",
@@ -282,8 +295,13 @@ class UI {
 
       rect(i * 125 + 75, 455, 100, 200, 10);
 
-      fill(100, 180, 255);
+      //fill(100, 180, 255);
+      fill(this.assignColor(current.name))
       ellipse(i * 125 + 75, 420, 60);
+
+      textSize(40)
+      fill(255)
+      text(current.name.charAt(0), i * 125 + 75, 433)
 
       fill(50);
       rect(i * 125 + 75, 370, 80, 20, 5);
@@ -297,6 +315,7 @@ class UI {
         let hob = current.hobbies[j];
         fill(50);
         rect(i * 125 + 75, j * 30 + 470, 80, 20, 3);
+        textStyle(NORMAL)
 
         fill(255);
         text(hob, i * 125 + 75, j * 30 + 475);
@@ -305,10 +324,14 @@ class UI {
       fill(40);
       rect(i * 125 + 75, 560, 100, 30);
 
-      textSize(20);
+      textSize(18);
       textStyle(BOLD);
       fill(100, 180, 255);
-      text("Follow", i * 125 + 75, 565);
+
+      if (peopleList.findIfFriend(this.id, current.id) == true)
+        text("Following", i * 125 + 75, 565)
+      else
+        text("Follow", i * 125 + 75, 565);
     }
   }
 
@@ -956,17 +979,15 @@ class UI {
     fill(35);
     rect(width / 2, 80, width, 160);
 
-    fill(100, 180, 255);
-
+    //fill(100, 180, 255);
+    fill(this.assignColor(thisName.get("name")));
     ellipse(50, 50, 60, 60);
 
-    if (this.thisPerson != null) {
     textAlign(CENTER);
     fill(255);
     textStyle(NORMAL);
     textSize(50);
-    text(this.thisPerson.get("name").charAt(0), 60, 6);
-    }
+    text(thisName.get("name").charAt(0), 51, 67);
 
     textAlign(LEFT);
     textStyle(BOLD);
@@ -1064,6 +1085,27 @@ class UI {
         textSize(20);
 
         text("FRIENDS", 120, 187);
+      }
+
+      if (
+        peopleList.findIfFriend(this.thisPerson, this.id) == true && peopleList.findIfFriend(this.id, this.thisPerson) == false
+      ) {
+        fill(255, 153, 100);
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
+          fill(255, 163, 110);
+        if (
+          mouseX > 45 &&
+          mouseX < 195 &&
+          mouseY > 165 &&
+          mouseY < 195 &&
+          mouseIsPressed
+        )
+          fill(240, 143, 90);
+
+        textStyle(BOLD);
+        textSize(15);
+
+        text("FOLLOW BACK", 120, 187);
       }
     }
 
@@ -1166,6 +1208,14 @@ class UI {
             this.page = "account";
           }
         }
+
+        for (let i = 0; i<3; i++)
+          {
+            if (dist(mouseX, mouseY, i*125 + 75, 565) < 30)
+            {
+              peopleList.friendPerson(this.id, this.recommends[i])
+            }
+          }
       }
 
       if (this.page == "account" && this.thisPerson != this.id) {
@@ -1285,7 +1335,6 @@ class UI {
         if (this.username != "" && this.password != "") {
           //if correct u and p
           peopleList.localLogin();
-          //print("done?");
         }
         this.typing = 0;
         return true;
@@ -1394,7 +1443,6 @@ class UI {
       this.thisPerson = args.name;
     }
     if (method == "signupFail") {
-      //print("hello");
       this.page = "signin";
       this.failedToSignUp = true;
       this.failedToSignUpReason = "User taken >:(";
@@ -1446,9 +1494,9 @@ function mouseReleased() {
 
   if (tp != null) tp.mouseRelease();
 
-  if (ui.postsDisplaying != null && ui.get("page") == "posts") {
-    for (let i = 0; i < ui.postsDisplaying.length; i++) {
-      ui.postsDisplaying[i].mouseRelease();
+  if (ui.get("postsDisplaying") != null && ui.get("page") == "posts") {
+    for (let i = 0; i < ui.get("postsDisplaying").length; i++) {
+      ui.get("postsDisplaying")[i].mouseRelease();
     }
   }
 }
@@ -1463,12 +1511,12 @@ function mouseWheel(event) {
       post.up();
     }
   }
-  if (ui.postsDisplaying != null) {
-    for (let i = 0; i < ui.postsDisplaying.length; i++) {
+  if (ui.get("postsDisplaying") != null) {
+    for (let i = 0; i < ui.get("postsDisplaying").length; i++) {
       if (event.deltaY > 0) {
-        ui.postsDisplaying[i].down();
+        ui.get("postsDisplaying")[i].down();
       } else if (event.deltaY < 0) {
-        ui.postsDisplaying[i].up();
+        ui.get("postsDisplaying")[i].up();
       }
     }
   }
@@ -1494,6 +1542,9 @@ class PostCreator extends Post {
   }
 
   display() {
+
+    push()
+    translate(0, 100)
     textAlign(LEFT);
 
     rectMode(CORNER);
@@ -1501,8 +1552,13 @@ class PostCreator extends Post {
     noStroke();
     rect(25, 25, width - 50, this.hite, 20);
 
-    fill(100, 180, 255);
+    fill(ui.get("assignColor")(this.who));
     ellipse(65, 60, 40, 40);
+
+    textAlign(CENTER)
+    fill(255)
+    textSize(25)
+    text(this.who.charAt(0), 65, 68)
 
     rectMode(CORNER);
     fill(50);
@@ -1514,8 +1570,8 @@ class PostCreator extends Post {
     if (
       mouseX > 40 &&
       mouseX < 360 &&
-      mouseY > 90 &&
-      mouseY < 90 + this.hite - 80
+      mouseY > 190 &&
+      mouseY < 190 + this.hite - 80
     )
       fill(60);
     if (this.typing) stroke(100, 180, 255);
@@ -1523,6 +1579,7 @@ class PostCreator extends Post {
     rect(40, 90, 320, this.hite - 80, 10);
 
     noStroke();
+    textAlign(LEFT)
     textStyle(BOLD);
     fill(200);
     textSize(15);
@@ -1547,8 +1604,8 @@ class PostCreator extends Post {
     if (
       mouseX > 125 &&
       mouseX < 275 &&
-      mouseY > this.hite + 45 &&
-      mouseY < this.hite + 95
+      mouseY > 100 + this.hite + 45 &&
+      mouseY < 100 + this.hite + 95
     ) {
       translate(0, 3);
     }
@@ -1568,14 +1625,15 @@ class PostCreator extends Post {
     text("POST", 200, this.hite + 77);
 
     pop();
+    pop()
   }
 
   mouseRelease() {
     if (
       mouseX > 40 &&
       mouseX < 360 &&
-      mouseY > 90 &&
-      mouseY < 90 + this.hite - 80
+      mouseY > 190 &&
+      mouseY < 190 + this.hite - 80
     ) {
       this.typing = true;
     } else this.typing = false;
@@ -1583,13 +1641,11 @@ class PostCreator extends Post {
     if (
       mouseX > 125 &&
       mouseX < 275 &&
-      mouseY > this.hite + 45 &&
-      mouseY < this.hite + 95
+      mouseY > 100 + this.hite + 45 &&
+      mouseY < 100 + this.hite + 95
     ) {
       this.typing = false;
-      //print(this.id);
       let personA = peopleList.getPerson(this.id);
-      allFriend(personA);
       if (personA != null) {
         personA.createPost(this.words);
       }
@@ -1649,7 +1705,6 @@ function VScrollbar(xp, yp, sw, sh, l) {
     if (abs(this.newspos - this.spos) > 1) {
       this.spos = this.spos + (this.newspos - this.spos) / this.loose;
     }
-    //print(this.spos, this.ypos, this.sposMax, this.swidth, this.downFix);
     if (this.spos >= this.sposMax - 2) {
       this.downFix = this.downFix + 500;
       this.spos = 0;

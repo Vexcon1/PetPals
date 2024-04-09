@@ -202,7 +202,7 @@ class Post {
     return segments;
   }
   mouseRelease() {
-    if (this.id != ui.thisUser.id) {
+    if (this.id != ui.get("thisUser").get("id")) {
       if (dist(mouseX, mouseY, 340, 60 + this.yscroll) < 15) {
         if (this.liked == false) {
           this.liked = true;
@@ -225,8 +225,7 @@ class Post {
       mouseY > 40 + this.yscroll &&
       mouseY < 40 + this.yscroll + 35
     ) {
-      print(this.id, this.who);
-      ui.thisPerson = this.id;
+      ui.set("thisPerson",this.id);
       ui.viewProfile();
     }
   }

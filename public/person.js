@@ -1,6 +1,5 @@
 class Person {
   constructor(id, name, age, pet, _hobbies) {
-    print("person id", id);
     this.id = id;
     this.name = name;
     this.age = age;
@@ -60,15 +59,12 @@ class Person {
 
   addFriend(current) {
     if (current != undefined && current != null) {
-    print("new friend", current);
     this.friends.push(current);
-    print(this.id, this.friends);
     }
   }
 
   removeFriend(current) {
      if (current != undefined && current != null) {
-    print("remove friend", current);
     let index = this.friends.indexOf(current);
     this.friends = this.friends.splice(index, 1);
      }

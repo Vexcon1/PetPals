@@ -1,20 +1,13 @@
-
-
 let peopleList;
 let feed = null
 let vs1;
 let ui;
-
 let img
-
 let testViewSubject = null
+const socket = io();
+const db = new Database();
 
-// This sketch shows how to add an image from a file input
-// and convert it into a p5.Image object.
-//
-// Jared Donovan 2020
-// Based on the p5js createFileInput reference example:
-//   https://p5js.org/reference/#/p5/createFileInput
+db.setup()
 
 function setup() {
   createCanvas(400, 600);
@@ -31,14 +24,8 @@ function setup() {
   // Display information about each person
   peopleList.display();
 
-  // Try to befriend people based on hobbies
+  db.load()
   peopleList.createRecommendList();
-
-  // Make random posts and have random users like it
-  //peopleList.generateRandomPost()
-
-  // Try to like peoples post
-  //peopleList.generateRandomPostLikes()
 
   showAllPosts()
 
@@ -50,11 +37,8 @@ function boop() {
 
   // Try to befriend people based on hobbies
   peopleList.createRecommendList();
-
-  // Make random posts and have random users like it
+  
   //peopleList.generateRandomPost()
-
-  // Try to like peoples post
   //peopleList.generateRandomPostLikes()
 
   peopleList.localLogin
@@ -64,8 +48,7 @@ function boop() {
 
 function draw() {
   background(220);
-  //drawNodeList();
-  //testShowAll()
+
   ui.update()
 }
 
@@ -120,7 +103,8 @@ function generateName() {
     "Carter",
     "Addison",
     "Nicholas",
-    "Scarlett"
+    "Scarlett",
+    "Kyle"
   ];
   return random(names);
 }
@@ -173,10 +157,8 @@ function getRandomChatMessage() {
     "I am a bot, I am not a human, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot, I am a robot, I am a bot"
   ];
 
-  // Generate a random index
   const randomIndex = Math.floor(Math.random() * chatMessages.length);
 
-  // Return the random chat message
   return chatMessages[randomIndex];
 }
 
@@ -265,9 +247,7 @@ function testShowAll() {
     /*
     for (let i = 0; i < feed.length; i++) {
       if (current.location != null) {
-      print(feed)
       strokeWeight(10)
-      print(current.location)
       line(current.location.x, current.location.y, feed[i].get("location").x, feed[i].get("location").y);
       }
     }
@@ -323,12 +303,8 @@ async function quickSort(start, end) {
   if (start > end) {  // Nothing to sort!
     return;
   }
-  // partition() returns the index of the pivot element.
-  // Once partition() is executed, all elements to the  
-  // left of the pivot element are smaller than it and 
-  // all elements to its right are larger than it.
+
   let index = await partition(start, end);
-  // restore original state
   states[index] = -1;
   await Promise.all(
     [quickSort(start, index - 1), 
@@ -336,17 +312,12 @@ async function quickSort(start, end) {
     ]);
 }
 
-// We have chosen the element at the last index as 
-// the pivot element, but we could've made different
-// choices, e.g. take the first element as pivot.
 async function partition(start, end) {
   for (let i = start; i < end; i++) {
-    // identify the elements being considered currently
     states[i] = 1;
   }
   // Quicksort algorithm
   let pivotIndex = start;
-  // make pivot index distinct
   states[pivotIndex] = 0;
   let pivotElement = values[end].likes;
   for (let i = start; i < end; i++) {
@@ -359,7 +330,6 @@ async function partition(start, end) {
   }
   await swap(end, pivotIndex);
   for (let i = start; i < end; i++) {
-    // restore original state
     if (i != pivotIndex) {
       states[i] = -1;
     }
@@ -367,11 +337,7 @@ async function partition(start, end) {
   return pivotIndex;
 }
 
-// swaps elements of 'values' at indices 'i' and 'j'
 async function swap(i, j) {
-  // adjust the pace of the simulation by changing the
-  // value
-  //await sleep(25);
   let temp = values[i];
   values[i] = values[j];
   values[j] = temp;

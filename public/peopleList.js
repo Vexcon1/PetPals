@@ -22,7 +22,6 @@ class PeopleList {
       while (current.get("next")) {
         current = current.get("next");
       }
-      print("added person");
       current.set("next", person);
     }
     this.length++;
@@ -38,7 +37,6 @@ class PeopleList {
         generateHobbies(),
       ]);
     } else {
-      print("sent");
       db.method("createPerson", loginInfo, extra);
     }
   }
@@ -129,17 +127,6 @@ class PeopleList {
   }
 
   // Algorithms
-
-  async generateUniqueIdBetter() {
-    let id = 0;
-    if ((await db.get("ID_Index")) != null) {
-      id = await db.get("ID_Index");
-    }
-    id++;
-    db.set("ID_Index", id);
-    this.ids.push(id);
-    return id;
-  }
 
   generateUniqueId() {
     let id = "";
@@ -382,14 +369,14 @@ class PeopleList {
           mouseY,
         ) <= 20
       ) {
-        for (let i = 0; i < current.friends.length; i++) {
+        for (let i = 0; i < current.get("friends").length; i++) {
           strokeWeight(6);
           stroke(10, 10, 255);
           line(
-            current.location.x,
-            current.location.y,
-            current.friends[i].get("location").x,
-            current.friends[i].get("location").y,
+            current.get("location").x,
+            current.get("location").y,
+            current.get("friends")[i].get("location").x,
+            current.get("friends")[i].get("location").y,
           );
         }
         strokeWeight(1);
@@ -399,7 +386,7 @@ class PeopleList {
   }
 
   localLogin() {
-    db.method("login", [ui.username, ui.password]);
+    db.method("login", [ui.get("username"), ui.get("password")]);
   }
 
   fixFriends() {
