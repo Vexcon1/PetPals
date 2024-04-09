@@ -5,7 +5,7 @@ const io = require("socket.io")(http);
 const StormDB = require("stormdb");
 const userClass = require("./userClass.js");
 
-// start db with "./db.stormdb" storage location
+// Database Class
 const engine = new StormDB.localFileEngine("./db.stormdb");
 const db = new StormDB(engine);
 
@@ -15,8 +15,6 @@ const port = process.env.PORT || 3000;
 db.default({ users: [], accounts: [], ID_Index: 0 });
 
 app.use(express.static("public"));
-
-// link list go again
 
 function findIndex(array, element) {
   for (let i = 0; i < array.length; i++) {
@@ -30,41 +28,18 @@ function findIndex(array, element) {
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  socket.on("mouse", (data) => {
-    socket.broadcast.emit("mouse", data);
-  });
-
   socket.on("database", async (payload) => {
-    var { key, data, value } = payload;
-    // console.log(payload);
-    // console.log(key, data, value);
-    if (key == "set") {
-      db.set(`${data}`, value).save();
-    }
-    if (key == "get") {
-      var theData = db.get(`${data}`).value();
-      await socket.emit("database", {
-        key: "getA",
-        index: data,
-        sData: theData,
-      });
-    }
+    var { key, data, value } = payload; // request from client
     if (key == "loadDB") {
-      socket.emit("database", { key: "theDB", theDB: db.state });
-      socket.emit("database", { key: "users", value: db.get("users").value() });
+      socket.emit("database", { key: "users", value: db.get("users").value() }); // Send user list
     }
   });
 
   socket.on("methodServer", async (payload) => {
-    var { key, args1, args2 } = payload;
+    var { key, args1, args2 } = payload; // request from server
 
-    console.log(payload, key == "login");
-
-    if (key == "increase") {
-      var ind = db.get(`${data}`).value();
-      db.set(`${data}`, ind + 1).save();
-    }
     if (key == "createPerson") {
+      // create ne person
       var ind = db.get(`ID_Index`).value();
       var isAble = true;
 
@@ -95,6 +70,7 @@ io.on("connection", (socket) => {
         console.log(db.get(`users`).value().length);
 
         db.get(`users`).push(newUser).save();
+        db.get(`users`).get(db.get(`users`).value().length-1).set("next",newUser)
 
         console.log(db.get(`users`).value().length);
 
@@ -119,6 +95,7 @@ io.on("connection", (socket) => {
     }
 
     if (key == "createPost") {
+      // create new post
       let userList = db.get(`users`).value();
       for (let i = 0; i < userList.length; i++) {
         if (userList[i].id == args1[0]) {
@@ -139,6 +116,7 @@ io.on("connection", (socket) => {
     }
 
     if (key == "likePost") {
+      // like a post and save to db
       let userList = db.get(`users`).value();
       for (let i = 0; i < userList.length; i++) {
         if (userList[i].id == args1[1]) {
@@ -160,6 +138,8 @@ io.on("connection", (socket) => {
     }
 
     if (key == "unlikePost") {
+
+      // remove like from db
       let userList = db.get(`users`).value();
       for (let i = 0; i < userList.length; i++) {
         if (userList[i].id == args1[1]) {
@@ -182,6 +162,7 @@ io.on("connection", (socket) => {
     }
 
     if (key == "addFriend") {
+      // add friend and save to db
       let userList = db.get(`users`).value();
       let user1 = null;
       let user2 = null;
@@ -202,11 +183,13 @@ io.on("connection", (socket) => {
 
       socket.emit("methodClient", {
         key: "fixFriends",
+        user: user1,
         friends: user1.friends,
       });
     }
 
     if (key == "login") {
+      // login request, and send user if login success
       let username = args1[0];
       let password = args1[1];
 
