@@ -25,6 +25,15 @@ function findIndex(array, element) {
   return -1; // Return -1 if element is not found
 }
 
+function findIndexUser(array, element) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].username === element) {
+      return i; // Return the index if element is found
+    }
+  }
+  return -1; // Return -1 if element is not found
+}
+
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -70,7 +79,10 @@ io.on("connection", (socket) => {
         console.log(db.get(`users`).value().length);
 
         db.get(`users`).push(newUser).save();
-        db.get(`users`).get(db.get(`users`).value().length-1).set("next",newUser)
+        
+        //if (db.get(`users`).value()[db.get(`users`).value().length-2] != undefined) {
+     //db.get(`users`).get(db.get(`users`).value().length-2).set("next",newUser)
+      //  }
 
         console.log(db.get(`users`).value().length);
 
@@ -89,6 +101,14 @@ io.on("connection", (socket) => {
             .save();
           socket.emit("methodClient", { key: "signupSuccess", value: newUser });
         } else {
+          db.get(`accounts`)
+            .push({
+              id: ind,
+              username: args1[1],
+              password: args1[1],
+              index: db.get(`users`).value().length - 1,
+            })
+            .save();
           socket.emit("methodClient", { key: "createPerson", value: newUser });
         }
       }
@@ -126,11 +146,9 @@ io.on("connection", (socket) => {
               db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
               args1[2]
             ) {
-              console.log("yep");
               var theyPost = db.get(`users`).get(i).get(`posts`).get(x);
               theyPost.set("likes", theyPost.get("likes").value() + 1).save();
               theyPost.get("likesUser").push(args1[0]).save();
-              console.log(theyPost);
             }
           }
         }
@@ -149,12 +167,11 @@ io.on("connection", (socket) => {
               db.get(`users`).get(i).get(`posts`).get(x).value().postId ==
               args1[2]
             ) {
-              console.log("yep");
               var theyPost = db.get(`users`).get(i).get(`posts`).get(x);
               theyPost.set("likes", theyPost.get("likes").value() - 1).save();
               var daelete = findIndex(args1[0]);
               theyPost.get("likesUser").get(daelete).delete(true);
-              console.log(theyPost);
+              db.save()
             }
           }
         }
@@ -175,17 +192,46 @@ io.on("connection", (socket) => {
         }
       }
 
-      console.log(user1, user2);
-
       if (user1 != undefined && user2 != undefined) {
         user1.friends.push(user2.id);
-      }
+      
 
       socket.emit("methodClient", {
         key: "fixFriends",
         user: user1,
         friends: user1.friends,
       });
+      }
+    }
+
+    if (key == "removeFriend") {
+      // add friend and save to db
+      let userList = db.get(`users`).value();
+      let user1 = null;
+      let user2 = null;
+      for (let i = 0; i < userList.length; i++) {
+        if (userList[i].id == args1[0]) {
+          user1 = userList[i]
+        }
+        if (userList[i].id == args1[1]) {
+          user2 = userList[i]
+        }
+      }
+
+      //console.log(user1, user2);
+
+      if (user1 != undefined && user2 != undefined) {
+        let index = user1.friends.indexOf(user2.id);
+        user1.friends.splice(index, 1);
+        console.log(index,user2.id)
+        console.log('removed friend! ', user1.friends)
+        db.save()
+      socket.emit("methodClient", {
+        key: "fixFriends",
+        user: user1,
+        friends: user1.friends,
+      });
+      }
     }
 
     if (key == "login") {
@@ -195,12 +241,14 @@ io.on("connection", (socket) => {
 
       let foundAccount = false;
 
+      let user = null
+
       let userList = db.get(`accounts`).value();
 
       for (let i = 0; i < userList.length; i++) {
         if (userList[i].username == username) {
           if (userList[i].password == password) {
-            let user = db.get(`users`).value()[userList[i].index];
+            user = db.get(`users`).value()[userList[i].index];
             socket.emit("methodClient", { key: "login", value: user });
             foundAccount = true;
             break;
@@ -209,6 +257,37 @@ io.on("connection", (socket) => {
       }
       if (foundAccount == false) {
         socket.emit("methodClient", { key: "loginFail" });
+      }
+      if (user != null) {
+      socket.emit("methodClient", {
+        key: "fixFriends",
+        user: user,
+        friends: user.friends,
+      });
+      }
+    }
+
+    if (key == "delete") {
+
+      let username = args1[0];
+      let password = args1[1];
+
+      let foundAccount = false;
+
+      let user = null
+
+      let userList = db.get(`accounts`).value();
+
+      for (let i = 0; i < userList.length; i++) {
+        if (userList[i].username == username) {
+          if (userList[i].password == password) {
+            db.get(`users`).get(userList[i].index).delete(true);
+            db.get("accounts").get(i).delete(true);
+            db.save()
+            foundAccount = true;
+            break;
+          }
+        }
       }
     }
   });
