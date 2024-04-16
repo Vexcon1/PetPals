@@ -5,6 +5,7 @@ class Database {
   }
   
   method(index, value, value2) {
+    print(index,value,value2)
     socket.emit("methodServer", { key: index, args1: value, args2: value2 });
   }
 
@@ -160,16 +161,22 @@ class Database {
       }
       if (server.key == "fixFriends") {
         // Incase of friends not being a class and is instead a number
+        /*
         if (server.friends != null) {
           for (let i = 0; i < server.friends.length; i++) {
             let newFriend = peopleList.getPerson(server.friends[i]);
             let person = peopleList.getPerson(server.user.id);
             print('friendFix', person, newFriend)
             if (newFriend != null && person != null) {
+              if (person.friends.includes(newFriend) != true) {
             person.addFriend(newFriend);
+              }
             }
+            print('fixFriend2',person.friends)
           }
         }
+        */
+        peopleList.fixFriends()
       }
     });
   }

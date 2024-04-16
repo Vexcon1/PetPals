@@ -1,5 +1,7 @@
 //const { Color } = require("p5");
 
+//const { text } = require("body-parser");
+
 let tp;
 
 let post;
@@ -9,6 +11,7 @@ class UI {
     this.isAccount = false;
 
     this.page = "buffer";
+    this.pagePrev = "buffer"
 
     this.postPageView = "ForYou";
 
@@ -26,10 +29,15 @@ class UI {
     this.recommends = [];
 
     this.postsDisplaying = null;
+    this.viewPals = null;
     this.failedToSignUp = false;
     this.failedToLogIn = false;
     this.failedToSignUpReason = "";
     this.failedToLogInReason = "";
+
+    this.tempSize = 0
+    this.tempSizeInc = 1
+    this.searchFor = ""
 
     this.pets = [
       "Dog",
@@ -82,6 +90,10 @@ class UI {
   }
 
   update() {
+    //decides what page to run
+    if (this.page != "search")
+      this.pagePrev = this.page;
+    
     if (this.page == "debug") {
       this.runDebugPage();
       return;
@@ -139,10 +151,37 @@ class UI {
       this.runAccountPage();
     }
 
-    if (this.page != "home") this.runBottomMenu();
+    if (this.page == "viewPals") {
+      this.runViewPals();
+    }
+
+    if (this.page == "search") {
+      this.runSearchPage();
+    }
+    
+    if (this.page == "delete1") {
+      this.runDelete1();
+    }
+
+    if (this.page != "home" && this.page != "search") this.runBottomMenu();
+
+    fill(255, 0, 0);
+    ellipse(25, 575, 20, 20);
+
+    noStroke()
+    fill(80)
+    ellipse(25, 25, 35, 35)
+
+    stroke(255)
+    strokeWeight(2)
+    noFill()
+    ellipse(22, 22, 12, 12)
+
+    line(28, 28, 34, 34)
   }
 
   runDebugPage() {
+    //debug mode shows connections between users
     rectMode(CENTER);
     textAlign(CENTER);
     background(30);
@@ -152,8 +191,7 @@ class UI {
   }
 
   runBottomMenu() {
-    fill(255, 0, 0);
-    ellipse(15, 15, 20, 20);
+    //bottom menu switches between account, posts, and creating post
 
     rectMode(CENTER);
     noStroke();
@@ -209,15 +247,42 @@ class UI {
     image(img, 375, 25, 30, 30);
   }
 
+  // A simple hashing function to convert a string into a numeric value
   assignColor(id) {
     let a = id.charCodeAt(1) - 96;
     if (a <= 2) return color(100, 180, 255);
-    else if (a <= 4) return color(255, 141, 163);
-    else if (a <= 7) return color(181, 167, 255);
+    else if (a <= 5) return color(255, 141, 163);
+    else if (a <= 8) return color(181, 167, 255);
     else return color(255, 153, 100);
   }
 
+  runDelete1()
+  {
+    rectMode(CENTER)
+    stroke(255, 100, 100)
+    fill(255)
+    strokeWeight(5)
+    rect(width/2, height/2, width -100, 250, 20)
+
+    rect(width/2, height/2, 275, 125, 10)
+    rect(width/2, height/2+ 90, 200, 40, 10)
+    
+    noStroke()
+    fill(50)
+    textSize(20)
+    textAlign(CENTER)
+    text("are you sure you want to\nDELETE YOUR ACCOUNT??", width/2, height/2 - 100)
+
+    textSize(30)
+    text("KEEP ACCOUNT", width/2, height/2 + 5)
+
+    textSize(20)
+    text("I'm sure.", width/2, height/2 + 95)
+  }
+
   runHomePage() {
+    //page to select what page to go to next. Can navigate here by clicking paw at top right
+    //also includes friends suggestion section.
     background(30);
 
     textStyle(NORMAL);
@@ -235,59 +300,76 @@ class UI {
 
     textSize(20);
     fill(255);
-    text("-            -                      -                -", width / 2, 320);
+    text(
+      "-            -                      -                -",
+      width / 2,
+      320,
+    );
 
-    textStyle(NORMAL)
-    fill(100, 180, 255)
-    textSize(20)
-    text("posts", 86.5, 320)
-    text("account", 302, 320)
+    textStyle(NORMAL);
+    fill(100, 180, 255);
+    textSize(20);
+    text("posts", 86.5, 320);
+    text("account", 302, 320);
 
-    fill(255, 153, 100)
-    text("create post", 189, 320)
-    
+    fill(255, 153, 100);
+    text("create post", 189, 320);
+
+    //decides what friends to suggest to user based on his hobbies
     let possible = peopleList.suggestFriend(this.thisUser);
-    let top1 = 0
-    let top1Spot = null
-    let top2 = 0
-    let top2Spot = null
-    let top3 = 0
-    let top3Spot = null
-    let final = []
+    let top1 = 0;
+    let top1Spot = null;
+    let top2 = 0;
+    let top2Spot = null;
+    let top3 = 0;
+    let top3Spot = null;
+    let final = [];
     for (let i = 0; i < possible.length; i++) {
       if (possible[i].points > top1) {
-        top1Spot = possible[i].link
-        top1 = possible[i].points
+        top1Spot = possible[i].link;
+        top1 = possible[i].points;
       } else if (possible[i].points > top2) {
-        top2Spot = possible[i].link
-        top2 = possible[i].points
+        top2Spot = possible[i].link;
+        top2 = possible[i].points;
       } else if (possible[i].points > top3) {
-        top3Spot = possible[i].link
-        top3 = possible[i].points
+        top3Spot = possible[i].link;
+        top3 = possible[i].points;
       }
     }
-    final.push(top1Spot)
-    final.push(top2Spot)
-    final.push(top3Spot)
+    final.push(top1Spot);
+    final.push(top2Spot);
+    final.push(top3Spot);
 
-    this.recommends[0] = top1Spot
-    this.recommends[1] = top2Spot
-    this.recommends[2] = top3Spot
-    
+    this.recommends[0] = top1Spot;
+    this.recommends[1] = top2Spot;
+    this.recommends[2] = top3Spot;
+
     for (let i = 0; i < final.length; i++) {
       let current = final[i];
       if (this.thisUser == null) {
-        current = new Person(
-          "None",
-          "None",
-          "None",
-          "None",
-          "None",
-          "None",
-          "None",
-          "None",
-          "None",
+        textStyle(BOLD);
+        fill(255);
+        textSize(15);
+        textAlign(LEFT);
+        text(
+          "Lonely, Sadly no one is here\nthat you might like  ¯|_(ツ)_/¯",
+          i * 125 + 75,
+          375,
         );
+
+        return;
+      }
+      if (current == null) {
+        textStyle(BOLD);
+        fill(255);
+        textSize(15);
+        textAlign(LEFT);
+        text(
+          "Lonely, Sadly no one is here\nthat you might like  ¯|_(ツ)_/¯",
+          i * 125 + 75,
+          375,
+        );
+        return;
       }
       textStyle(NORMAL);
       fill(40);
@@ -296,12 +378,12 @@ class UI {
       rect(i * 125 + 75, 455, 100, 200, 10);
 
       //fill(100, 180, 255);
-      fill(this.assignColor(current.name))
+      fill(this.assignColor(current.get("name")));
       ellipse(i * 125 + 75, 420, 60);
 
-      textSize(40)
-      fill(255)
-      text(current.name.charAt(0), i * 125 + 75, 433)
+      textSize(40);
+      fill(255);
+      text(current.get("name").charAt(0), i * 125 + 75, 433);
 
       fill(50);
       rect(i * 125 + 75, 370, 80, 20, 5);
@@ -309,13 +391,13 @@ class UI {
       textStyle(BOLD);
       fill(255);
       textSize(15);
-      text(current.name, i * 125 + 75, 375);
+      text(current.get("name"), i * 125 + 75, 375);
 
       for (let j = 0; j < 3; j++) {
-        let hob = current.hobbies[j];
+        let hob = current.get("hobbies")[j];
         fill(50);
         rect(i * 125 + 75, j * 30 + 470, 80, 20, 3);
-        textStyle(NORMAL)
+        textStyle(NORMAL);
 
         fill(255);
         text(hob, i * 125 + 75, j * 30 + 475);
@@ -328,14 +410,15 @@ class UI {
       textStyle(BOLD);
       fill(100, 180, 255);
 
-      if (peopleList.findIfFriend(this.id, current.id) == true)
-        text("Following", i * 125 + 75, 565)
-      else
-        text("Follow", i * 125 + 75, 565);
+      if (peopleList.findIfFriend(this.id, current.get("id")) == true)
+        text("Following", i * 125 + 75, 565);
+      else text("Follow", i * 125 + 75, 565);
     }
   }
 
   runStartPage() {
+    //very first screen when you run program.
+    //sign in or log in
     background(30);
 
     imageMode(CENTER);
@@ -363,7 +446,104 @@ class UI {
     }
   }
 
+  runSearchPage()
+  {
+    rectMode(CORNER)
+    noStroke()
+    fill(35)
+    rect(0, 0, width, this.tempSize * 2)
+
+    
+    fill(40)
+    stroke(200)
+    strokeWeight(2)
+
+    rect(50, 10, this.tempSize, 30, 10)
+
+    if (this.tempSize < 300)
+    {
+      this.tempSize += this.tempSizeInc
+      this.tempSizeInc *= 1.5
+    }
+
+    if (this.tempSize > 300)
+      this.tempSize = 300
+
+    noStroke()
+    fill(255)
+    textSize(20)
+    textAlign(LEFT)
+
+    this.wrapText(this.searchFor, 60, 30, 260, 20)
+
+    let names = []
+
+    if (this.searchFor.length > 0)
+    {
+      names = peopleList.getName(this.searchFor)
+    }
+
+    while(names.length > 8)
+      {
+        names.splice(names.length -1, 1)
+      }
+
+    for (let i = 0; i < names.length; i++)
+      {
+        let current = names[i]
+        rectMode(CORNER)
+        noStroke()
+        fill(80)
+        rect(15, i * 50 + 76, 80 + textWidth(current.name), 35, 15)
+
+        textAlign(CENTER);
+        fill(this.assignColor(current.name));
+        ellipse(35, i * 50 + 93, 25, 25);
+        fill(255);
+        textSize(17);
+        textStyle(NORMAL);
+        text(current.name.charAt(0), 35, i * 50 + 98);
+
+        noStroke();
+        fill(255);
+        textStyle(NORMAL);
+        textAlign(LEFT);
+        textSize(20);
+
+        text(current.name, 70, i * 50 + 100);
+
+        textAlign(RIGHT);
+        fill(100, 180, 255);
+
+        let state = ""
+        if (peopleList.findIfFriend(this.thisUser.id, current.id) &&
+            peopleList.findIfFriend(current.id, this.thisUser.id))
+          state = "Pals!"
+        else if (peopleList.findIfFriend(this.thisUser.id, current.id))
+          state = "Following"
+        else
+          state = "Follow"
+
+        fill(60)
+        if (mouseX > 340 - textWidth(state) && mouseX < 360 && mouseY > i * 50 + 75 && mouseY < i * 50 +110)
+        {
+          fill(70)
+          if (mouseIsPressed)
+            fill(50)
+        }
+
+        rectMode(CORNERS)
+        rect(360, i * 50 + 75, 340 - textWidth(state), i * 50 +110, 10)
+
+        textAlign(RIGHT);
+        fill(100, 180, 255);
+
+        text(state, 350, i * 50 + 100);
+      }
+  }
+
   runMessagingPage() {
+    //abandoned screen
     background(30);
 
     textAlign(CENTER);
@@ -388,6 +568,7 @@ class UI {
   }
 
   runTextPage() {
+    //part of abandoned messaging page
     background(30);
 
     rectMode(CORNER);
@@ -416,6 +597,7 @@ class UI {
   }
 
   runBufferPage() {
+    //very satesfying loading screen
     background(30);
 
     noFill();
@@ -447,6 +629,7 @@ class UI {
   }
 
   runSignPage() {
+    //sign in screen. Choose your name, age, password, hobbies, and pet!
     rectMode(CENTER);
     textAlign(CENTER);
     background(30);
@@ -516,6 +699,7 @@ class UI {
     fill(255);
     if (this.age != null) text(this.age, 200, 355);
 
+    //if any field is empty -- dont allow user to proceed
     if (this.username == "" || this.password == "" || this.age == "") {
       noFill();
       stroke(255, 153, 100);
@@ -546,14 +730,27 @@ class UI {
     }
   }
 
+  //for typing into sign in boxes
   addToKey(k) {
+    if (this.page == "search")
+    {
+      this.searchFor += k;
+      return
+    }
     if (this.typing == 1 && textWidth(this.username) < 275) this.username += k;
     if (this.typing == 2 && textWidth(this.password) < 275) this.password += k;
     if (this.typing == 3 && textWidth(this.age) < 20 && key >= 0 && key <= 9)
       this.age += k;
   }
 
+  //backspace
   backspace() {
+    if (this.page == "search")
+    {
+      this.searchFor = this.searchFor.substring(0, this.searchFor.length - 1);
+      return
+    }
+    
     if (this.typing == 1) {
       this.username = this.username.substring(0, this.username.length - 1);
     }
@@ -568,6 +765,7 @@ class UI {
   }
 
   runHobbiesPage() {
+    //page to select hobbies
     background(30);
 
     textAlign(CENTER);
@@ -659,6 +857,7 @@ class UI {
   }
 
   runPetSelectionPage() {
+    //select a pet
     background(30);
 
     textAlign(CENTER);
@@ -736,6 +935,7 @@ class UI {
   }
 
   runLogPage() {
+    //log in page
     rectMode(CENTER);
     textAlign(CENTER);
     background(30);
@@ -817,6 +1017,8 @@ class UI {
   }
 
   runPostTypePage() {
+    //when you navigate to posts page, this is the in between page.
+    //choose to look at recommended content, newest content or most liked content.
     background(30);
 
     noStroke();
@@ -898,8 +1100,9 @@ class UI {
         if (i - 1 >= 0) {
           addhitee = this.postsDisplaying[i - 1].getHitee();
         }
-        addSizeVs = addSizeVs - i * 130 + addhitee;
+        addSizeVs = addSizeVs + addhitee + 25;
       }
+      print("yeah", addSizeVs * -1);
       vs1.changeSize(this.postsDisplaying.length, addSizeVs);
     } else {
       vs1.changeSize(0);
@@ -958,12 +1161,14 @@ class UI {
   }
 
   runMakePostPage() {
+    //page to create a new post
     background(30);
 
     tp.update();
   }
 
   runAccountPage() {
+    //view your account or others here
     let thisName = new Person(1, "Unknown", 0, "", "", []);
 
     //find the person
@@ -1009,21 +1214,20 @@ class UI {
       textSize(15);
       text(thisName.get("hobbies")[i], 50, i * 25 + 100);
     }
+    rectMode(CENTER);
+
+    fill(40);
+    rect(120, 180, 150, 30, 5);
+    rect(280, 180, 150, 30, 5);
+
+    fill(100, 180, 250);
+
+    textStyle(BOLD);
+    textSize(20);
+
+    text("VIEW PALS", 280, 187);
 
     if (this.thisPerson != this.id) {
-      rectMode(CENTER);
-
-      fill(40);
-      rect(120, 180, 150, 30, 5);
-      rect(280, 180, 150, 30, 5);
-
-      fill(100, 180, 250);
-
-      textStyle(BOLD);
-      textSize(20);
-
-      text("MESSAGE", 280, 187);
-
       if (peopleList.findIfFriend(this.id, this.thisPerson) == false) {
         fill(100, 180, 255);
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
@@ -1084,11 +1288,12 @@ class UI {
         textStyle(BOLD);
         textSize(20);
 
-        text("FRIENDS", 120, 187);
+        text("PALS!", 120, 187);
       }
 
       if (
-        peopleList.findIfFriend(this.thisPerson, this.id) == true && peopleList.findIfFriend(this.id, this.thisPerson) == false
+        peopleList.findIfFriend(this.thisPerson, this.id) == true &&
+        peopleList.findIfFriend(this.id, this.thisPerson) == false
       ) {
         fill(255, 153, 100);
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
@@ -1107,6 +1312,12 @@ class UI {
 
         text("FOLLOW BACK", 120, 187);
       }
+    } else {
+      textStyle(BOLD);
+      textSize(15);
+      fill(255, 100, 100)
+
+      text("Delete Account", 120, 185);
     }
 
     rectMode(CENTER);
@@ -1129,6 +1340,212 @@ class UI {
     );
   }
 
+  async runViewPals() {
+    background(30);
+
+    textSize(50);
+    textStyle(BOLD);
+    textAlign(CENTER);
+    fill(100, 180, 255);
+
+    text("PALS", width / 2, 50);
+    textSize(20);
+
+    this.viewPals = await peopleList.getFollowingStatus(this.thisPerson);
+
+    let addSpace = 0;
+    vsp.update();
+
+    push();
+    translate(6, vsp.getPos());
+    for (let i = 0; i < this.viewPals.both.length; i++) {
+      // My Friend
+
+      rectMode(CORNER)
+      noStroke()
+      fill(38, 80, 120)
+      rect(15, i * 50 + 76, 80 + textWidth(this.viewPals.both[i].name), 35, 15)
+      
+      textAlign(CENTER);
+      fill(this.assignColor(this.viewPals.both[i].name));
+      ellipse(35, i * 50 + 93, 25, 25);
+      fill(255);
+      textSize(17);
+      textStyle(NORMAL);
+      text(this.viewPals.both[i].name.charAt(0), 35, i * 50 + 98);
+
+      noStroke();
+      fill(255);
+      textStyle(NORMAL);
+      textAlign(LEFT);
+      textSize(20);
+
+      text(this.viewPals.both[i].name, 70, i * 50 + 100);
+
+      textAlign(RIGHT);
+      fill(100, 180, 255);
+
+      let state = ""
+      if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.both[i].id) &&
+          peopleList.findIfFriend(this.viewPals.both[i].id, this.thisUser.id))
+        state = "Pals!"
+      else if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.both[i].id))
+        state = "Following"
+      else
+        state = "Follow"
+
+      fill(60)
+      if (mouseX > 340 - textWidth(state) && mouseX < 360 && mouseY > i * 50 + 75 + vsp.getPos() && mouseY < i * 50 +110 + vsp.getPos())
+      {
+        fill(70)
+        if (mouseIsPressed)
+          fill(50)
+      }
+
+      rectMode(CORNERS)
+      rect(360, i * 50 + 75, 340 - textWidth(state), i * 50 +110, 10)
+
+      textAlign(RIGHT);
+      fill(100, 180, 255);
+      
+      text(state, 350, i * 50 + 100);
+
+      addSpace = addSpace + 50;
+    }
+    for (let i = 0; i < this.viewPals.person.length; i++) {
+      // My Friend
+
+      rectMode(CORNER)
+      noStroke()
+      fill(120, 80, 38)
+      rect(15, i * 50 + 76 + this.viewPals.both.length * 50, 80 + textWidth(this.viewPals.person[i].name), 35, 15)
+      
+      textAlign(CENTER);
+      fill(this.assignColor(this.viewPals.person[i].name));
+      ellipse(35, i * 50 + 93 + this.viewPals.both.length * 50, 25, 25);
+      fill(255);
+      textSize(17);
+      textStyle(NORMAL);
+      text(
+        this.viewPals.person[i].name.charAt(0),
+        35,
+        i * 50 + 98 + this.viewPals.both.length * 50,
+      );
+
+      noStroke();
+      fill(255);
+      textStyle(NORMAL);
+      textAlign(LEFT);
+      textSize(20);
+
+      text(this.viewPals.person[i].name, 70, i * 50 + 100 + this.viewPals.both.length * 50);
+
+      textAlign(RIGHT);
+      fill(100, 180, 255);
+
+      let state = ""
+      if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.person[i].id) &&
+          peopleList.findIfFriend(this.viewPals.person[i].id, this.thisUser.id))
+        state = "Pals!"
+      else if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.person[i].id))
+        state = "Following"
+      else
+        state = "Follow"
+      
+      fill(60)
+      if (mouseX > 340 - textWidth(state) && mouseX < 360 && mouseY > i * 50 + 75 + this.viewPals.both.length * 50  + vsp.getPos() && mouseY < i * 50 +110 + this.viewPals.both.length * 50 + vsp.getPos())
+      {
+        fill(70)
+        if (mouseIsPressed)
+          fill(50)
+      }
+
+      rectMode(CORNERS)
+      rect(360, i * 50 + 75 + this.viewPals.both.length * 50, 340 - textWidth(state), i * 50 +110 + this.viewPals.both.length * 50, 10)
+
+      textAlign(RIGHT);
+      fill(100, 180, 255);
+      text(state, 350, i * 50 + 100 + this.viewPals.both.length * 50);
+
+      addSpace = addSpace + 50;
+    }
+    for (let i = 0; i < this.viewPals.current.length; i++) {
+      // My Friend
+
+      rectMode(CORNER)
+      noStroke()
+      fill(80)
+      rect(15, i * 50 + 76 + (this.viewPals.both.length + this.viewPals.person.length) * 50, 80 + textWidth(this.viewPals.current[i].name), 35, 15)
+      
+      textAlign(CENTER);
+      fill(this.assignColor(this.viewPals.current[i].name));
+      ellipse(
+        35,
+        i * 50 + 93 + (this.viewPals.both.length + this.viewPals.person.length) * 50,
+        25,
+        25,
+      );
+      fill(255);
+      textSize(17);
+      textStyle(NORMAL);
+      text(
+        this.viewPals.current[i].name.charAt(0),
+        35,
+        i * 50 + 98 + (this.viewPals.both.length + this.viewPals.person.length) * 50,
+      );
+
+      noStroke();
+      fill(255);
+      textStyle(NORMAL);
+      textAlign(LEFT);
+      textSize(20);
+
+      text(
+        this.viewPals.current[i].name,
+        70,
+        i * 50 + 100 + (this.viewPals.both.length + this.viewPals.person.length) * 50,
+      );
+
+      let state = ""
+      if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.current[i].id) &&
+          peopleList.findIfFriend(this.viewPals.current[i].id, this.thisUser.id))
+        state = "Pals!"
+      else if (peopleList.findIfFriend(this.thisUser.id, this.viewPals.current[i].id))
+        state = "Following"
+      else
+        state = "Follow"
+
+      fill(60)
+      if (mouseX > 340 - textWidth(state) && mouseX < 360 && mouseY > i * 50 + 75 + (this.viewPals.both.length + this.viewPals.person.length) * 50  + vsp.getPos() && mouseY < i * 50 +110 + (this.viewPals.both.length + this.viewPals.person.length) * 50 + vsp.getPos())
+      {
+        fill(70)
+        if (mouseIsPressed)
+          fill(50)
+      }
+        
+      rectMode(CORNERS)
+      rect(360, i * 50 + 75 + (this.viewPals.both.length + this.viewPals.person.length) * 50, 340 - textWidth(state), i * 50 +110 + (this.viewPals.both.length + this.viewPals.person.length) * 50, 10)
+      
+      textAlign(RIGHT);
+      fill(100, 180, 255);
+      text(
+        state,
+        350,
+        i * 50 + 100 + (this.viewPals.both.length + this.viewPals.person.length) * 50,
+      );
+
+      addSpace = addSpace + 50;
+    }
+    pop();
+    vsp.display();
+
+    vsp.changeSize(
+      this.viewPals.both.length + this.viewPals.person.length + this.viewPals.current.length,
+      addSpace,
+    );
+  }
+
+  //wrap text is for typing inside of boxes. If a sentance is too long and goes outside of the boundaries, it will move it to a new line.
   wrapText(tex, x, y, maxWidth, lineHeight) {
     let words = tex.split(" ");
     let line = "";
@@ -1172,59 +1589,180 @@ class UI {
   //wrapText(this.words, 50, 110, width - 100, 20)
 
   viewProfile() {
+    //if the user is signed in, swich to account page
     if (this.isAccount == true) {
       this.page = "account";
     }
   }
 
+  seeNewPost() {
+    this.postPageView = "Newest";
+    this.page = "posts";
+    this.postsDisplaying = null;
+  }
+
   async mouseRelease() {
-    if (dist(mouseX, mouseY, 15, 15) < 10) {
-      if (this.page == "debug") { 
+    if (dist(mouseX, mouseY, 25, 575) < 10) {
+      //if clicked on debug circle
+      if (this.page == "debug") {
+        //if already on debug page
         if (this.isAccount == false) {
-        this.page = "start"
+          //if the user is signed in, bring them to the home page
+          this.page = "start";
         } else {
-        this.page = "home";
+          //if not signed in, bring them to the start page
+          this.page = "home";
         }
-      }
-      else {
+      } else {
+        //if not on the debug page, go to debug page
         this.page = "debug";
+        boop();
       }
     }
 
     if (this.isAccount == true) {
+      //if signed in
       if (this.page == "home") {
         if (300 < mouseY && mouseY < 330) {
           if (75 < mouseX && mouseX < 125) {
+            //if clicks on posts
             this.page = "postType";
           }
 
           if (150 < mouseX && mouseX < 230) {
             tp = new PostCreator(this.id, 0, this.username, " ", null, 200);
+            //if clicks "make post"
             this.page = "makePost";
           }
 
           if (260 < mouseX && mouseX < 320) {
             this.thisPerson = this.id;
+            //if clicks account page
             this.page = "account";
           }
         }
 
-        for (let i = 0; i<3; i++)
-          {
-            if (dist(mouseX, mouseY, i*125 + 75, 565) < 30)
-            {
-              peopleList.friendPerson(this.id, this.recommends[i])
-            }
+        for (let i = 0; i < 3; i++) {
+          if (dist(mouseX, mouseY, i * 125 + 75, 565) < 30) {
+            peopleList.friendPerson(this.id, this.recommends[i]);
           }
+        }
       }
 
       if (this.page == "account" && this.thisPerson != this.id) {
         if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195) {
           let personFriend = peopleList.getPerson(this.thisPerson);
-          if (peopleList.findIfFriend(this.id, personFriend) == true)
-            peopleList.unFriendPerson(this.id, personFriend);
-          else peopleList.friendPerson(this.id, personFriend);
+          print(this.thisPerson,peopleList.findIfFriend(this.id, personFriend))
+          if (peopleList.findIfFriend(this.id, this.thisPerson) == true)  {
+            peopleList.unfriendPerson(this.id, personFriend);
+          } else {
+            peopleList.friendPerson(this.id, personFriend);
+          }
           //follow button
+        }
+      }
+
+      if (this.page == "delete1")
+      {
+        //rect(width/2, height/2, 275, 125, 10)
+        //rect(width/2, height/2+ 90, 200, 40, 10)
+        if (mouseX > width/2 - 275/2 && mouseX < width/2 + 275/2 && mouseY > height/2 - 125/2 && mouseY < height/2 + 125/2)
+        {
+          this.page = "account"
+        }
+        else if (mouseX > width/2 - 200/2 && mouseX < width/2 + 200/2 && mouseY > height/2 + 70 && mouseY < height/2 + 110)
+        {
+          //here theo
+          this.isAccount = false;
+          this.page = "start"
+          db.method("delete",[this.username,this.password])
+          peopleList.removePerson(this.thisUser)
+        }
+      }
+
+      if (this.page == "search")
+      {
+        let names = []
+
+        if (this.searchFor.length > 0)
+        {
+          names = peopleList.getName(this.searchFor)
+        }
+
+        if (mouseX > 250 && mouseX < 350) {
+          for (let i = 0;i < names.length; i++) {
+            if (
+              mouseY > i * 50 + 80 &&
+              mouseY < i * 50 + 100) {
+              if (peopleList.findIfFriend(this.thisUser.id, names[i].id) == true)
+              {
+                peopleList.unfriendPerson(this.thisUser.id, names[i].id)
+              }
+              else if (peopleList.findIfFriend(this.thisUser.id, names[i].id) == false)
+              {
+                print(names[i])
+                peopleList.friendPerson(this.thisUser.id, names[i])
+              }
+            }
+          }
+        }
+
+        if (mouseX > 50 && mouseX < 150)
+        {
+          for (let i = 0; i < names.length; i++)
+            {
+              if (mouseY > i * 50 + 80 &&
+                  mouseY < i * 50 + 100)
+              {
+                this.thisPerson = names[i].id;
+                this.page = "account"
+              }
+            }
+        }
+      }
+
+      if (this.page == "viewPals") {
+
+        if (mouseX > 250 && mouseX < 350) {
+          for (let i = 0;i < this.viewPals.master.length; i++) {
+            if (
+              mouseY > i * 50 + 80 + vsp.getPos() &&
+              mouseY < i * 50 + 100 + vsp.getPos()
+            ) {
+              if (i < this.viewPals.both.length) {
+                peopleList.unfriendPerson(this.thisUser.id, this.viewPals.master[i]);
+              } else if (i < this.viewPals.both.length + this.viewPals.person.length) {
+                peopleList.unfriendPerson(this.thisUser.id, this.viewPals.master[i]);
+              }
+              else {
+                peopleList.friendPerson(this.thisUser.id, this.viewPals.master[i])
+              }
+            }
+          }
+        }
+
+        if (mouseX > 50 && mouseX < 150)
+        {
+          for (let i = 0;i < this.viewPals.master.length; i++)
+            {
+              if (mouseY > i * 50 + 80 + vsp.getPos() &&
+                  mouseY < i * 50 + 100 + vsp.getPos())
+              {
+                this.thisPerson = this.viewPals.master[i].id;
+                this.page = "account"
+              }
+            }
+        }
+      }
+
+      if (this.page == "account") {
+        if (mouseX > 205 && mouseX < 355 && mouseY > 165 && mouseY < 195) {
+          this.page = "viewPals";
+        }
+
+        if (mouseX > 45 && mouseX < 195 && mouseY > 165 && mouseY < 195)
+        {
+          this.page = "delete1";
         }
       }
 
@@ -1268,6 +1806,21 @@ class UI {
 
       //can access message, posts, account, and create posts
 
+      if (dist(mouseX, mouseY, 25, 25) < 30)
+      {
+        if (this.page != "search")
+        {
+          this.searchFor = ""
+          this.tempSize = 0
+          this.tempSizeInc = 1
+          this.page = "search"
+        }
+        else if (this.page == "search")
+        {
+          this.page = this.pagePrev
+        }
+      }
+      
       if (this.page != "home") {
         if (dist(mouseX, mouseY, 375, 25) < 15) {
           this.page = "home";
@@ -1364,7 +1917,7 @@ class UI {
           this.thisPerson = this.username;
           */
           peopleList.createPerson(
-            [1, this.username, this.age, this.pet, this.hobbies],
+            [1, this.username, this.age, this.pet, this.hobbys],
             [this.username, this.password],
           );
 
@@ -1433,14 +1986,14 @@ class UI {
       this.page = "home";
       this.thisUser = args;
       this.id = args.id;
-      this.thisPerson = args.name;
+      this.thisPerson = args.id;
     }
     if (method == "correctSignup") {
       this.isAccount = true;
       this.page = "home";
       this.thisUser = args;
       this.id = args.id;
-      this.thisPerson = args.name;
+      this.thisPerson = args.id;
     }
     if (method == "signupFail") {
       this.page = "signin";
@@ -1471,6 +2024,9 @@ function keyTyped() {
 
   if (ui.get("page") == "login") if (key != "Enter") ui.addToKey(key);
 
+  if (ui.get("page") == "search" && key != "Enter")
+    ui.addToKey(key)
+
   if (tp != null) if (key != "Enter") tp.addToKey(key);
 }
 
@@ -1484,6 +2040,9 @@ function keyPressed() {
       ui.backspace();
     }
 
+    if (ui.get("page") == "search")
+      ui.backspace()
+
     if (tp != null) tp.backspace();
   }
 }
@@ -1492,7 +2051,7 @@ function mouseReleased() {
   ui.mouseRelease();
   // if (post != null && ui.get("postsPage") == true)             post.mouseRelease();
 
-  if (tp != null) tp.mouseRelease();
+  if (ui.get("page") == "makePost") tp.mouseRelease();
 
   if (ui.get("postsDisplaying") != null && ui.get("page") == "posts") {
     for (let i = 0; i < ui.get("postsDisplaying").length; i++) {
@@ -1504,13 +2063,7 @@ function mouseReleased() {
 function mouseWheel(event) {
   // Change the background color
   // based on deltaY.
-  if (ui.postsPage == true && post != null) {
-    if (event.deltaY > 0) {
-      post.down();
-    } else if (event.deltaY < 0) {
-      post.up();
-    }
-  }
+
   if (ui.get("postsDisplaying") != null) {
     for (let i = 0; i < ui.get("postsDisplaying").length; i++) {
       if (event.deltaY > 0) {
@@ -1522,9 +2075,15 @@ function mouseWheel(event) {
   }
 
   if (event.deltaY > 0) {
-    vs1.down();
+    vs1.scroll("down");
   } else if (event.deltaY < 0) {
-    vs1.up();
+    vs1.scroll("up");
+  }
+
+  if (event.deltaY > 0) {
+    vsp.scroll("down");
+  } else if (event.deltaY < 0) {
+    vsp.scroll("up");
   }
 }
 
@@ -1542,9 +2101,8 @@ class PostCreator extends Post {
   }
 
   display() {
-
-    push()
-    translate(0, 100)
+    push();
+    translate(0, 100);
     textAlign(LEFT);
 
     rectMode(CORNER);
@@ -1552,13 +2110,13 @@ class PostCreator extends Post {
     noStroke();
     rect(25, 25, width - 50, this.hite, 20);
 
-    fill(ui.get("assignColor")(this.who));
+    fill(ui.assignColor(this.who));
     ellipse(65, 60, 40, 40);
 
-    textAlign(CENTER)
-    fill(255)
-    textSize(25)
-    text(this.who.charAt(0), 65, 68)
+    textAlign(CENTER);
+    fill(255);
+    textSize(25);
+    text(this.who.charAt(0), 65, 68);
 
     rectMode(CORNER);
     fill(50);
@@ -1579,7 +2137,7 @@ class PostCreator extends Post {
     rect(40, 90, 320, this.hite - 80, 10);
 
     noStroke();
-    textAlign(LEFT)
+    textAlign(LEFT);
     textStyle(BOLD);
     fill(200);
     textSize(15);
@@ -1608,6 +2166,10 @@ class PostCreator extends Post {
       mouseY < 100 + this.hite + 95
     ) {
       translate(0, 3);
+
+      if (mouseIsPressed) {
+        translate(0, 2);
+      }
     }
 
     rect(200, this.hite + 70, 150, 50, 10);
@@ -1625,7 +2187,7 @@ class PostCreator extends Post {
     text("POST", 200, this.hite + 77);
 
     pop();
-    pop()
+    pop();
   }
 
   mouseRelease() {
@@ -1646,8 +2208,9 @@ class PostCreator extends Post {
     ) {
       this.typing = false;
       let personA = peopleList.getPerson(this.id);
-      if (personA != null) {
+      if (personA != null && this.words != " ") {
         personA.createPost(this.words);
+        ui.seeNewPost();
       }
     }
 
@@ -1655,7 +2218,10 @@ class PostCreator extends Post {
   }
 
   addToKey(k) {
-    if (this.typing == true) this.words += k;
+    if (this.typing == true && this.key == ENTER) {
+      print("do");
+      this.splitLongWord("", width - 100);
+    } else if (this.typing == true) this.words += k;
   }
 
   backspace() {
@@ -1705,13 +2271,12 @@ function VScrollbar(xp, yp, sw, sh, l) {
     if (abs(this.newspos - this.spos) > 1) {
       this.spos = this.spos + (this.newspos - this.spos) / this.loose;
     }
-    if (this.spos >= this.sposMax - 2) {
-      this.downFix = this.downFix + 500;
-      this.spos = 0;
-    }
+
     if (this.spos <= this.sposMin + 2 && this.sposMin < 5) {
       this.spos = 0;
     }
+
+    //print(this.spos, this.sposMin, this.sposMax, this.swidth, this.ratio);
   };
 
   this.up = function () {
@@ -1764,16 +2329,42 @@ function VScrollbar(xp, yp, sw, sh, l) {
     return -(this.spos - this.ypos) * this.ratio;
   };
 
-  this.changeSize = function (numElements, extraSize) {
-    // Adjust scrollbar size based on the number of elements
-    var scrollbarHeight = this.sheight;
-    var scrollbarWidth = this.swidth;
-    var heighttowidth = scrollbarHeight - scrollbarWidth;
-    var lengt = this.sheight / numElements;
+  this.changeSize = function (numElements, boxSize) {
+    // Adjust scrollbar size based on the number of elements and box size
+    //print(this.spos, this.sposMax, numElements);
+    this.sheight = boxSize;
+    this.sposMin = 0;
     this.ratio = numElements / 2;
-    this.sposMin = -0.1;
-    this.sposMax = 500;
+    this.sposMax = boxSize / this.ratio;
     this.itemAmount = numElements;
+
+    if (this.sheight < 0) {
+      this.sheight = this.sheight * -1;
+    }
+    if (this.sposMax < 0) {
+      this.sposMax = this.sposMax * -1;
+    }
+  };
+
+  this.overEvent = function () {
+    if (
+      mouseX > this.xpos - 5 &&
+      mouseX < this.xpos - 5 + this.swidth &&
+      mouseY > this.ypos &&
+      mouseY < this.ypos + this.sheight
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  this.scroll = function (dir) {
+    if (dir === "up") {
+      this.newspos = constrain(this.spos - 30, this.sposMin, this.sposMax);
+    } else if (dir === "down") {
+      this.newspos = constrain(this.spos + 30, this.sposMin, this.sposMax);
+    }
   };
 
   this.resetY = function () {

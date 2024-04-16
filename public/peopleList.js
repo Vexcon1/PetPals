@@ -76,6 +76,8 @@ class PeopleList {
     while (current) {
       if (current.get("name") == person1 || current.get("id") == person1) {
         current.removeFriend(wantFriend);
+        print(wantFriend);
+        db.method("removeFriend", [current.get("id"), wantFriend.get("id")]);
       }
       current = current.get("next");
     }
@@ -106,6 +108,24 @@ class PeopleList {
       }
       current = current.get("next");
     }
+  }
+
+  getName(name) {
+    let current = this.link;
+    let list = []
+    while (current) {
+      let tempName = current.get("name")
+      while (tempName.length > name.length)
+        {
+          tempName = tempName.substring(0, tempName.length - 1);
+        }
+      if (tempName === name) {
+        list.push(current);
+      }
+      current = current.get("next");
+    }
+
+    return list
   }
 
   likePost(uid, id, pid) {
@@ -147,7 +167,26 @@ class PeopleList {
         this.ids[Math.floor(Math.random() * this.ids.length)],
       );
       if (person != null) {
+         if (person != testViewSubject) {
         person.createPost();
+         }
+      }
+    }
+  }
+
+  generateRandomFriend() {
+    let current = this.link;
+    for (let i = 0; i < 5; i++) {
+      if (current) {
+         if (testViewSubject != current) {
+        if (
+          current.get("id") == id &&
+          peopleList.findIfFriend(id, current.id)
+        ) {
+          peopleList.friendPerson(id, current);
+        }
+         }
+        current = current.get("next");
       }
     }
   }
@@ -155,6 +194,7 @@ class PeopleList {
   generateRandomPostLikes() {
     let current = this.link;
     while (current) {
+      if (testViewSubject != current) {
       let numPosts = current.get("posts").length;
       let likeNum = 5;
       for (let i = 0; i < numPosts; i++) {
@@ -162,7 +202,7 @@ class PeopleList {
           let randomX = Math.floor(Math.random() * this.ids.length);
           var personLike = this.getPerson(this.ids[randomX]);
           if (personLike != null) {
-            this.friendPerson(current.id, personLike);
+            //this.friendPerson(current.id, personLike);
             current.get("posts")[i].get("likesUser").push(personLike.get("id"));
             current
               .get("posts")
@@ -174,6 +214,7 @@ class PeopleList {
             );
           }
         }
+      }
       }
       current = current.get("next");
     }
@@ -242,11 +283,18 @@ class PeopleList {
   }
 
   createNewsFeed(person) {
-    var possiblePeople = [];
+    var possiblePeople = {
+      priority: [],
+      normal: [],
+      low: [],
+    };
     var peopleArray = [];
     let current = this.link;
     if (person != null) {
       while (current) {
+        if (person.friends.includes(current)) {
+          peopleArray["friends"] = true;
+        }
         for (let i = 0; i < current.posts.length; i++) {
           if (person.friends != null) {
             for (let fi = 0; fi < person.friends.length; fi++) {
@@ -264,8 +312,36 @@ class PeopleList {
             }
           }
         }
-        if (peopleArray["ilike"] == true || peopleArray["flike"] == true) {
-          possiblePeople.push(current);
+        let otherPerson = current;
+        let commonHobbies = person.hobbies.filter((hobby) =>
+          otherPerson.get("hobbies").includes(hobby),
+        );
+        print(commonHobbies.length);
+        if (commonHobbies.length > 0) {
+          peopleArray["hob"] = true;
+        }
+
+        if (peopleArray["flike"] == true) {
+          possiblePeople.priority.push(current);
+        }
+
+        if (peopleArray["ilike"] == true) {
+          possiblePeople.normal.push(current);
+        }
+
+        if (peopleArray["friends"] == true) {
+          possiblePeople.low.push(current);
+        } else if (peopleArray["hob"] == true) {
+          possiblePeople.low.push(current);
+        }
+
+        if (
+          peopleArray["ilike"] == true ||
+          peopleArray["flike"] == true ||
+          peopleArray["friends"] == true ||
+          peopleArray["hob"] == true
+        ) {
+          //print(peopleArray)
           peopleArray = [];
         }
         current = current.get("next");
@@ -273,8 +349,16 @@ class PeopleList {
 
       let allPosts = [];
 
-      for (let i = 0; i < possiblePeople.length; i++) {
-        allPosts = allPosts.concat(possiblePeople[i].posts);
+      for (let i = 0; i < possiblePeople.priority.length; i++) {
+        allPosts = allPosts.concat(possiblePeople.priority[i].posts);
+      }
+
+      for (let i = 0; i < possiblePeople.normal.length; i++) {
+        allPosts = allPosts.concat(possiblePeople.normal[i].posts);
+      }
+
+      for (let i = 0; i < possiblePeople.low.length; i++) {
+        allPosts = allPosts.concat(possiblePeople.low[i].posts);
       }
 
       return allPosts;
@@ -312,6 +396,54 @@ class PeopleList {
       }
       current = current.get("next");
     }
+  }
+
+  async getFollowingStatus(ida) {
+    let persona = this.getPerson(ida);
+    let current = this.link;
+    let peopleArray = [];
+    var allFriends = {
+      current: [],
+      person: [],
+      both: [],
+      master: [],
+    };
+    if (persona != null) {
+      while (current) {
+        if (current == persona) {
+          current = current.get("next");
+        }
+        if (current == null) {
+          break;
+        }
+        if (persona.get("friends").includes(current)) {
+          peopleArray["personFriend"] = true;
+        } else {
+          peopleArray["personFriend"] = false;
+        }
+        if (current.get("friends").includes(persona)) {
+          peopleArray["currentFriend"] = true;
+        } else {
+          peopleArray["currentFriend"] = false;
+        }
+        //print(peopleArray["personFriend"],peopleArray["currentFriend"] )
+        if (
+          peopleArray["personFriend"] == true &&
+          peopleArray["currentFriend"] == true
+        ) {
+          allFriends.both.push(current);
+        } else if (peopleArray["personFriend"] == true) {
+          allFriends.person.push(current);
+        } else if (peopleArray["currentFriend"] == true) {
+          allFriends.current.push(current);
+        }
+        current = current.get("next");
+      }
+    }
+    allFriends.master = allFriends.master.concat(allFriends.both);
+    allFriends.master = allFriends.master.concat(allFriends.person);
+    allFriends.master = allFriends.master.concat(allFriends.current);
+    return allFriends;
   }
 
   createAllPostList() {
@@ -391,16 +523,16 @@ class PeopleList {
 
   fixFriends() {
     let current = this.link;
-     while (current) {
-       if (current.friendsID.length > 0) {
-       for (let i = 0; i < current.friendsID.length; i++) {
-         let newFriend = this.getPerson(current.friendsID[i]);
-         let index = current.friendsID.indexOf(current);
-         current.addFriend(newFriend);
-         current.friendsID = current.friendsID.splice(index, 1);
-       }
-       }
-       current = current.get("next");
-     }
+    while (current) {
+      if (current.friendsID.length > 0) {
+        for (let i = 0; i < current.friendsID.length; i++) {
+          let newFriend = this.getPerson(current.friendsID[i]);
+          let index = current.friendsID.indexOf(current);
+          current.addFriend(newFriend);
+          current.friendsID = current.friendsID.splice(index, 1);
+        }
+      }
+      current = current.get("next");
+    }
   }
 }

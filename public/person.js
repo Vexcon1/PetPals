@@ -4,7 +4,10 @@ class Person {
     this.name = name;
     this.age = age;
     this.pet = pet;
-    this.location = createVector(random(-190,190)+width/2, random(-190,190)+height/2);
+    this.location = createVector(
+      random(-190, 190) + width / 2,
+      random(-190, 190) + height / 2,
+    );
     this.hobbies = _hobbies;
     this.recommend = [];
     this.friends = [];
@@ -59,15 +62,16 @@ class Person {
 
   addFriend(current) {
     if (current != undefined && current != null) {
-    this.friends.push(current);
+      this.friends.push(current);
     }
   }
 
   removeFriend(current) {
-     if (current != undefined && current != null) {
-    let index = this.friends.indexOf(current);
-    this.friends = this.friends.splice(index, 1);
-     }
+    if (current != undefined && current != null) {
+      let index = this.friends.indexOf(current);
+      print(this.name,current.name,this.friends[0],this.friendsID,index);
+      this.friends.splice(index, 1);
+    }
   }
 
   // Algorithms
@@ -81,7 +85,7 @@ class Person {
     for (let i = 0; i < this.hobbies.length; i++) {
       if (otherPerson.get("hobbies").includes(this.hobbies[i]) == true) {
         this.recommend.push(otherPerson);
-        otherPerson.get("recommend").push(this);
+        //otherPerson.get("recommend").push(this);
       }
     }
   }
